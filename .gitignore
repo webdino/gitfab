@@ -1,0 +1,6 @@
+htdocs/public
+htdocs/node_modules
+components/
+*~
+\#*
+.#*
