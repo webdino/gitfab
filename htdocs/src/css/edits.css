@@ -1,0 +1,98 @@
+#main {
+  font-family: Helvetica, sans-serif;
+  background-color: white;
+  border: 1px solid gray;
+  padding: 12px 0 6px 12px;
+  margin: 0 auto;
+  width: 490px;
+}
+
+#meta {
+  margin-bottom: 24px;
+}
+
+#title {
+}
+
+#tags {
+  font-size: 10px;
+}
+
+#process-list ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.process {
+  clear: both;
+}
+
+.process .content {
+  width: 430px;
+  border-bottom: 1px dotted black;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  float: left;
+}
+
+.process .content img {
+  width: 300px;
+}
+
+.process .function {
+  margin-left: 10px;
+  float: left;
+}
+
+.button {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0 3px;
+}
+
+.button.remove {
+  background: url(../images/remove.png) no-repeat;
+  background-size: contain;
+}
+
+.button.upload {
+  background: url(../images/upload.png) no-repeat;
+  background-size: contain;
+}
+
+.name {
+  color: #ff1493;
+  display: inline-block;
+}
+
+#form {
+  width: 430px;
+  margin-top: 12px;
+}
+
+.right {
+  text-align: right;
+}
+
+#textarea {
+  width: 430px;
+}
+
+#send-button {
+  margin-top: 3px;
+}
+
+#upload-container {
+  margin-top: 12px;
+}
+
+#upload-label {
+  color: orange;
+  text-decoration: underline;
+}
+
+#upload {
+  display: none;
+}

@@ -1,0 +1,21 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #eee;
+}
+
+header {
+  height: 50px;
+  width: 100%;
+  margin-bottom: 24px;
+  border-bottom: 1px solid gray;
+  background-color: #ccc;
+}
+
+footer {
+  margin-top: 24px;
+  height: 100px;
+  width: 100%;
+  border-top: 1px solid gray;
+  background-color: white;
+}
