@@ -4,6 +4,7 @@
 
 var EditController = {
   init: function() {
+    EditController.current_id = 0;
     //reusable elements
     EditController.reusable_input = $(document.createElement("input"));
     EditController.reusable_input.attr("id", "reusable_input");
@@ -14,20 +15,35 @@ var EditController = {
     $("#upload").change(EditController.upload);
     $("#title").click(EditController.editTitle);
     $("#tags").click(EditController.editTags);
+    
+    $("header").bind("dragover", function(e) {
+      e.preventDefault();
+      return false;
+    });
+    $("header").bind("drop", function(e) {
+      console.log(e);
+    });
   },
   
   editTextContent: function(e) {
     if (e.target.nodeName == "A") {
       return;
     }
+
     var target = $(e.currentTarget);
     target.unbind("click", EditController.editTextContent);
+    
     var text = target.text();
     EditController.reusable_textarea.val(text);
     target.empty();
     target.append(EditController.reusable_textarea);
-    EditController.reusable_textarea.blur(EditController.commitTextContent);
     EditController.reusable_textarea.focus();
+    EditController.reusable_textarea.blur(EditController.commitTextContent);
+
+    //この属性があると、textarea をクリックした場合でも blur イベントが発生してしまう。
+    var content = target.parent(".content");
+    content.removeAttr("draggable");
+    content.removeAttr("href");
   },
   
   commitTextContent: function(e) {
@@ -37,6 +53,11 @@ var EditController = {
     target.html(html);
     target.click(EditController.editTextContent);
     EditController.reusable_textarea.unbind("blur", EditController.commitTextContent);
+    
+    var content = target.parent(".content");
+    content.attr("draggable", "true");
+    content.attr("href", "#");
+    
   },
   
   editTitle: function(e) {
@@ -131,6 +152,43 @@ var EditController = {
     target.remove();
   },
   
+  dragStart: function(e) {
+    var source = $(e.currentTarget);
+    var dataTransfer = e.originalEvent.dataTransfer;
+    dataTransfer.setData("text/plain", source.parent().attr("id"));
+    return true;
+  },
+  
+  dragOver: function(e) {
+    e.preventDefault();
+    return false;
+  },
+  
+  dropEnd: function(e) {
+    var target = $(e.currentTarget).parent(".process");
+    var targetid = target.attr("id");
+    var dataTransfer = e.originalEvent.dataTransfer;
+    var sourceid = dataTransfer.getData('text/plain');
+    if (targetid == sourceid) {
+      return;
+    }
+    e.stopPropagation();
+    
+    var source = $("#"+sourceid);
+    var processes = $(".process");
+    var sourceIndex = processes.index(source);
+    var targetIndex = processes.index(target);
+    var isBefore = sourceIndex > targetIndex;
+    
+    //exchange
+    if (isBefore == true) {
+      target.before(source);
+    } else {
+      target.after(source);
+    }
+    return false;
+  },
+  
   append: function(e) {
     var textarea = $("#textarea");
   
@@ -138,14 +196,21 @@ var EditController = {
     //elements
     var process = $(document.createElement("li"));
     process.addClass("process");
+    process.attr("id", EditController.current_id++);
     var textcontent = $(document.createElement("div"));
     textcontent.addClass("text");
     textcontent.html(html);
-    var content = $(document.createElement("div"));
-    content.addClass("content");
-    content.append(textcontent);
     textcontent.click(EditController.editTextContent);
 
+    var content = $(document.createElement("a"));
+    content.attr("draggable", "true");
+    content.attr("href", "#");
+    content.addClass("content");
+    content.append(textcontent);
+    content.bind('dragstart', EditController.dragStart);
+    content.bind('dragover', EditController.dragOver);
+    content.bind('drop', EditController.dropEnd);
+    
     var func = $(document.createElement("div"));
     func.addClass("function");
     var upload = $(document.createElement("div"));

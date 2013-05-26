@@ -18,8 +18,8 @@
     <div id="main" role="main">
 
       <section id="meta">
-        <div id="title">PRODUCT-001</div>
-        <div id="tags">clock</div>
+        <div id="title">untitled</div>
+        <div id="tags"></div>
       </section>
 
       <section id="process-list">
