@@ -122,6 +122,11 @@ var EditController = {
     $("#upload").click();
   },
   
+  remove: function(e) {
+    var target = $(e.currentTarget.parentNode.parentNode);
+    target.remove();
+  },
+  
   append: function(e) {
     var textarea = $("#textarea");
   
@@ -148,6 +153,7 @@ var EditController = {
     func.append(upload);
     func.append(remove);
     upload.click(EditController.kickUpload);
+    remove.click(EditController.remove);
 
     process.append(content);
     process.append(func);
