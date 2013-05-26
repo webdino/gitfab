@@ -96,7 +96,11 @@ var EditController = {
       img.file = file;
       var reader = new FileReader();
       reader.onload = function(e) { 
+        //replace image
         EditController.upload_target.find(".image-container").remove();
+        //removes upload button
+        EditController.upload_target.parent().find(".button.upload").remove();
+
         img.attr("src", reader.result);
         var imgContainer = $(document.createElement("div"));
         imgContainer.addClass("image-container");
