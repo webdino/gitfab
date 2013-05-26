@@ -1,13 +1,13 @@
 #main {
   background-color: white;
   border: 1px solid gray;
-  padding: 12px 0 6px 12px;
+  padding: 0 0 12px 12px;
   margin: 0 auto;
   width: 490px;
 }
 
 #meta {
-  margin-bottom: -12px;
+  margin: 24px 0 8px 0;
 }
 
 #title {
@@ -59,6 +59,7 @@
 
 .process:last-child .content {
   border-bottom: 1px dotted black;
+  margin-bottom: 24px;
 }
 
 .image-container {
@@ -104,7 +105,6 @@
 
 #form {
   width: 430px;
-  margin-top: 12px;
 }
 
 .right {
