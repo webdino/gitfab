@@ -6,6 +6,7 @@
   <head>
     <meta charset="utf-8">
     <title data-l10n-id="title"></title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/common.css" type="text/css">
     <link rel="stylesheet" href="css/edits.css" type="text/css">
     <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
@@ -17,8 +18,8 @@
     <div id="main" role="main">
 
       <section id="meta">
-        <div id="title">プロダクトA</div>
-        <div id="tags">時計</div>
+        <div id="title">PRODUCT-001</div>
+        <div id="tags">clock</div>
       </section>
 
       <section id="process-list">
@@ -27,7 +28,7 @@
 
       <section id="form">
         <div id="textarea-container">
-          <textarea id="textarea"></textarea><div class="right"><button id="send-button">send</button></div>
+          <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
         </div>
         <!--
         <div id="upload-container"><label id="upload-label">upload files</label><input id="upload" name="file" type="file" /></div>

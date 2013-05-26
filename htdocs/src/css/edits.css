@@ -1,5 +1,4 @@
 #main {
-  font-family: Helvetica, sans-serif;
   background-color: white;
   border: 1px solid gray;
   padding: 12px 0 6px 12px;
@@ -16,6 +15,16 @@
 
 #tags {
   font-size: 10px;
+  height: 10px;
+}
+
+#tags:before {
+  content: "tags: ";
+}
+
+#tags.editing {
+  position: relative;
+  top: -2px;
 }
 
 #process-list ul {
@@ -30,14 +39,23 @@
 
 .process .content {
   width: 430px;
-  border-bottom: 1px dotted black;
+  border-top: 1px dotted black;
+  padding-top: 6px;
   padding-bottom: 6px;
   margin-bottom: 6px;
   float: left;
 }
 
+.process:last-child .content {
+  border-bottom: 1px dotted black;
+}
+
+.process .image-container {
+  text-align: center;
+}
+
 .process .content img {
-  width: 300px;
+  width: 200px;
 }
 
 .process .function {
@@ -76,7 +94,7 @@
   text-align: right;
 }
 
-#textarea {
+textarea {
   width: 430px;
 }
 
@@ -95,4 +113,16 @@
 
 #upload {
   display: none;
+}
+
+#reusable_input.title {
+  height: 10px;
+}
+
+#reusable_input.tags {
+  height: 10px;
+  font-size: 10px;
+}
+
+#reusable_textarea {
 }
