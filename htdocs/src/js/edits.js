@@ -12,17 +12,10 @@ var EditController = {
     EditController.reusable_textarea.attr("id", "reusable_textarea");
 
     $("#append-button").click(EditController.append);
+    $("#commit-button").click(EditController.commit);
     $("#upload").change(EditController.upload);
     $("#title").click(EditController.editTitle);
     $("#tags").click(EditController.editTags);
-    
-    $("header").bind("dragover", function(e) {
-      e.preventDefault();
-      return false;
-    });
-    $("header").bind("drop", function(e) {
-      console.log(e);
-    });
   },
   
   editTextContent: function(e) {
@@ -112,15 +105,14 @@ var EditController = {
   upload: function(e) {
     var file = this.files[0];
     if (file.type.match(/image.*/)) {
-    
       var img = $(document.createElement("img"));
-      img.file = file;
       var reader = new FileReader();
       reader.onload = function(e) { 
         //replace image
         EditController.upload_target.find(".image-container").remove();
         //removes upload button
         EditController.upload_target.parent().find(".button.upload").remove();
+        EditController.upload_target.get(0).uploaded_file = file;
 
         img.attr("src", reader.result);
         var imgContainer = $(document.createElement("div"));
@@ -230,6 +222,31 @@ var EditController = {
     $("#process-list ul").append(process);
     
     textarea.val("");
+  },
+  
+  commit: function(e) {
+    var title = $("#title").text();
+    var tags = $("#tags").text();
+    var contentList = $(".content");
+    var userDocument = "";
+    for (var i = 0, n = contentList.length; i < n; i++) {
+      var content = $(contentList.get(i));
+      var textContent = content.find(".text").text();
+      var file = content.get(0).uploaded_file;
+
+      userDocument += textContent+"\n";
+      if (file) {
+        userDocument += file.name+"\n";
+      }
+      userDocument += "--\n";
+      
+    }
+    
+    console.log("--------------------");
+    console.log("title:"+title);
+    console.log("tags:"+tags);
+    console.log("document:");
+    console.log(userDocument);
   },
   
   encode4html: function(text) {

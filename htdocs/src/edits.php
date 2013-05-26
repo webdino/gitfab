@@ -16,10 +16,12 @@
   <body>
     <?php include('header.php.inc'); ?>
     <div id="main" role="main">
-
       <section id="meta">
         <div id="title">untitled</div>
         <div id="tags"></div>
+        <div id="commit-button-container">
+          <button id="commit-button">commit</button>
+        </div>
       </section>
 
       <section id="process-list">

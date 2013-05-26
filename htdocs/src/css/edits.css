@@ -7,7 +7,7 @@
 }
 
 #meta {
-  margin-bottom: 24px;
+  margin-bottom: -12px;
 }
 
 #title {
@@ -27,6 +27,15 @@
 #tags.editing {
   position: relative;
   top: -2px;
+}
+
+#commit-button-container {
+  text-align: right;
+}
+
+#commit-button {
+  position: relative;
+  top: -30px;
 }
 
 #process-list ul {
