@@ -2,20 +2,20 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var EditController = {
+var ItemController = {
   init: function() {
-    EditController.current_id = 0;
+    ItemController.current_id = 0;
     //reusable elements
-    EditController.reusable_input = $(document.createElement("input"));
-    EditController.reusable_input.attr("id", "reusable_input");
-    EditController.reusable_textarea = $(document.createElement("textarea"));
-    EditController.reusable_textarea.attr("id", "reusable_textarea");
+    ItemController.reusable_input = $(document.createElement("input"));
+    ItemController.reusable_input.attr("id", "reusable_input");
+    ItemController.reusable_textarea = $(document.createElement("textarea"));
+    ItemController.reusable_textarea.attr("id", "reusable_textarea");
 
-    $("#append-button").click(EditController.append);
-    $("#commit-button").click(EditController.commit);
-    $("#upload").change(EditController.upload);
-    $("#title").click(EditController.editTitle);
-    $("#tags").click(EditController.editTags);
+    $("#append-button").click(ItemController.append);
+    $("#commit-button").click(ItemController.commit);
+    $("#upload").change(ItemController.upload);
+    $("#title").click(ItemController.editTitle);
+    $("#tags").click(ItemController.editTags);
   },
   
   editTextContent: function(e) {
@@ -24,14 +24,14 @@ var EditController = {
     }
 
     var target = $(e.currentTarget);
-    target.unbind("click", EditController.editTextContent);
+    target.unbind("click", ItemController.editTextContent);
     
     var text = target.text();
-    EditController.reusable_textarea.val(text);
+    ItemController.reusable_textarea.val(text);
     target.empty();
-    target.append(EditController.reusable_textarea);
-    EditController.reusable_textarea.focus();
-    EditController.reusable_textarea.blur(EditController.commitTextContent);
+    target.append(ItemController.reusable_textarea);
+    ItemController.reusable_textarea.focus();
+    ItemController.reusable_textarea.blur(ItemController.commitTextContent);
 
     //この属性があると、textarea をクリックした場合でも blur イベントが発生してしまう。
     var content = target.parent(".content");
@@ -40,12 +40,12 @@ var EditController = {
   },
   
   commitTextContent: function(e) {
-    var text = EditController.reusable_textarea.val();
-    var html = EditController.encode4html(text);
-    var target = EditController.reusable_textarea.parent();
+    var text = ItemController.reusable_textarea.val();
+    var html = ItemController.encode4html(text);
+    var target = ItemController.reusable_textarea.parent();
     target.html(html);
-    target.click(EditController.editTextContent);
-    EditController.reusable_textarea.unbind("blur", EditController.commitTextContent);
+    target.click(ItemController.editTextContent);
+    ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
     
     var content = target.parent(".content");
     content.attr("draggable", "true");
@@ -55,51 +55,51 @@ var EditController = {
   
   editTitle: function(e) {
     var title = $("#title");
-    title.unbind("click", EditController.editTitle);
+    title.unbind("click", ItemController.editTitle);
     var text = title.text();
     title.empty();
     title.addClass("editing");
-    EditController.reusable_input.val(text);
-    EditController.reusable_input.addClass("title");
-    EditController.reusable_input.change(EditController.commitTitle);
-    EditController.reusable_input.blur(EditController.commitTitle);
-    title.append(EditController.reusable_input);
-    EditController.reusable_input.focus();
+    ItemController.reusable_input.val(text);
+    ItemController.reusable_input.addClass("title");
+    ItemController.reusable_input.change(ItemController.commitTitle);
+    ItemController.reusable_input.blur(ItemController.commitTitle);
+    title.append(ItemController.reusable_input);
+    ItemController.reusable_input.focus();
   },
   
   commitTitle: function(e) {
-    var text = EditController.reusable_input.val();
+    var text = ItemController.reusable_input.val();
     var title = $("#title");
     title.text(text);
     title.removeClass("editing");
-    title.click(EditController.editTitle);
-    EditController.reusable_input.removeClass("title");
-    EditController.reusable_input.unbind("change", EditController.commitTitle);
-    EditController.reusable_input.unbind("blur", EditController.commitTitle);
+    title.click(ItemController.editTitle);
+    ItemController.reusable_input.removeClass("title");
+    ItemController.reusable_input.unbind("change", ItemController.commitTitle);
+    ItemController.reusable_input.unbind("blur", ItemController.commitTitle);
   },
   
   editTags: function(e) {
     var tags = $("#tags");
-    tags.unbind("click", EditController.editTags);
+    tags.unbind("click", ItemController.editTags);
     var text = tags.text();
     tags.empty();
     tags.addClass("editing");
-    EditController.reusable_input.val(text);
-    EditController.reusable_input.addClass("tags");
-    EditController.reusable_input.change(EditController.commitTags);
-    EditController.reusable_input.blur(EditController.commitTags);
-    tags.append(EditController.reusable_input);
-    EditController.reusable_input.focus();
+    ItemController.reusable_input.val(text);
+    ItemController.reusable_input.addClass("tags");
+    ItemController.reusable_input.change(ItemController.commitTags);
+    ItemController.reusable_input.blur(ItemController.commitTags);
+    tags.append(ItemController.reusable_input);
+    ItemController.reusable_input.focus();
   },
   commitTags: function(e) {
-    var text = EditController.reusable_input.val();
+    var text = ItemController.reusable_input.val();
     var tags = $("#tags");
     tags.text(text);
     tags.removeClass("editing");
-    tags.click(EditController.editTags);
-    EditController.reusable_input.removeClass("tags");
-    EditController.reusable_input.unbind("change", EditController.commitTags);
-    EditController.reusable_input.unbind("blur", EditController.commitTags);
+    tags.click(ItemController.editTags);
+    ItemController.reusable_input.removeClass("tags");
+    ItemController.reusable_input.unbind("change", ItemController.commitTags);
+    ItemController.reusable_input.unbind("blur", ItemController.commitTags);
   },
   
   upload: function(e) {
@@ -109,17 +109,17 @@ var EditController = {
       var reader = new FileReader();
       reader.onload = function(e) { 
         //replace image
-        EditController.upload_target.find(".image-container").remove();
+        ItemController.upload_target.find(".image-container").remove();
         //removes upload button
-        EditController.upload_target.parent().find(".button.upload").remove();
-        EditController.upload_target.get(0).uploaded_file = file;
+        ItemController.upload_target.parent().find(".button.upload").remove();
+        ItemController.upload_target.get(0).uploaded_file = file;
 
         img.attr("src", reader.result);
         var imgContainer = $(document.createElement("div"));
         imgContainer.addClass("image-container");
         imgContainer.append(img);
-        EditController.upload_target.append(imgContainer);
-        img.click(EditController.kickUploadFromImage);
+        ItemController.upload_target.append(imgContainer);
+        img.click(ItemController.kickUploadFromImage);
       };
       reader.readAsDataURL(file);
     }
@@ -129,13 +129,13 @@ var EditController = {
     var target = e.target;
     var parent = $(target.parentNode.parentNode);
     var content = $(parent.find(".content"));
-    EditController.upload_target = content;
+    ItemController.upload_target = content;
     $("#upload").click();
   },
   
   kickUploadFromImage: function(e) {
     var target = e.currentTarget;
-    EditController.upload_target = $(target.parentNode.parentNode);
+    ItemController.upload_target = $(target.parentNode.parentNode);
     $("#upload").click();
   },
   
@@ -184,24 +184,24 @@ var EditController = {
   append: function(e) {
     var textarea = $("#textarea");
   
-    var html = EditController.encode4html(textarea.val());
+    var html = ItemController.encode4html(textarea.val());
     //elements
     var process = $(document.createElement("li"));
     process.addClass("process");
-    process.attr("id", EditController.current_id++);
+    process.attr("id", ItemController.current_id++);
     var textcontent = $(document.createElement("div"));
     textcontent.addClass("text");
     textcontent.html(html);
-    textcontent.click(EditController.editTextContent);
+    textcontent.click(ItemController.editTextContent);
 
     var content = $(document.createElement("a"));
     content.attr("draggable", "true");
     content.attr("href", "#");
     content.addClass("content");
     content.append(textcontent);
-    content.bind('dragstart', EditController.dragStart);
-    content.bind('dragover', EditController.dragOver);
-    content.bind('drop', EditController.dropEnd);
+    content.bind('dragstart', ItemController.dragStart);
+    content.bind('dragover', ItemController.dragOver);
+    content.bind('drop', ItemController.dropEnd);
     
     var func = $(document.createElement("div"));
     func.addClass("function");
@@ -213,8 +213,8 @@ var EditController = {
     remove.addClass("remove");
     func.append(upload);
     func.append(remove);
-    upload.click(EditController.kickUpload);
-    remove.click(EditController.remove);
+    upload.click(ItemController.kickUpload);
+    remove.click(ItemController.remove);
 
     process.append(content);
     process.append(func);
@@ -225,7 +225,9 @@ var EditController = {
   },
   
   commit: function(e) {
+    //このタイトルのリポジトリを作成あるいはアップデート
     var title = $("#title").text();
+    //タグ
     var tags = $("#tags").text();
     var contentList = $(".content");
     var userDocument = "";
@@ -237,11 +239,13 @@ var EditController = {
       userDocument += textContent+"\n";
       if (file) {
         userDocument += file.name+"\n";
+        //file をコミット
       }
       userDocument += "--\n";
       
     }
-    
+    //userDocument をコミット
+
     console.log("--------------------");
     console.log("title:"+title);
     console.log("tags:"+tags);
@@ -265,5 +269,5 @@ var EditController = {
 };
 
 $(document).ready(function() {
-  EditController.init();
+  ItemController.init();
 });

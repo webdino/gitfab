@@ -8,13 +8,14 @@
     <title data-l10n-id="title"></title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/common.css" type="text/css">
-    <link rel="stylesheet" href="css/edits.css" type="text/css">
+    <link rel="stylesheet" href="css/item.css" type="text/css">
     <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="js/edits.js"></script>
+    <script type="text/javascript" src="js/item.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
     <?php include('header.php.inc'); ?>
+    <?php include('toolbar.php.inc'); ?>
     <div id="main" role="main">
       <section id="meta">
         <div id="title">untitled</div>
