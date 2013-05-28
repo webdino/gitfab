@@ -1,0 +1,57 @@
+#item-list {
+  padding: 12px 0 ;
+  margin: 24px auto;
+  width: 490px;
+  background-color: white;
+/*  border: 1px solid gray; */
+}
+
+.item {
+  clear: both;
+  height: 150px;
+  margin: 12px;
+  list-style-type: none;
+}
+
+.item a {
+  color: black;
+  text-decoration: none;
+}
+
+.thumbnail {
+  float:left;
+  width: 150px;
+  height: 150px;
+  background: url(../../samples/sample.jpg) no-repeat;
+  background-size: contain;
+}
+
+.meta {
+  float:left;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  margin-left: 12px;
+  width: 300px;
+}
+
+.title {
+  clear: both;
+  font-size: 16px;
+}
+
+.author {
+  float:left;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.date {
+  float:left;
+  font-size: 12px;
+}
+
+.abstract {
+  clear: both;
+  font-size: 14px;
+}
