@@ -111,8 +111,9 @@ define("github/api", ["jQuery"], function($){
     };
 
     API.buildURL = function(type, params){
-	var url = this.api_list[type];
-	if(url){
+	var api = this.api_list[type];
+	if(api){
+	    var url = api.url;
 	    for(var attr in params){
 		url = url.replace("{" + attr + "}", params[attr]);
 	    }
@@ -124,6 +125,7 @@ define("github/api", ["jQuery"], function($){
 	var url = this.buildURL(type, params);
 	if(url){
 	    $.ajax({
+		url: url,
 		type: this.api_list[type].type,
 		data: params,
 		success: function(data){
