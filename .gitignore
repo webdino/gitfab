@@ -4,3 +4,5 @@ components/
 *~
 \#*
 .#*
+htdocs/Gemfile*
+htdocs/config.ru
