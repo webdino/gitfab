@@ -13,7 +13,7 @@ require(["jQuery", "github/user"], function($, User){
     $(function(){
 	var chikoski = new User("chikoski");
 	console.log(chikoski.name);
-	chikoski.details(function(status, user){
+	chikoski.loadProfile(function(status, user){
 	    console.log(status);
 	    console.log(user);
 	});
