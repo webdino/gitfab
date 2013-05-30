@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
     var DIR_DEST       = "public";
+    var DIR_TEST       = "public/test";
     var DIR_COMPONENTS  = "components";
     var DIR_SRC        = "src";
     var NODE_MODULES   = "node_modules";
@@ -8,7 +9,7 @@ module.exports = function(grunt) {
 
     dirs.src = {
 	base: DIR_SRC,
-	html: DIR_SRC + "/html",
+	test: DIR_SRC + "/test",
 	js: DIR_SRC + "/js",
 	css: DIR_SRC + "/css",
 	php: DIR_SRC
@@ -21,20 +22,27 @@ module.exports = function(grunt) {
 	css: DIR_DEST + "/" + "css"
     };
 
+    dirs.test = {
+	base: DIR_TEST,
+	html: DIR_TEST,
+	js: DIR_TEST + "/" + "js",
+	css: DIR_TEST + "/" + "css"
+    };
+
     dirs.components = {
 	base: DIR_COMPONENTS,
 	jquery: DIR_COMPONENTS + "/jquery",
 	requirejs: DIR_COMPONENTS + "/requirejs"
     };
 
-    var files = {};
-    files.php = ['<%= dirs.src.php %>/*.php','<%= dirs.src.php %>/*.inc'];
-    files.html = ['<%= dirs.src.html %>/**/*.html'];
-    
-    files.js = {
-	expanded: ['<%= dirs.dest.js %>/*.js'],
-	minified: ['<%= dirs.dest.js %>/*.min.js'],
-	components:['<%= dirs.components.base %>/*/*.min.js']
+    var files = {
+	php: ['<%= dirs.src.php %>/*.php','<%= dirs.src.php %>/*.inc'],
+        js: {
+	    expanded: ['<%= dirs.dest.js %>/*.js'],
+	    minified: ['<%= dirs.dest.js %>/*.min.js'],
+	    components:['<%= dirs.components.base %>/*/*.min.js']
+	},
+	test: ['<%= dirs.src.test %>/**/*.html', '<%= dirs.src.js %>/**/*.js', '<%= dirs.components.base %>/*/*.min.js']
     };
 
     var requirejs = {};
@@ -65,6 +73,7 @@ module.exports = function(grunt) {
 	clean: {
 	    dest: ["<%= dirs.dest.base %>"],
 	    ext: ["<%= dirs.components.base %>"],
+	    test: ["<%= dirs.test.base %>"],
 	    node_modules: ["<%= dirs.node_modules %>"]
 	},
 	requirejs:{
@@ -85,9 +94,9 @@ module.exports = function(grunt) {
 	    }
 	},
 	watch: {
-	    html: {
-	    	files: files.html,
-	    	tasks: ['copy:html']
+	    test: {
+		files: files.test,
+		tasks: ['copy:test']
 	    }
 	},
 	copy: {
@@ -98,10 +107,16 @@ module.exports = function(grunt) {
 		flatten: true
 	    },
 	    html: {
-		src: files.php.concat(files.html),
+		src: files.php,
     		dest: '<%= dirs.dest.html %>',
     		flatten: true,
     		expand: true
+	    },
+	    test:{
+		src: files.test,
+		dest: '<%= dirs.test.base %>',
+		expand: true,
+		flatten: true
 	    }
 	}
 
