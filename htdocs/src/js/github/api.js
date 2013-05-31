@@ -110,8 +110,34 @@ define("github/api", ["jQuery"], function($){
 	}
     };
 
+    var buildAPIInfo = function(url){
+	var match = url.match(/{\?([^}]+)}/);
+	var params = {};
+	if(match){
+	    url = url.substr(0, match.index);
+	    var param_names = match[1].split(/,/);
+	    for(var i = 0; i < param_names; i++){
+		match[param_names[i]] = null;
+	    }
+	}
+	return {
+	    url: url,
+	    params: params
+	};
+    };
+
+    var findAPI = function(type){
+	var api = API.api_list[type];
+	if(api && api.url){
+	    var api_type = api.type;
+	    api = buildAPIInfo(api.url);
+	    api.type = api_type;
+	}
+	return api;
+    };
+
     API.buildURL = function(type, params){
-	var api = this.api_list[type];
+	var api = findAPI(type);
 	if(api){
 	    var url = api.url;
 	    for(var attr in params){
