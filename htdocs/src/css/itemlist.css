@@ -40,6 +40,12 @@
   font-size: 16px;
 }
 
+.abstract {
+  clear: both;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
 .author {
   float:left;
   font-size: 12px;
@@ -49,9 +55,17 @@
 .date {
   float:left;
   font-size: 12px;
+  margin-right: 12px;
 }
 
-.abstract {
-  clear: both;
-  font-size: 14px;
+.like {
+  float:left;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.fork {
+  float:left;
+  font-size: 12px;
+  margin-right: 12px;
 }

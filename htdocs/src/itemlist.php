@@ -9,7 +9,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/common.css" type="text/css">
     <link rel="stylesheet" href="css/itemlist.css" type="text/css">
-    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/itemlist.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
@@ -24,8 +24,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
           </a>
         </li>
@@ -35,8 +37,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
           </a>
         </li>
@@ -45,8 +49,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
         </li>
         <li class="item">
@@ -54,8 +60,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
         </li>
         <li class="item">
@@ -63,8 +71,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
         </li>
         <li class="item">
@@ -72,8 +82,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
         </li>
         <li class="item">
@@ -81,8 +93,10 @@
           <ul class="meta">
             <li class="title">タイトル</li>
             <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">作者</li>
-            <li class="date">作成日</li>
+            <li class="author">Daisuke Akatsuka</li>
+            <li class="date">2013.05.29</li>
+            <li class="like">★ 10</li>
+            <li class="fork">fork 10</li>
           </ul>
         </li>
       </ul>
