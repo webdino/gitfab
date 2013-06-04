@@ -26,7 +26,7 @@ var ItemController = {
     var target = $(e.currentTarget);
     target.unbind("click", ItemController.editTextContent);
     
-    var text = target.text();
+    var text = target.get(0).markdownContent;
     ItemController.reusable_textarea.val(text);
     target.empty();
     target.append(ItemController.reusable_textarea);
@@ -112,7 +112,7 @@ var ItemController = {
         ItemController.upload_target.find(".image-container").remove();
         //removes upload button
         ItemController.upload_target.parent().find(".button.upload").remove();
-        ItemController.upload_target.get(0).uploaded_file = file;
+        ItemController.upload_target.get(0).fileContent = file;
 
         img.attr("src", reader.result);
         var imgContainer = $(document.createElement("div"));
@@ -184,7 +184,8 @@ var ItemController = {
   append: function(e) {
     var textarea = $("#textarea");
   
-    var html = ItemController.encode4html(textarea.val());
+    var text = textarea.val();
+    var html = ItemController.encode4html(text);
     //elements
     var process = $(document.createElement("li"));
     process.addClass("process");
@@ -193,6 +194,7 @@ var ItemController = {
     textcontent.addClass("text");
     textcontent.html(html);
     textcontent.click(ItemController.editTextContent);
+    textcontent.get(0).markdownContent = text;
 
     var content = $(document.createElement("a"));
     content.attr("draggable", "true");
@@ -219,7 +221,7 @@ var ItemController = {
     process.append(content);
     process.append(func);
     
-    $("#process-list ul").append(process);
+    $("#process-list-ul").append(process);
     
     textarea.val("");
   },
@@ -233,10 +235,10 @@ var ItemController = {
     var userDocument = "";
     for (var i = 0, n = contentList.length; i < n; i++) {
       var content = $(contentList.get(i));
-      var textContent = content.find(".text").text();
-      var file = content.get(0).uploaded_file;
+      var text = content.find(".text").get(0).markdownContent;
+      var file = content.get(0).fileContent;
 
-      userDocument += textContent+"\n";
+      userDocument += text+"\n";
       if (file) {
         userDocument += file.name+"\n";
         //file をコミット
@@ -251,20 +253,14 @@ var ItemController = {
     console.log("tags:"+tags);
     console.log("document:");
     console.log(userDocument);
+    ItemController.post();
   },
   
+  post: function() {
+  },
+
   encode4html: function(text) {
-    var html = text;
-    //changes <>
-    html = html.replace(/</g, "&lt;");
-    html = html.replace(/>/g, "&gt;");
-    //find the name
-    html = html.replace(/^(#\S+)/, "<div class='name'>$1</div>");
-    //adds to link
-    html = html.replace(/(http:\/\/\S+)/, "<a href='$1'>$1</a>");
-    //replaces to br
-    html = html.replace(/\n/g, "\n<br/>");
-    return html;
+    return window.markdown.toHTML(text);
   }
 };
 

@@ -9,7 +9,8 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/common.css" type="text/css">
     <link rel="stylesheet" href="css/item.css" type="text/css">
-    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/markdown.js"></script>
     <script type="text/javascript" src="js/item.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
@@ -26,7 +27,7 @@
           </div>
         </section>
         <section id="process-list">
-          <ul></ul>
+          <ul id="process-list-ul"></ul>
         </section>
         <section id="form">
           <div id="textarea-container">

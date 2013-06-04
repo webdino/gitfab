@@ -38,7 +38,7 @@
   top: -30px;
 }
 
-#process-list ul {
+#process-list-ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -98,11 +98,6 @@
   background-size: contain;
 }
 
-.name {
-  color: #ff1493;
-  display: inline-block;
-}
-
 #form {
   width: 430px;
 }
@@ -146,3 +141,9 @@ textarea {
   top: -2px;
   left: -2px;
 }
+
+/** in markdown **/
+h1 {
+  color: #ff1493;
+}
+
