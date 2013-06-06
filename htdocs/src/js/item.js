@@ -24,13 +24,17 @@ var ItemController = {
       return;
     }
     var queryString = url.substring(indexOfQ+1);
-    var indexOfE = queryString.indexOf("=");
-    var repositoryName = queryString.substring(indexOfE+1);
-    $.get("../api/ba-simple-proxy.php", {url: "https://raw.github.com/"+repositoryName+"/master/gitfab.md"}, ItemController.loadedGitFabDocument);
+    var params = queryString.split("&");
+    for (var i = 0, n = params.length; i < n; i++) {
+      var param = params[i];
+      var keyvalue = param.split("=");
+      ItemController[keyvalue[0]] = keyvalue[1];
+    }
+    var gitfabDocumentURL = "https://raw.github.com/"+ItemController.owner+"/"+ItemController.repository+"/"+ItemController.master+"/gitfab.md";
+    $.get("../api/ba-simple-proxy.php", {url: gitfabDocumentURL}, ItemController.loadedGitFabDocument);
   },
   
   loadedGitFabDocument: function(data) {
-    console.log(data);
     //parse
     var lines = data.contents.split("\n");
     var title = lines[0].substring("title:".length);
@@ -57,7 +61,7 @@ var ItemController = {
     var target = $(e.currentTarget);
     target.unbind("click", ItemController.editTextContent);
     
-    var text = target.get(0).markdownContent;
+    var text = target.get(0).markdown;
     ItemController.reusable_textarea.val(text);
     target.empty();
     target.append(ItemController.reusable_textarea);
@@ -132,24 +136,26 @@ var ItemController = {
   upload: function(e) {
     var file = this.files[0];
     var target = ItemController.upload_target.get(0);
-    var text = target.markdownContent;
+    var url = URL.createObjectURL(file);
+    var text = target.markdown;
+    text += "\n\n";
     if (file.type.match(/image.*/)) {
-      var reader = new FileReader();
-      reader.onload = function(e) { 
-        text += "\n\n";
-        text += "!["+file.name+"]("+reader.result+")";
-        target.markdownContent = text;
-        var html = ItemController.encode4html(text);
-        ItemController.upload_target.html(html);
-      };
-      reader.readAsDataURL(file);
+      text += "!["+file.name+"]("+url+")";
     } else {
-      text += "\n\n";
-      text += "["+file.name+"]("+file.name+")";
-      target.markdownContent = text;
-      var html = ItemController.encode4html(text);
-      ItemController.upload_target.html(html);
+      text += "["+file.name+"]("+url+")";
     }
+    ItemController.updateProcess(text, ItemController.upload_target);
+    if (!target.files) {
+      target.files = {};
+    }
+    target.files[url] = file;
+  },
+  
+  updateProcess: function(text, target) {
+    target.get(0).markdown = text;
+    var html = ItemController.encode4html(text);
+    target.html(html);
+    target.find("a").attr("target", "_blank");
   },
   
   kickUpload: function(e) {
@@ -216,7 +222,6 @@ var ItemController = {
   },
   
   append2dom: function(text) {
-    var html = ItemController.encode4html(text);
     //elements
     var process = $(document.createElement("li"));
     process.addClass("process");
@@ -230,9 +235,7 @@ var ItemController = {
     content.bind('dragover', ItemController.dragOver);
     content.bind('drop', ItemController.dropEnd);
     content.click(ItemController.editTextContent);
-    content.html(html);
-
-    content.get(0).markdownContent = text;
+    ItemController.updateProcess(text, content);
     
     var func = $(document.createElement("div"));
     func.addClass("function");
@@ -261,31 +264,29 @@ var ItemController = {
     var contentList = $(".content");
     var userDocument = "";
     for (var i = 0, n = contentList.length; i < n; i++) {
-      var content = $(contentList.get(i));
-      var text = content.get(0).markdownContent;
-      var file = content.get(0).fileContent;
-
-      userDocument += text+"\n";
-      if (file) {
-        userDocument += file.name+"\n";
-        //file をコミット
+      var content = contentList.get(i);
+      var text = content.markdown;
+      var files = content.files;
+      for (key in files) {
+        var file = files[key];
+        //replace url
+        var fileURL = "https://raw.github.com/"+ItemController.owner+"/"+ItemController.repository+"/"+ItemController.master+"/"+file.name;
+        text = text.replace(key, fileURL);
+        //ここで file を上記URLにあうようにコミット
       }
+      content.files = {};
+      userDocument += text+"\n";
       userDocument += "--\n";
-      
     }
-    //userDocument をコミット
+    //ここで userDocument を gitfab.md の内容としてコミット
 
     console.log("--------------------");
     console.log("title:"+title);
     console.log("tags:"+tags);
     console.log("document:");
     console.log(userDocument);
-    ItemController.post();
   },
   
-  post: function() {
-  },
-
   encode4html: function(text) {
     return window.markdown.toHTML(text);
   }
