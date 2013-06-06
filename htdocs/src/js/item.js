@@ -11,6 +11,7 @@ var ItemController = {
     ItemController.reusable_textarea = $(document.createElement("textarea"));
     ItemController.reusable_textarea.attr("id", "reusable_textarea");
     $("#append-button").click(ItemController.append);
+    $("#upload-button").click(ItemController.appendViaUpload);
     $("#commit-button").click(ItemController.commit);
     $("#upload").change(ItemController.upload);
     $("#title").click(ItemController.editTitle);
@@ -134,11 +135,19 @@ var ItemController = {
   },
   
   upload: function(e) {
+    var target = null;
+    var text = "";
+    if (ItemController.upload_target) {
+      target = ItemController.upload_target.get(0);
+      text += target.markdown+"\n\n";
+    } else {
+      //append a process via upload
+      var process = ItemController.append2dom("");
+      target = process.find(".content").get(0);
+      ItemController.upload_target = $(target);
+    }
     var file = this.files[0];
-    var target = ItemController.upload_target.get(0);
     var url = URL.createObjectURL(file);
-    var text = target.markdown;
-    text += "\n\n";
     if (file.type.match(/image.*/)) {
       text += "!["+file.name+"]("+url+")";
     } else {
@@ -220,6 +229,11 @@ var ItemController = {
     ItemController.append2dom(text);
     textarea.val("");
   },
+
+  appendViaUpload: function(e) {
+    ItemController.upload_target = null;
+    $("#upload").click();
+  },
   
   append2dom: function(text) {
     //elements
@@ -254,6 +268,7 @@ var ItemController = {
     process.append(func);
     
     $("#process-list-ul").append(process);
+    return process;
   },
   
   commit: function(e) {
@@ -274,6 +289,7 @@ var ItemController = {
         text = text.replace(key, fileURL);
         //ここで file を上記URLにあうようにコミット
       }
+      content.markdown = text;
       content.files = {};
       userDocument += text+"\n";
       userDocument += "--\n";

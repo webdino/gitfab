@@ -99,7 +99,18 @@
 }
 
 #form {
+  width: 490px;
+}
+
+#textarea-container {
   width: 430px;
+  display: inline-block;
+}
+
+#upload-container {
+  float: right;
+  width: 60px;
+  text-align: center;
 }
 
 .right {
@@ -112,15 +123,6 @@ textarea {
 
 #send-button {
   margin-top: 3px;
-}
-
-#upload-container {
-  margin-top: 12px;
-}
-
-#upload-label {
-  color: orange;
-  text-decoration: underline;
 }
 
 #upload {

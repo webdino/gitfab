@@ -33,6 +33,9 @@
           <div id="textarea-container">
             <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
           </div>
+          <div id="upload-container">
+            <div id="upload-button" class="button upload"></div>
+          </div>
           <!--
           <div id="upload-container"><label id="upload-label">upload files</label><input id="upload" name="file" type="file" /></div>
           -->
