@@ -20,7 +20,7 @@
     <div id="main" role="main">
       <div id="item">
         <section id="meta">
-          <div id="title">untitled</div>
+          <div id="title"></div>
           <div id="tags"></div>
           <div id="commit-button-container">
             <button id="commit-button">commit</button>

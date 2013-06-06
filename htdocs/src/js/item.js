@@ -10,19 +10,50 @@ var ItemController = {
     ItemController.reusable_input.attr("id", "reusable_input");
     ItemController.reusable_textarea = $(document.createElement("textarea"));
     ItemController.reusable_textarea.attr("id", "reusable_textarea");
-
     $("#append-button").click(ItemController.append);
     $("#commit-button").click(ItemController.commit);
     $("#upload").change(ItemController.upload);
     $("#title").click(ItemController.editTitle);
     $("#tags").click(ItemController.editTags);
+
+    //get the repository name from query string
+    var url = window.location.href;
+    var indexOfQ = url.indexOf("?");
+    if (indexOfQ < 0) {
+      $("#title").text("untitled");
+      return;
+    }
+    var queryString = url.substring(indexOfQ+1);
+    var indexOfE = queryString.indexOf("=");
+    var repositoryName = queryString.substring(indexOfE+1);
+    $.get("../api/ba-simple-proxy.php", {url: "https://raw.github.com/"+repositoryName+"/master/gitfab.md"}, ItemController.loadedGitFabDocument);
+  },
+  
+  loadedGitFabDocument: function(data) {
+    console.log(data);
+    //parse
+    var lines = data.contents.split("\n");
+    var title = lines[0].substring("title:".length);
+    var tags = lines[1].substring("tags:".length);
+    $("#title").text(title);
+    $("#tags").text(tags);
+    var text;
+    for (var i = 2, n = lines.length; i < n; i++) {
+      var line = lines[i];
+      if (line == "---") {
+        ItemController.append2dom(text);
+        text = null;
+        continue;
+      }
+      if (text) {
+        text += "\n" + line;
+      } else {
+        text = line;
+      }
+    }
   },
   
   editTextContent: function(e) {
-    if (e.target.nodeName == "A") {
-      return;
-    }
-
     var target = $(e.currentTarget);
     target.unbind("click", ItemController.editTextContent);
     
@@ -34,9 +65,8 @@ var ItemController = {
     ItemController.reusable_textarea.blur(ItemController.commitTextContent);
 
     //この属性があると、textarea をクリックした場合でも blur イベントが発生してしまう。
-    var content = target.parent(".content");
-    content.removeAttr("draggable");
-    content.removeAttr("href");
+    target.removeAttr("draggable");
+    target.removeAttr("href");
   },
   
   commitTextContent: function(e) {
@@ -46,11 +76,8 @@ var ItemController = {
     target.html(html);
     target.click(ItemController.editTextContent);
     ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
-    
-    var content = target.parent(".content");
-    content.attr("draggable", "true");
-    content.attr("href", "#");
-    
+    target.attr("draggable", "true");
+    target.attr("href", "#");
   },
   
   editTitle: function(e) {
@@ -104,24 +131,24 @@ var ItemController = {
   
   upload: function(e) {
     var file = this.files[0];
+    var target = ItemController.upload_target.get(0);
+    var text = target.markdownContent;
     if (file.type.match(/image.*/)) {
-      var img = $(document.createElement("img"));
       var reader = new FileReader();
       reader.onload = function(e) { 
-        //replace image
-        ItemController.upload_target.find(".image-container").remove();
-        //removes upload button
-        ItemController.upload_target.parent().find(".button.upload").remove();
-        ItemController.upload_target.get(0).fileContent = file;
-
-        img.attr("src", reader.result);
-        var imgContainer = $(document.createElement("div"));
-        imgContainer.addClass("image-container");
-        imgContainer.append(img);
-        ItemController.upload_target.append(imgContainer);
-        img.click(ItemController.kickUploadFromImage);
+        text += "\n\n";
+        text += "!["+file.name+"]("+reader.result+")";
+        target.markdownContent = text;
+        var html = ItemController.encode4html(text);
+        ItemController.upload_target.html(html);
       };
       reader.readAsDataURL(file);
+    } else {
+      text += "\n\n";
+      text += "["+file.name+"]("+file.name+")";
+      target.markdownContent = text;
+      var html = ItemController.encode4html(text);
+      ItemController.upload_target.html(html);
     }
   },
   
@@ -183,27 +210,29 @@ var ItemController = {
   
   append: function(e) {
     var textarea = $("#textarea");
-  
     var text = textarea.val();
+    ItemController.append2dom(text);
+    textarea.val("");
+  },
+  
+  append2dom: function(text) {
     var html = ItemController.encode4html(text);
     //elements
     var process = $(document.createElement("li"));
     process.addClass("process");
     process.attr("id", ItemController.current_id++);
-    var textcontent = $(document.createElement("div"));
-    textcontent.addClass("text");
-    textcontent.html(html);
-    textcontent.click(ItemController.editTextContent);
-    textcontent.get(0).markdownContent = text;
 
     var content = $(document.createElement("a"));
     content.attr("draggable", "true");
     content.attr("href", "#");
     content.addClass("content");
-    content.append(textcontent);
     content.bind('dragstart', ItemController.dragStart);
     content.bind('dragover', ItemController.dragOver);
     content.bind('drop', ItemController.dropEnd);
+    content.click(ItemController.editTextContent);
+    content.html(html);
+
+    content.get(0).markdownContent = text;
     
     var func = $(document.createElement("div"));
     func.addClass("function");
@@ -222,8 +251,6 @@ var ItemController = {
     process.append(func);
     
     $("#process-list-ul").append(process);
-    
-    textarea.val("");
   },
   
   commit: function(e) {
@@ -235,7 +262,7 @@ var ItemController = {
     var userDocument = "";
     for (var i = 0, n = contentList.length; i < n; i++) {
       var content = $(contentList.get(i));
-      var text = content.find(".text").get(0).markdownContent;
+      var text = content.get(0).markdownContent;
       var file = content.get(0).fileContent;
 
       userDocument += text+"\n";

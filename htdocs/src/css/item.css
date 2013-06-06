@@ -143,6 +143,9 @@ textarea {
 }
 
 /** in markdown **/
+.content img {
+}
+
 h1 {
   color: #ff1493;
 }
