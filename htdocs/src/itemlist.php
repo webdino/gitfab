@@ -18,6 +18,7 @@
     <?php include('toolbar.php.inc'); ?>
     <div id="main" role="main">
       <ul id="item-list">
+      <!--
         <li class="item">
           <a href="item.php">
           <div class="thumbnail"></div>
@@ -99,6 +100,7 @@
             <li class="fork">fork 10</li>
           </ul>
         </li>
+      -->
       </ul>
     </div>
     <?php include('footer.php.inc'); ?>

@@ -1,11 +1,12 @@
 #item-list {
-  padding: 12px 0 ;
+/*  padding: 12px 0 ; */
   margin: 24px auto;
   width: 490px;
   background-color: white;
 /*  border: 1px solid gray; */
 }
 
+/*
 .item {
   clear: both;
   height: 150px;
@@ -69,3 +70,5 @@
   font-size: 12px;
   margin-right: 12px;
 }
+
+*/
