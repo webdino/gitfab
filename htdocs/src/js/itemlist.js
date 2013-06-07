@@ -9,6 +9,8 @@ var ITEM_PAGE = "item.php?";
 
 var ItemListController = {
   init: function() {
+    $.getJSON(LIST_API, ItemListController.loadItemList);
+
     var url = window.location.href;
     var indexOfQ = url.indexOf("?");
     if (indexOfQ < 0) {
