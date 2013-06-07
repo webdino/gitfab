@@ -31,14 +31,16 @@ var ItemController = {
       var keyvalue = param.split("=");
       ItemController[keyvalue[0]] = keyvalue[1];
     }
-    var gitfabDocumentURL = "https://raw.github.com/"+ItemController.owner+"/"+ItemController.repository+"/"+ItemController.master+"/gitfab.md";
-    $.get("../api/ba-simple-proxy.php", {url: gitfabDocumentURL}, ItemController.loadedGitFabDocument);
+    var gitfabDocumentURL = "https://api.github.com/repos/"+ItemController.owner+"/"+ItemController.repository+"/contents/gitfab.md?callback=?";
+    $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
   },
   
-  loadedGitFabDocument: function(data) {
+  loadedGitFabDocument: function(result) {
+    var base64 = new Base64();
+    var content = base64.decodeStringAsUTF8(result.data.content.replace(/\n/g, ""));
     //parse
-    var lines = data.contents.split("\n");
-    var title = lines[0].substring("title:".length);
+    var lines = content.split("\n");
+    var title = ItemController.repository;
     var tags = lines[1].substring("tags:".length);
     $("#title").text(title);
     $("#tags").text(tags);
@@ -273,7 +275,7 @@ var ItemController = {
   
   commit: function(e) {
     //このタイトルのリポジトリを作成あるいはアップデート
-    var title = $("#title").text();
+    //var title = $("#title").text();
     //タグ
     var tags = $("#tags").text();
     var contentList = $(".content");
@@ -297,7 +299,7 @@ var ItemController = {
     //ここで userDocument を gitfab.md の内容としてコミット
 
     console.log("--------------------");
-    console.log("title:"+title);
+    console.log("repository:"+ItemController.repository);
     console.log("tags:"+tags);
     console.log("document:");
     console.log(userDocument);
