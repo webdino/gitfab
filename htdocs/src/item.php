@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/item.css" type="text/css">
     <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/lib/markdown.js"></script>
+    <script type="text/javascript" src="js/lib/base64.js"></script>
     <script type="text/javascript" src="js/item.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
