@@ -43,5 +43,6 @@ footer {
 }
 
 #toolbar {
+  display: none;
   text-align: center;
 }

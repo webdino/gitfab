@@ -22,17 +22,22 @@ var ItemController = {
     var indexOfQ = url.indexOf("?");
     if (indexOfQ < 0) {
       $("#title").text("untitled");
-      return;
+    } else {
+      var queryString = url.substring(indexOfQ+1);
+      var params = queryString.split("&");
+      for (var i = 0, n = params.length; i < n; i++) {
+        var param = params[i];
+        var keyvalue = param.split("=");
+        ItemController[keyvalue[0]] = keyvalue[1];
+      }
+      var gitfabDocumentURL = "https://api.github.com/repos/"+ItemController.owner+"/"+ItemController.repository+"/contents/gitfab.md?callback=?";
+      $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
     }
-    var queryString = url.substring(indexOfQ+1);
-    var params = queryString.split("&");
-    for (var i = 0, n = params.length; i < n; i++) {
-      var param = params[i];
-      var keyvalue = param.split("=");
-      ItemController[keyvalue[0]] = keyvalue[1];
+
+    if (ItemController.access_token) {
+      $("#login").hide();
+      $("#toolbar").show();
     }
-    var gitfabDocumentURL = "https://api.github.com/repos/"+ItemController.owner+"/"+ItemController.repository+"/contents/gitfab.md?callback=?";
-    $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
   },
   
   loadedGitFabDocument: function(result) {

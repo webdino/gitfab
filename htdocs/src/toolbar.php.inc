@@ -1,3 +1,4 @@
 <div id="toolbar">
-dashboard | create | setting
+<!-- dashboard | create | setting -->
+create
 </div>
