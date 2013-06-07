@@ -17,11 +17,10 @@ var ItemListController = {
       var item = itemlist[i];
       var owner = item.owner.login;
       var repository = item.name;
-      var master = item.master_branch;
       var li = $(document.createElement("li"));
       li.addClass("item");
       var link = $(document.createElement("a"));
-      link.attr("href", ITEM_PAGE+"owner="+owner+"&repository="+repository+"&master="+master);
+      link.attr("href", ITEM_PAGE+"owner="+owner+"&repository="+repository);
       link.text(item.full_name);
       li.append(link);
       ul.append(li);
