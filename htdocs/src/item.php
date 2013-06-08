@@ -12,6 +12,7 @@
     <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/lib/markdown.js"></script>
     <script type="text/javascript" src="js/lib/base64.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
     <script type="text/javascript" src="js/item.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
@@ -37,9 +38,6 @@
           <div id="upload-container">
             <div id="upload-button" class="button upload"></div>
           </div>
-          <!--
-          <div id="upload-container"><label id="upload-label">upload files</label><input id="upload" name="file" type="file" /></div>
-          -->
           <input id="upload" name="file" type="file" />
         </section>
       </div>

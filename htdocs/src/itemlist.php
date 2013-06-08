@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/common.css" type="text/css">
     <link rel="stylesheet" href="css/itemlist.css" type="text/css">
     <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
     <script type="text/javascript" src="js/itemlist.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>

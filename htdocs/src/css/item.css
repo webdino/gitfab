@@ -3,7 +3,7 @@
   border: 1px solid gray;
   padding: 0 0 12px 12px;
   margin: 24px auto;
-  width: 490px;
+  width: 440px;
 }
 
 #meta {
@@ -11,13 +11,11 @@
 }
 
 #title {
-  cursor: pointer;
 }
 
 #tags {
   font-size: 10px;
   height: 10px;
-  cursor: pointer;
 }
 
 #tags:before {
@@ -31,6 +29,7 @@
 
 #commit-button-container {
   text-align: right;
+  display: none;
 }
 
 #commit-button {
@@ -48,36 +47,28 @@
   clear: both;
 }
 
-.process .content {
+.content {
   width: 430px;
   border-top: 1px dotted black;
   padding-top: 6px;
   padding-bottom: 6px;
   margin-bottom: 6px;
-  float: left;
-}
-
-.process:last-child .content {
-  border-bottom: 1px dotted black;
-  margin-bottom: 24px;
+  cursor: default;
+  text-decoration: none;
+  color: black;
+  display: inline-block;
+  pointer-events: none;
 }
 
 .image-container {
   text-align: center;
 }
 
-.content {
-  text-decoration: none;
-  color: black;
-}
-
-.content img {
-  width: 200px;
-}
-
 .function {
-  margin-left: 10px;
-  float: left;
+  width: 60px;
+  text-align: center;
+  float: right;
+  display: none;
 }
 
 .button {
@@ -86,6 +77,7 @@
   height: 16px;
   margin: 0 3px;
   cursor: pointer;
+  display: none;
 }
 
 .button.remove {
@@ -99,7 +91,7 @@
 }
 
 #form {
-  width: 490px;
+  display: none;
 }
 
 #textarea-container {
@@ -144,9 +136,54 @@ textarea {
   left: -2px;
 }
 
-/** in markdown **/
-.content img {
+/** -------- editable -------------- **/
+.editable #item {
+  width: 490px;
 }
+
+.editable #title {
+  cursor: pointer;
+}
+
+.editable #tags {
+  cursor: pointer;
+}
+
+.editable #commit-button-container {
+  display: block;
+}
+
+.editable .content {
+  pointer-events: auto;
+}
+
+.editable .process:last-child .content {
+  border-bottom: 1px dotted black;
+  margin-bottom: 24px;
+}
+
+.editable .function {
+  display: block;
+}
+
+.button {
+  display: inline-block;
+}
+
+.editable #form {
+  display: block;
+}
+
+/** -------- in markdown ----------- **/
+.content img {
+  width: 200px;
+  pointer-events: auto;
+}
+
+.content a {
+  pointer-events: auto;
+}
+
 
 h1 {
   color: #ff1493;

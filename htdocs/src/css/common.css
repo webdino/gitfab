@@ -18,6 +18,20 @@ header {
   width: 100%;
   border-bottom: 1px solid gray;
   background-color: #ccc;
+  font-size: 10px;
+  text-align: right;
+}
+
+header a {
+  text-decoration: none;
+}
+
+#create {
+  display: none;
+  margin-right: 6px;
+}
+
+#login {
 }
 
 #main {
@@ -28,12 +42,6 @@ footer {
   width: 100%;
   border-top: 1px solid gray;
   background-color: white;
-}
-
-/* temp */
-header {
-  font-size: 10px;
-  text-align: right;
 }
 
 footer {

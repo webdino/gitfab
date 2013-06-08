@@ -5,6 +5,21 @@
 var ItemController = {
   init: function() {
     ItemController.current_id = 0;
+    //get the repository name from query string
+    var parameters = CommonController.getParameters();
+    ItemController.access_token = parameters.access_token;
+    if (parameters.owner) {
+      ItemController.owner = parameters.owner;
+      ItemController.repository = parameters.repository;
+      var gitfabDocumentURL = "https://api.github.com/repos/"+parameters.owner+"/"+parameters.repository+"/contents/gitfab.md?callback=?";
+      $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
+    } else {
+      $("#title").text("untitled");
+      ItemController.getAuthUser();
+    }
+  },
+  
+  setEditable: function() {
     //reusable elements
     ItemController.reusable_input = $(document.createElement("input"));
     ItemController.reusable_input.attr("id", "reusable_input");
@@ -16,31 +31,15 @@ var ItemController = {
     $("#upload").change(ItemController.upload);
     $("#title").click(ItemController.editTitle);
     $("#tags").click(ItemController.editTags);
-
-    //get the repository name from query string
-    var url = window.location.href;
-    var indexOfQ = url.indexOf("?");
-    if (indexOfQ < 0) {
-      $("#title").text("untitled");
-    } else {
-      var queryString = url.substring(indexOfQ+1);
-      var params = queryString.split("&");
-      for (var i = 0, n = params.length; i < n; i++) {
-        var param = params[i];
-        var keyvalue = param.split("=");
-        ItemController[keyvalue[0]] = keyvalue[1];
-      }
-      var gitfabDocumentURL = "https://api.github.com/repos/"+ItemController.owner+"/"+ItemController.repository+"/contents/gitfab.md?callback=?";
-      $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
-    }
-
-    if (ItemController.access_token) {
-      $("#login").hide();
-      $("#toolbar").show();
-    }
+    $("#main").addClass("editable");
   },
   
   loadedGitFabDocument: function(result) {
+    ItemController.parseGitFabDocument(result);
+    ItemController.getAuthUser();
+  },
+  
+  parseGitFabDocument: function(result) {
     var base64 = new Base64();
     var content = base64.decodeStringAsUTF8(result.data.content.replace(/\n/g, ""));
     //parse
@@ -65,6 +64,21 @@ var ItemController = {
     }
   },
   
+  getAuthUser: function() {
+    if (ItemController.access_token) {
+      $.getJSON(USER_API+ItemController.access_token, ItemController.loadAuthUser);
+    }
+  },
+  
+  loadAuthUser: function(result) {
+    var username = result.data.login;
+    CommonController.authorized(username, ItemController.access_token);
+    ItemController.login = username;
+    if (!ItemController.owner || (ItemController.owner == ItemController.login)) {
+      ItemController.setEditable();
+    }
+  },
+  
   editTextContent: function(e) {
     var target = $(e.currentTarget);
     target.unbind("click", ItemController.editTextContent);
@@ -85,6 +99,7 @@ var ItemController = {
     var text = ItemController.reusable_textarea.val();
     var html = ItemController.encode4html(text);
     var target = ItemController.reusable_textarea.parent();
+    target.get(0).markdown = text;
     target.html(html);
     target.click(ItemController.editTextContent);
     ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
