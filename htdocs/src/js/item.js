@@ -300,8 +300,6 @@ var ItemController = {
   },
   
   commit: function(e) {
-    //このタイトルのリポジトリを作成あるいはアップデート
-    //var title = $("#title").text();
     //タグ
     var tags = $("#tags").text();
     var contentList = $(".content");
@@ -330,11 +328,36 @@ var ItemController = {
     console.log("document:");
     console.log(userDocument);
     
+    //このタイトルのリポジトリを作成あるいはアップデート
+    var repository = $("#title").text();
     //リポジトリ作成
     if (!ItemController.repository) {
-    //CREATE_API
+      ItemController.createRepository(repository, function() {});
     }
     
+  },
+
+  createRepository: function(name, callback) {
+    $.ajax({
+      type: "POST",
+      url: CREATE_API,
+      data: {
+        "name": name,
+        "description": "This is your first repo",
+        "homepage": "https://github.com",
+        "private": false,
+        "has_issues": true,
+        "has_wiki": true,
+        "has_downloads": true,
+        "auto_init": true,
+        "access_token": ItemController.access_token
+      },
+      dataType:"jsonp",
+      jsonpCallback: "callback",
+      success: function(data){
+        console.log(data);
+      }
+    });
   },
   
   encode4html: function(text) {
