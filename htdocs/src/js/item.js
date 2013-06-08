@@ -333,33 +333,36 @@ var ItemController = {
     //リポジトリ作成
     if (!ItemController.repository) {
       ItemController.createRepository(repository, function() {});
+    } else if (ItemController.repository != repository) {
+      //rename
+    } else {
+      //commit
     }
-    
   },
 
   createRepository: function(name, callback) {
+    var parameters = {
+      name: name,
+      auto_init: true
+    };
     $.ajax({
       type: "POST",
       url: CREATE_API,
-      data: {
-        "name": name,
-        "description": "This is your first repo",
-        "homepage": "https://github.com",
-        "private": false,
-        "has_issues": true,
-        "has_wiki": true,
-        "has_downloads": true,
-        "auto_init": true,
-        "access_token": ItemController.access_token
+      headers: {
+        "Authorization":" bearer "+ItemController.access_token
       },
-      dataType:"jsonp",
-      jsonpCallback: "callback",
+      data: JSON.stringify(parameters),
+      dataType:"json",
       success: function(data){
-        console.log(data);
+        ItemController.repository = name;
+        callback();
+      },
+      error: function(request, textStatus, errorThrown){
+        alert("ERROR:"+textStatus);
       }
     });
   },
-  
+
   encode4html: function(text) {
     return window.markdown.toHTML(text);
   }

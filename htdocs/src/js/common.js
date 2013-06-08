@@ -27,7 +27,7 @@ var CommonController = {
   
   authorized: function(username, token) {
     $("#login").text(username);
-    $("#create").attr("href", ITEM_PAGE+"access_token="+token);
+    $("#create").attr("href", ITEM_PAGE+"access_token="+token+"&user="+username);
     $("#create").show()
     $("#toolbar").show()
   }
