@@ -8,6 +8,7 @@ var ItemController = {
     //get the repository name from query string
     var parameters = CommonController.getParameters();
     ItemController.access_token = parameters.access_token;
+    ItemController.user = parameters.user;
     if (parameters.owner) {
       ItemController.owner = parameters.owner;
       ItemController.repository = parameters.repository;
@@ -66,15 +67,20 @@ var ItemController = {
   
   getAuthUser: function() {
     if (ItemController.access_token) {
-      $.getJSON(USER_API+ItemController.access_token, ItemController.loadAuthUser);
+//      $.getJSON(USER_API+ItemController.access_token, ItemController.loadAuthUser);
+      ItemController.authorized();
     }
   },
   
   loadAuthUser: function(result) {
     var username = result.data.login;
-    CommonController.authorized(username, ItemController.access_token);
-    ItemController.login = username;
-    if (!ItemController.owner || (ItemController.owner == ItemController.login)) {
+    ItemController.user = username;
+    ItemController.authorized();
+  },
+  
+  authorized: function() {
+    CommonController.authorized(ItemController.user, ItemController.access_token);
+    if (!ItemController.owner || (ItemController.owner == ItemController.user)) {
       ItemController.setEditable();
     }
   },
@@ -323,6 +329,12 @@ var ItemController = {
     console.log("tags:"+tags);
     console.log("document:");
     console.log(userDocument);
+    
+    //リポジトリ作成
+    if (!ItemController.repository) {
+    //CREATE_API
+    }
+    
   },
   
   encode4html: function(text) {

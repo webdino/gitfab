@@ -52,7 +52,7 @@ var ItemListController = {
     for (var i = 0, n = itemlist.length; i < n; i++) {
       var item = $(itemlist[i]);
       var href = item.attr("href");
-      href += "&access_token=" + ItemListController.access_token;
+      href += "&access_token=" + ItemListController.access_token+"&user="+username;
       item.attr("href", href);
     }
   }

@@ -5,6 +5,7 @@
 var LIST_API = "https://api.github.com/users/gitfab/subscriptions?callback=?";
 var TOKEN_API = "https://github.com/login/oauth/access_token";
 var USER_API = "https://api.github.com/user?callback=?&access_token=";
+var CREATE_API = "https://api.github.com/user/repos";
 var ITEM_PAGE = "item.php?";
 
 var CommonController = {
