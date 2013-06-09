@@ -4,6 +4,7 @@
 
 var ItemController = {
   init: function() {
+    ItemController.base64 = new Base64();
     ItemController.current_id = 0;
     //get the repository name from query string
     var parameters = CommonController.getParameters();
@@ -41,8 +42,7 @@ var ItemController = {
   },
   
   parseGitFabDocument: function(result) {
-    var base64 = new Base64();
-    var content = base64.decodeStringAsUTF8(result.data.content.replace(/\n/g, ""));
+    var content = ItemController.base64.decodeStringAsUTF8(result.data.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
     var title = ItemController.repository;
@@ -300,20 +300,37 @@ var ItemController = {
   },
   
   commit: function(e) {
-    //タグ
-    var tags = $("#tags").text();
-    var contentList = $(".content");
+    //このタイトルのリポジトリを作成あるいはアップデート
+    var repository = $("#title").text();
+    //リポジトリ作成
+    if (!ItemController.repository) {
+      ItemController.createRepository(repository, ItemController.commitDocument);
+    } else if (ItemController.repository != repository) {
+      //rename
+    } else {
+      //commit
+      ItemController.commitDocument();
+    }
+  },
+
+  commitDocument: function() {
     var userDocument = "";
+    userDocument += "title:"+ItemController.repository;
+    userDocument += "\n";
+    userDocument += "tags:"+$("#tags").text();
+    userDocument += "\n";
+
+    var filemap = {};
+    var contentList = $(".content");
     for (var i = 0, n = contentList.length; i < n; i++) {
       var content = contentList.get(i);
       var text = content.markdown;
       var files = content.files;
       for (key in files) {
-        var file = files[key];
+        filemap[key] = files[key];
         //replace url
-        var fileURL = "https://raw.github.com/"+ItemController.owner+"/"+ItemController.repository+"/"+ItemController.master+"/"+file.name;
+        var fileURL = "https://raw.github.com/"+ItemController.owner+"/"+ItemController.repository+"/master/"+file.name;
         text = text.replace(key, fileURL);
-        //ここで file を上記URLにあうようにコミット
       }
       content.markdown = text;
       content.files = {};
@@ -321,25 +338,41 @@ var ItemController = {
       userDocument += "--\n";
     }
     //ここで userDocument を gitfab.md の内容としてコミット
-
+    /*
     console.log("--------------------");
     console.log("repository:"+ItemController.repository);
     console.log("tags:"+tags);
     console.log("document:");
     console.log(userDocument);
-    
-    //このタイトルのリポジトリを作成あるいはアップデート
-    var repository = $("#title").text();
-    //リポジトリ作成
-    if (!ItemController.repository) {
-      ItemController.createRepository(repository, function() {});
-    } else if (ItemController.repository != repository) {
-      //rename
-    } else {
-      //commit
-    }
+    */
+    ItemController.commitFile("gitfab.md", ItemController.base64.encodeStringAsUTF8(userDocument), "", function() {});
   },
 
+  commitFile: function(path, content, message, callback) {
+    var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository+"/contents/"+path;
+    console.log(content);
+    var parameters = {
+      path: path,
+      message: message,
+      content: content
+    };
+    $.ajax({
+      type: "PUT",
+      url: url,
+      headers: {
+        "Authorization":" bearer "+ItemController.access_token
+      },
+      data: JSON.stringify(parameters),
+      dataType:"json",
+      success: function(data){
+        console.log(data);
+      },
+      error: function(request, textStatus, errorThrown){
+        alert("Create File ERROR:"+textStatus+"["+path+"]");
+      }
+    });
+  },
+  
   createRepository: function(name, callback) {
     var parameters = {
       name: name,
@@ -347,7 +380,7 @@ var ItemController = {
     };
     $.ajax({
       type: "POST",
-      url: CREATE_API,
+      url: CREATE_REPOSITORY_API,
       headers: {
         "Authorization":" bearer "+ItemController.access_token
       },
@@ -358,7 +391,7 @@ var ItemController = {
         callback();
       },
       error: function(request, textStatus, errorThrown){
-        alert("ERROR:"+textStatus);
+        alert("ERROR:"+textStatus+" "+errorThrown);
       }
     });
   },
