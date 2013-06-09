@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var MATERIALS = "materials";
+
 var ItemController = {
   init: function() {
     ItemController.base64 = new Base64();
@@ -46,11 +48,11 @@ var ItemController = {
     //parse
     var lines = content.split("\n");
     var title = ItemController.repository;
-    var tags = lines[1].substring("tags:".length);
+    var tags = lines[1].substring("## ".length);
     $("#title").text(title);
     $("#tags").text(tags);
     var text;
-    for (var i = 2, n = lines.length; i < n; i++) {
+    for (var i = 4, n = lines.length; i < n; i++) {
       var line = lines[i];
       if (line == "---") {
         ItemController.append2dom(text);
@@ -86,6 +88,10 @@ var ItemController = {
   },
   
   editTextContent: function(e) {
+    if (!ItemController.user) {
+      e.preventDefault();
+      return;
+    }
     var target = $(e.currentTarget);
     target.unbind("click", ItemController.editTextContent);
     
@@ -215,6 +221,10 @@ var ItemController = {
   },
   
   dragStart: function(e) {
+    if (!ItemController.user) {
+      e.preventDefault();
+      return false;
+    }
     var source = $(e.currentTarget);
     var dataTransfer = e.originalEvent.dataTransfer;
     dataTransfer.setData("text/plain", source.parent().attr("id"));
@@ -304,7 +314,10 @@ var ItemController = {
     var repository = $("#title").text();
     //リポジトリ作成
     if (!ItemController.repository) {
-      ItemController.createRepository(repository, ItemController.commitDocument);
+      ItemController.createRepository(repository, function() {
+        ItemController.repository = repository;
+        ItemController.commitDocument();
+      });
     } else if (ItemController.repository != repository) {
       //rename
     } else {
@@ -315,9 +328,13 @@ var ItemController = {
 
   commitDocument: function() {
     var userDocument = "";
-    userDocument += "title:"+ItemController.repository;
+    userDocument += "# "+ItemController.repository;
     userDocument += "\n";
-    userDocument += "tags:"+$("#tags").text();
+    userDocument += "## "+$("#tags").text();
+    userDocument += "\n";
+    userDocument += "This document is for [gitfab](http://gitfab.org)";
+    userDocument += "\n";
+    userDocument += "---";
     userDocument += "\n";
 
     var filemap = {};
@@ -327,30 +344,48 @@ var ItemController = {
       var text = content.markdown;
       var files = content.files;
       for (key in files) {
-        filemap[key] = files[key];
+        var file = files[key];
+        filemap[key] = file;
         //replace url
-        var fileURL = "https://raw.github.com/"+ItemController.owner+"/"+ItemController.repository+"/master/"+file.name;
+        var fileURL = "https://raw.github.com/"+ItemController.user+"/"+ItemController.repository+"/master/"+MATERIALS+"/"+file.name;
         text = text.replace(key, fileURL);
       }
       content.markdown = text;
       content.files = {};
       userDocument += text+"\n";
-      userDocument += "--\n";
+      userDocument += "---\n";
     }
     //ここで userDocument を gitfab.md の内容としてコミット
-    /*
-    console.log("--------------------");
-    console.log("repository:"+ItemController.repository);
-    console.log("tags:"+tags);
-    console.log("document:");
-    console.log(userDocument);
-    */
-    ItemController.commitFile("gitfab.md", ItemController.base64.encodeStringAsUTF8(userDocument), "", function() {});
+    ItemController.commitFile("gitfab.md", ItemController.base64.encodeStringAsUTF8(userDocument), "", function() {
+      ItemController.commitFiles(filemap);
+    });
+  },
+
+  commitFiles: function(filemap) {
+    var file = null;
+    for (var key in filemap) {
+      file = filemap[key];
+      delete filemap[key];
+      break;
+    }
+    if (!file) {
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var content = reader.result;
+      var index = content.indexOf(",");
+      content = content.substring(index+1);
+      var path = MATERIALS+"/"+file.name;
+      ItemController.commitFile(path, content, "", function() {
+        ItemController.commitFiles(filemap);
+      });
+    };
+    reader.readAsDataURL(file);
   },
 
   commitFile: function(path, content, message, callback) {
     var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository+"/contents/"+path;
-    console.log(content);
     var parameters = {
       path: path,
       message: message,
@@ -365,7 +400,7 @@ var ItemController = {
       data: JSON.stringify(parameters),
       dataType:"json",
       success: function(data){
-        console.log(data);
+        callback(data);
       },
       error: function(request, textStatus, errorThrown){
         alert("Create File ERROR:"+textStatus+"["+path+"]");
@@ -387,8 +422,7 @@ var ItemController = {
       data: JSON.stringify(parameters),
       dataType:"json",
       success: function(data){
-        ItemController.repository = name;
-        callback();
+        callback(data);
       },
       error: function(request, textStatus, errorThrown){
         alert("ERROR:"+textStatus+" "+errorThrown);
