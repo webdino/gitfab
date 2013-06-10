@@ -7,6 +7,7 @@ var TOKEN_API = "https://github.com/login/oauth/access_token";
 var USER_API = "https://api.github.com/user?callback=?&access_token=";
 var CREATE_REPOSITORY_API = "https://api.github.com/user/repos";
 var ITEM_PAGE = "item.php?";
+var ITEM_LIST_PAGE = "itemlist.php?";
 
 var CommonController = {
   getParameters: function() {
@@ -30,5 +31,6 @@ var CommonController = {
     $("#create").attr("href", ITEM_PAGE+"access_token="+token+"&user="+username);
     $("#create").show()
     $("#toolbar").show()
+    $("#top").attr("href", ITEM_LIST_PAGE+"access_token="+token+"&user="+username);
   }
 }

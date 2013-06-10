@@ -11,19 +11,23 @@ var ItemListController = {
     ItemListController.parseItemList(result);
 
     var parameters = CommonController.getParameters();
-    if (!parameters.code) {
-      return;
+    if (parameters.code) {
+      $.get("api/token.php?code="+parameters.code, function(data) {
+        var regex = /access_token=([^&]+)/;
+        var result = regex.exec(data);
+        if (!result) {
+          $("#login").text(data);
+          return;
+        }
+        ItemListController.access_token = result[1];
+        $.getJSON(USER_API+ItemListController.access_token, ItemListController.loadAuthUser);
+      });
+    } else if (parameters.user && parameters.access_token) {
+      ItemListController.user = parameters.user;
+      ItemListController.access_token = parameters.access_token;
+      console.log(ItemListController.user+" "+ItemListController.access_token);
+      ItemListController.autholized();
     }
-    $.get("api/token.php?code="+parameters.code, function(data) {
-      var regex = /access_token=([^&]+)/;
-      var result = regex.exec(data);
-      if (!result) {
-        $("#login").text(data);
-        return;
-      }
-      ItemListController.access_token = result[1];
-      $.getJSON(USER_API+ItemListController.access_token, ItemListController.loadAuthUser);
-    });
   },
   
   parseItemList: function(result) {
@@ -46,13 +50,17 @@ var ItemListController = {
   
   loadAuthUser: function(result) {
     var username = result.data.login;
-    CommonController.authorized(username, ItemListController.access_token);
-    
+    ItemListController.user = username;
+    ItemListController.autholized();
+  },
+  
+  autholized: function() {
+    CommonController.authorized(ItemListController.user, ItemListController.access_token);
     var itemlist = $(".item a");
     for (var i = 0, n = itemlist.length; i < n; i++) {
       var item = $(itemlist[i]);
       var href = item.attr("href");
-      href += "&access_token=" + ItemListController.access_token+"&user="+username;
+      href += "&access_token=" + ItemListController.access_token+"&user="+ItemListController.user;
       item.attr("href", href);
     }
   }
