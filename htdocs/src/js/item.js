@@ -93,7 +93,13 @@ var ItemController = {
       e.preventDefault();
       return;
     }
-    var target = $(e.currentTarget);
+    var currentTarget = e.currentTarget;
+    var originalTarget = e.originalEvent.target;
+    if (originalTarget.tagName == "A" && originalTarget != currentTarget) {
+      return;
+    }
+    
+    var target = $(currentTarget);
     target.unbind("click", ItemController.editTextContent);
     
     var text = target.get(0).markdown;
@@ -110,10 +116,8 @@ var ItemController = {
   
   commitTextContent: function(e) {
     var text = ItemController.reusable_textarea.val();
-    var html = ItemController.encode4html(text);
     var target = ItemController.reusable_textarea.parent();
-    target.get(0).markdown = text;
-    target.html(html);
+    ItemController.updateProcess(text, target);
     target.click(ItemController.editTextContent);
     ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
     target.attr("draggable", "true");
