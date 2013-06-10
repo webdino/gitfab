@@ -3,6 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var MATERIALS = "materials";
+var MAIN_DOCUMENT = "README.md";
 
 var ItemController = {
   init: function() {
@@ -15,7 +16,7 @@ var ItemController = {
     if (parameters.owner) {
       ItemController.owner = parameters.owner;
       ItemController.repository = parameters.repository;
-      var gitfabDocumentURL = "https://api.github.com/repos/"+parameters.owner+"/"+parameters.repository+"/contents/gitfab.md?callback=?";
+      var gitfabDocumentURL = "https://api.github.com/repos/"+parameters.owner+"/"+parameters.repository+"/contents/"+MAIN_DOCUMENT+"?callback=?";
       $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
     } else {
       $("#title").text("untitled");
@@ -314,19 +315,32 @@ var ItemController = {
     var repository = $("#title").text();
     //リポジトリ作成
     if (!ItemController.repository) {
-      ItemController.createRepository(repository, function() {
-        ItemController.repository = repository;
-        ItemController.commitDocument();
-      });
+      ItemController.asNewRepository(repository, ItemController.update);
     } else if (ItemController.repository != repository) {
       //rename
     } else {
-      //commit
-      ItemController.commitDocument();
+      ItemController.update();
     }
   },
 
-  commitDocument: function() {
+  update: function() {
+    ItemController.loadShaMap(ItemController.commitDocument);
+  },
+  
+  loadShaMap: function(callback) {
+    var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository+"/git/trees/master?recursive=1&callback=?";
+    $.getJSON(url, function(result) {
+      var shamap = {};
+      var tree = result.data.tree;
+      for (var i = 0, n = tree.length; i < n; i++) {
+        var node = tree[i];
+        shamap[node.path] = node.sha;
+      }
+      callback(shamap);
+    });
+  },
+  
+  commitDocument: function(shamap) {
     var userDocument = "";
     userDocument += "# "+ItemController.repository;
     userDocument += "\n";
@@ -355,13 +369,13 @@ var ItemController = {
       userDocument += text+"\n";
       userDocument += "---\n";
     }
-    //ここで userDocument を gitfab.md の内容としてコミット
-    ItemController.commitFile("gitfab.md", ItemController.base64.encodeStringAsUTF8(userDocument), "", function() {
-      ItemController.commitFiles(filemap);
+    //ここで userDocument を README.md の内容としてコミット
+    ItemController.commitFile(MAIN_DOCUMENT, ItemController.base64.encodeStringAsUTF8(userDocument), "", shamap, function() {
+      ItemController.commitFiles(filemap, shamap);
     });
   },
 
-  commitFiles: function(filemap) {
+  commitFiles: function(filemap, shamap) {
     var file = null;
     for (var key in filemap) {
       file = filemap[key];
@@ -377,20 +391,23 @@ var ItemController = {
       var index = content.indexOf(",");
       content = content.substring(index+1);
       var path = MATERIALS+"/"+file.name;
-      ItemController.commitFile(path, content, "", function() {
-        ItemController.commitFiles(filemap);
+      ItemController.commitFile(path, content, "", shamap, function() {
+        ItemController.commitFiles(filemap, shamap);
       });
     };
     reader.readAsDataURL(file);
   },
 
-  commitFile: function(path, content, message, callback) {
+  commitFile: function(path, content, message, shamap, callback) {
     var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository+"/contents/"+path;
     var parameters = {
       path: path,
       message: message,
       content: content
     };
+    if (shamap && shamap[path]) {
+      parameters.sha = shamap[path];
+    }
     $.ajax({
       type: "PUT",
       url: url,
@@ -408,7 +425,7 @@ var ItemController = {
     });
   },
   
-  createRepository: function(name, callback) {
+  asNewRepository: function(name, callback) {
     var parameters = {
       name: name,
       auto_init: true
@@ -422,6 +439,7 @@ var ItemController = {
       data: JSON.stringify(parameters),
       dataType:"json",
       success: function(data){
+        ItemController.repository = name;
         callback(data);
       },
       error: function(request, textStatus, errorThrown){
