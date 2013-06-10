@@ -8,6 +8,9 @@ var USER_API = "https://api.github.com/user?callback=?&access_token=";
 var CREATE_REPOSITORY_API = "https://api.github.com/user/repos";
 var ITEM_PAGE = "item.php?";
 var ITEM_LIST_PAGE = "itemlist.php?";
+var WATCH_API = "api/watch.php?";
+var TOKEN_API = "api/token.php?";
+
 
 var CommonController = {
   getParameters: function() {

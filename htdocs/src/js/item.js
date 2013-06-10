@@ -89,8 +89,10 @@ var ItemController = {
       } else {
         $("#fork").click(function () {
           ItemController.fork(function() {
-            var url = "http://gitfab.org/item.php?owner="+ItemController.user+"&repository="+ItemController.repository+"&user="+ItemController.user+"&access_token="+ItemController.access_token;
-            window.location.href = url;
+            ItemController.watch(ItemController.user, ItemController.repository, function() {
+              var url = "http://gitfab.org/item.php?owner="+ItemController.user+"&repository="+ItemController.repository+"&user="+ItemController.user+"&access_token="+ItemController.access_token;
+              window.location.href = url;
+            });
           });
         });
       }
@@ -354,7 +356,9 @@ var ItemController = {
     var repository = $("#title").text();
     //リポジトリ作成
     if (!ItemController.repository) {
-      ItemController.newRepository(repository, ItemController.update);
+      ItemController.newRepository(repository, function () {
+        ItemController.watch(ItemController.user, ItemController.repository, ItemController.update);
+      });
     } else if (ItemController.repository != repository) {
       //rename
       ItemController.renameRepository(repository, ItemController.update);
@@ -363,6 +367,17 @@ var ItemController = {
     }
   },
 
+  watch: function(owner, repository, callback) {
+    var url = WATCH_API+"owner="+owner+"&repository="+repository;
+    $.getJSON(url, function(data) {
+      if (data.message) {
+        alert(data.message);
+        return;
+      }
+      callback();
+    });
+  },
+  
   update: function() {
     ItemController.loadShaMap(ItemController.commitDocument);
   },

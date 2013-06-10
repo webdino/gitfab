@@ -12,7 +12,7 @@ var ItemListController = {
 
     var parameters = CommonController.getParameters();
     if (parameters.code) {
-      $.get("api/token.php?code="+parameters.code, function(data) {
+      $.get(TOKEN_API+"code="+parameters.code, function(data) {
         var regex = /access_token=([^&]+)/;
         var result = regex.exec(data);
         if (!result) {
