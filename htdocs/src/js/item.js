@@ -318,6 +318,7 @@ var ItemController = {
       ItemController.asNewRepository(repository, ItemController.update);
     } else if (ItemController.repository != repository) {
       //rename
+      ItemController.renameRepository(repository, ItemController.update);
     } else {
       ItemController.update();
     }
@@ -432,7 +433,7 @@ var ItemController = {
     };
     $.ajax({
       type: "POST",
-      url: CREATE_REPOSITORY_API,
+      url: REPOSITORY_API,
       headers: {
         "Authorization":" bearer "+ItemController.access_token
       },
@@ -448,6 +449,29 @@ var ItemController = {
     });
   },
 
+  renameRepository: function(name, callback) {
+    var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository;
+    var parameters = {
+      name: name,
+    };
+    $.ajax({
+      type: "PATCH",
+      url: url,
+      headers: {
+        "Authorization":" bearer "+ItemController.access_token
+      },
+      data: JSON.stringify(parameters),
+      dataType:"json",
+      success: function(data){
+        ItemController.repository = name;
+        callback(data);
+      },
+      error: function(request, textStatus, errorThrown){
+        alert("ERROR:"+textStatus+" "+errorThrown);
+      }
+    });
+  },
+  
   encode4html: function(text) {
     return window.markdown.toHTML(text);
   }
