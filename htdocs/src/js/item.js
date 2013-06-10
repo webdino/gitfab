@@ -315,7 +315,7 @@ var ItemController = {
     var repository = $("#title").text();
     //リポジトリ作成
     if (!ItemController.repository) {
-      ItemController.asNewRepository(repository, ItemController.update);
+      ItemController.newRepository(repository, ItemController.update);
     } else if (ItemController.repository != repository) {
       //rename
       ItemController.renameRepository(repository, ItemController.update);
@@ -426,14 +426,14 @@ var ItemController = {
     });
   },
   
-  asNewRepository: function(name, callback) {
+  newRepository: function(name, callback) {
     var parameters = {
       name: name,
       auto_init: true
     };
     $.ajax({
       type: "POST",
-      url: REPOSITORY_API,
+      url: CREATE_REPOSITORY_API,
       headers: {
         "Authorization":" bearer "+ItemController.access_token
       },
@@ -444,7 +444,8 @@ var ItemController = {
         callback(data);
       },
       error: function(request, textStatus, errorThrown){
-        alert("ERROR:"+textStatus+" "+errorThrown);
+        var response = JSON.parse(request.responseText);
+        alert("ERROR:"+response.errors[0].message);
       }
     });
   },
@@ -467,7 +468,8 @@ var ItemController = {
         callback(data);
       },
       error: function(request, textStatus, errorThrown){
-        alert("ERROR:"+textStatus+" "+errorThrown);
+        var response = JSON.parse(request.responseText);
+        alert("ERROR:"+response.errors[0].message);
       }
     });
   },
