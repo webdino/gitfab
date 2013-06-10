@@ -859,6 +859,7 @@ Markdown.dialects.Gruber.inline = {
     },
 
     "[": function link( text ) {
+
       var orig = String(text);
       // Inline content is possible inside `link text`
       var res = Markdown.DialectHelpers.inline_until_char.call( this, text.substr(1), "]" );
