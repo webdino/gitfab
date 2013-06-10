@@ -83,9 +83,44 @@ var ItemController = {
   
   authorized: function() {
     CommonController.authorized(ItemController.user, ItemController.access_token);
-    if (!ItemController.owner || (ItemController.owner == ItemController.user)) {
-      ItemController.setEditable();
+    if (ItemController.owner) {
+      if (ItemController.owner == ItemController.user) {
+        ItemController.setEditable();
+      } else {
+        $("#fork").click(function () {
+          ItemController.fork(function() {
+            var url = "http://gitfab.org/item.php?owner="+ItemController.user+"&repository="+ItemController.repository+"&user="+ItemController.user+"&access_token="+ItemController.access_token;
+            window.location.href = url;
+          });
+        });
+      }
+    } else {
+      if (ItemController.user) {
+        ItemController.setEditable();
+      } else {
+        $("#fork").click(function() {
+          alert("please login");
+        });
+      }
     }
+  },
+  
+  fork: function(callback) {
+    var url = "https://api.github.com/repos/"+ItemController.owner+"/"+ItemController.repository+"/forks";
+    $.ajax({
+      type: "POST",
+      url: url,
+      headers: {
+        "Authorization":" bearer "+ItemController.access_token
+      },
+      success: function(data){
+        callback();
+      },
+      error: function(request, textStatus, errorThrown){
+        var response = JSON.parse(request.responseText);
+        alert("ERROR:"+response.errors[0].message);
+      }
+    });
   },
   
   editTextContent: function(e) {

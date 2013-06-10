@@ -6,6 +6,16 @@
   width: 440px;
 }
 
+#tools {
+  text-align: right;
+  font-size: 10px;
+}
+
+#fork {
+  margin-right: 6px;
+  text-decoration: none;
+}
+
 #meta {
   margin: 24px 0 8px 0;
 }
@@ -139,6 +149,10 @@ textarea {
 /** -------- editable -------------- **/
 .editable #item {
   width: 490px;
+}
+
+.editable #fork {
+  display: none;
 }
 
 .editable #title {

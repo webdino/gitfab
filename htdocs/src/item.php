@@ -21,6 +21,9 @@
     <?php include('toolbar.php.inc'); ?>
     <div id="main" role="main">
       <div id="item">
+        <section id="tools">
+          <a id="fork" href="#">fork</a>
+        </section>
         <section id="meta">
           <div id="title"></div>
           <div id="tags"></div>
