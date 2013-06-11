@@ -3,7 +3,8 @@ $owner = $_GET["owner"];
 $repository = $_GET["repository"];
 
 $username = "gitfab";
-$password = "XXXXXXXX";
+$password = getenv("PASSWORD");
+
 $url = "https://api.github.com/repos/$owner/$repository/subscription";
 $parameters = json_encode(array("subscribed"=>true, "ignored"=>false));
 
