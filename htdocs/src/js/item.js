@@ -40,6 +40,10 @@ var ItemController = {
   },
   
   loadedGitFabDocument: function(result) {
+    if (result.data.message) {
+      alert(result.data.message);
+      return;
+    }
     ItemController.parseGitFabDocument(result);
     ItemController.getAuthUser();
   },

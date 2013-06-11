@@ -31,6 +31,10 @@ var ItemListController = {
   },
   
   parseItemList: function(result) {
+    if (result.data.message) {
+      alert(result.data.message);
+      return;
+    }
     var ul = $("#item-list");
     var itemlist = result.data;
     for (var i = 0, n = itemlist.length; i < n; i++) {
