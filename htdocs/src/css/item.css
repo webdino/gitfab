@@ -20,7 +20,12 @@
   margin: 24px 0 8px 0;
 }
 
+#owner {
+  display: inline-block;
+}
+
 #title {
+  display: inline-block;
 }
 
 #tags {

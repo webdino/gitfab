@@ -25,7 +25,7 @@
           <a id="fork" href="#">fork</a>
         </section>
         <section id="meta">
-          <div id="title"></div>
+          <div id="owner"></div> / <div id="title"></div>
           <div id="tags"></div>
           <div id="commit-button-container">
             <button id="commit-button">commit</button>

@@ -54,6 +54,8 @@ var ItemController = {
     var lines = content.split("\n");
     var title = ItemController.repository;
     var tags = lines[1].substring("## ".length);
+    var owner = ItemController.owner ? ItemController.owner : ItemController.user;
+    $("#owner").text(owner);
     $("#title").text(title);
     $("#tags").text(tags);
     var text;
