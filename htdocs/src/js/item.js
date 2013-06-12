@@ -86,7 +86,7 @@ var ItemController = {
       ItemController.authorized();
     } else {
       $("#fork").click(function() {
-        alert("please login.");
+        alert("please login");
       });
     }
   },
