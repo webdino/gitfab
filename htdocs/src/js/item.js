@@ -19,8 +19,14 @@ var ItemController = {
       var gitfabDocumentURL = "https://api.github.com/repos/"+parameters.owner+"/"+parameters.repository+"/contents/"+MAIN_DOCUMENT+"?callback=?";
       $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
     } else {
-      $("#title").text("untitled");
-      ItemController.getAuthUser();
+      if (ItemController.user) {
+        $("#owner").text(ItemController.user);
+        $("#title").text("input-your-repository-name");
+        ItemController.getAuthUser();
+      } else {
+        //not found
+        $("#item").text("item not found");
+      }
     }
   },
   
