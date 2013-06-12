@@ -18,20 +18,26 @@ header {
   width: 100%;
   border-bottom: 1px solid gray;
   background-color: #ccc;
-  font-size: 10px;
-  text-align: right;
 }
 
 header a {
   text-decoration: none;
 }
 
-#create {
-  display: none;
-  margin-right: 6px;
+#logo {
+  float: left;
+  font-size: 30px;
+  margin-left: 10px;
+  margin-top: 2px;
 }
 
-#top {
+#menus {
+  float: right;
+  font-size: 12px;
+}
+
+#create {
+  display: none;
   margin-right: 6px;
 }
 

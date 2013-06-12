@@ -30,10 +30,10 @@ var CommonController = {
   },
   
   authorized: function(username, token) {
-    $("#login").text(username);
+    $("#login").text("logged in as "+username);
     $("#create").attr("href", ITEM_PAGE+"access_token="+token+"&user="+username);
     $("#create").show()
     $("#toolbar").show()
-    $("#top").attr("href", ITEM_LIST_PAGE+"access_token="+token+"&user="+username);
+    $("#logo a").attr("href", ITEM_LIST_PAGE+"access_token="+token+"&user="+username);
   }
 }

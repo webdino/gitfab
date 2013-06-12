@@ -1,3 +1,3 @@
 <footer>
-about us | github | mozilla japan | fablab japan
+about us | mozilla japan | fablab japan
 </footer>
