@@ -84,6 +84,10 @@ var ItemController = {
     if (ItemController.access_token) {
 //      $.getJSON(USER_API+ItemController.access_token, ItemController.loadAuthUser);
       ItemController.authorized();
+    } else {
+      $("#fork").click(function() {
+        alert("please login");
+      });
     }
   },
   
@@ -111,10 +115,6 @@ var ItemController = {
     } else {
       if (ItemController.user) {
         ItemController.setEditable();
-      } else {
-        $("#fork").click(function() {
-          alert("please login");
-        });
       }
     }
   },
