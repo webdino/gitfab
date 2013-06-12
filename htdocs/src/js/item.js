@@ -7,6 +7,7 @@ var MAIN_DOCUMENT = "README.md";
 
 var ItemController = {
   init: function() {
+    ItemController.markdownParser = new Showdown.converter();
     ItemController.base64 = new Base64();
     ItemController.current_id = 0;
     //get the repository name from query string
@@ -541,7 +542,7 @@ var ItemController = {
   },
   
   encode4html: function(text) {
-    return window.markdown.toHTML(text);
+    return ItemController.markdownParser.makeHtml(text);
   }
 };
 
