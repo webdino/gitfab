@@ -10,24 +10,46 @@ var ItemController = {
     ItemController.markdownParser = new Showdown.converter();
     ItemController.base64 = new Base64();
     ItemController.current_id = 0;
-    //get the repository name from query string
-    var parameters = CommonController.getParameters();
-    ItemController.access_token = parameters.access_token;
-    ItemController.user = parameters.user;
-    if (parameters.owner) {
-      ItemController.owner = parameters.owner;
-      ItemController.repository = parameters.repository;
-      var gitfabDocumentURL = "https://api.github.com/repos/"+parameters.owner+"/"+parameters.repository+"/contents/"+MAIN_DOCUMENT+"?callback=?";
-      $.getJSON(gitfabDocumentURL, ItemController.loadedGitFabDocument);
-    } else {
-      if (ItemController.user) {
+
+    CommonController.setParameters(ItemController);
+
+    if (ItemController.user) {
+      CommonController.updateUI(ItemController.user);
+    }
+
+    if (ItemController.user == ItemController.owner) {
+      if (ItemController.repository == ":create") {
+        //new repository
+        ItemController.repository = null;
         $("#owner").text(ItemController.user);
         $("#title").text("input-your-repository-name");
-        ItemController.getAuthUser();
+        ItemController.setEditable();
       } else {
-        //not found
-        $("#item").text("item not found");
+        //update repository
+        CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(result, error) {
+          if (CommonController.showError(error) == true) return;
+          ItemController.parseGitFabDocument(result);
+          ItemController.setEditable();
+        });
       }
+    } else if (ItemController.repository) {
+      CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(result, error) {
+        if (CommonController.showError(error) == true) return;
+        ItemController.parseGitFabDocument(result);
+      });
+      
+      if (!ItemController.user) {
+        $("#fork").click(function() {
+          alert("please login");
+        });
+      } else {
+        $("#fork").click(function () {
+          ItemController.fork();
+        });
+      }
+    } else {
+      //not found
+      $("#item").text("item not found");
     }
   },
   
@@ -46,17 +68,8 @@ var ItemController = {
     $("#main").addClass("editable");
   },
   
-  loadedGitFabDocument: function(result) {
-    if (result.data.message) {
-      alert(result.data.message);
-      return;
-    }
-    ItemController.parseGitFabDocument(result);
-    ItemController.getAuthUser();
-  },
-  
   parseGitFabDocument: function(result) {
-    var content = ItemController.base64.decodeStringAsUTF8(result.data.content.replace(/\n/g, ""));
+    var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
     var title = ItemController.repository;
@@ -79,63 +92,6 @@ var ItemController = {
         text = line;
       }
     }
-  },
-  
-  getAuthUser: function() {
-    if (ItemController.access_token) {
-//      $.getJSON(USER_API+ItemController.access_token, ItemController.loadAuthUser);
-      ItemController.authorized();
-    } else {
-      $("#fork").click(function() {
-        alert("please login");
-      });
-    }
-  },
-  
-  loadAuthUser: function(result) {
-    var username = result.data.login;
-    ItemController.user = username;
-    ItemController.authorized();
-  },
-  
-  authorized: function() {
-    CommonController.authorized(ItemController.user, ItemController.access_token);
-    if (ItemController.owner) {
-      if (ItemController.owner == ItemController.user) {
-        ItemController.setEditable();
-      } else {
-        $("#fork").click(function () {
-          ItemController.fork(function() {
-            ItemController.watch(ItemController.user, ItemController.repository, function() {
-              var url = "http://gitfab.org/item.php?owner="+ItemController.user+"&repository="+ItemController.repository+"&user="+ItemController.user+"&access_token="+ItemController.access_token;
-              window.location.href = url;
-            });
-          });
-        });
-      }
-    } else {
-      if (ItemController.user) {
-        ItemController.setEditable();
-      }
-    }
-  },
-  
-  fork: function(callback) {
-    var url = "https://api.github.com/repos/"+ItemController.owner+"/"+ItemController.repository+"/forks";
-    $.ajax({
-      type: "POST",
-      url: url,
-      headers: {
-        "Authorization":" bearer "+ItemController.access_token
-      },
-      success: function(data){
-        callback();
-      },
-      error: function(request, textStatus, errorThrown){
-        var response = JSON.parse(request.responseText);
-        alert("ERROR:"+response.errors[0].message);
-      }
-    });
   },
   
   editTextContent: function(e) {
@@ -367,48 +323,31 @@ var ItemController = {
   commit: function(e) {
     //このタイトルのリポジトリを作成あるいはアップデート
     var repository = $("#title").text();
-    //リポジトリ作成
     if (!ItemController.repository) {
-      ItemController.newRepository(repository, function () {
-        ItemController.watch(ItemController.user, ItemController.repository, ItemController.update);
-      });
+      //new
+      ItemController.newRepository(repository);
     } else if (ItemController.repository != repository) {
       //rename
-      ItemController.renameRepository(repository, ItemController.update);
+      ItemController.renameRepository(repository);
     } else {
-      ItemController.update();
+      //update
+      ItemController.updateRepository();
     }
   },
 
   watch: function(owner, repository, callback) {
-    var url = WATCH_API+"owner="+owner+"&repository="+repository;
-    $.getJSON(url, function(data) {
-      if (data.message) {
-        alert(data.message);
-        return;
-      }
-      callback();
-    });
+    CommonController.watch(owner, repository, callback);
   },
   
-  update: function() {
-    ItemController.loadShaMap(ItemController.commitDocument);
+  updateRepository: function() {
+    CommonController.getSHATree(ItemController.user, ItemController.repository, ItemController.commitDocument);
   },
   
-  loadShaMap: function(callback) {
-    var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository+"/git/trees/master?recursive=1&callback=?";
-    $.getJSON(url, function(result) {
-      var shamap = {};
-      var tree = result.data.tree;
-      for (var i = 0, n = tree.length; i < n; i++) {
-        var node = tree[i];
-        shamap[node.path] = node.sha;
-      }
-      callback(shamap);
-    });
-  },
-  
-  commitDocument: function(shamap) {
+  commitDocument: function(result, error) {
+    if (CommonController.showError(error) == true) return;
+
+    var tree = result.tree;
+
     var userDocument = "";
     userDocument += "# "+ItemController.repository;
     userDocument += "\n";
@@ -429,7 +368,7 @@ var ItemController = {
         var file = files[key];
         filemap[key] = file;
         //replace url
-        var fileURL = "https://raw.github.com/"+ItemController.user+"/"+ItemController.repository+"/master/"+MATERIALS+"/"+file.name;
+        var fileURL = CommonController.getFileURL(ItemController.user, ItemController.repository, MATERIALS+"/"+file.name);
         text = text.replace(key, fileURL);
       }
       content.markdown = text;
@@ -438,106 +377,61 @@ var ItemController = {
       userDocument += "---\n";
     }
     //ここで userDocument を README.md の内容としてコミット
-    ItemController.commitFile(MAIN_DOCUMENT, ItemController.base64.encodeStringAsUTF8(userDocument), "", shamap, function() {
-      ItemController.commitFiles(filemap, shamap);
-    });
+    ItemController.commitChain(MAIN_DOCUMENT, ItemController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
   },
 
-  commitFiles: function(filemap, shamap) {
-    var file = null;
-    for (var key in filemap) {
-      file = filemap[key];
-      delete filemap[key];
-      break;
-    }
-    if (!file) {
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var content = reader.result;
-      var index = content.indexOf(",");
-      content = content.substring(index+1);
-      var path = MATERIALS+"/"+file.name;
-      ItemController.commitFile(path, content, "", shamap, function() {
-        ItemController.commitFiles(filemap, shamap);
-      });
-    };
-    reader.readAsDataURL(file);
-  },
-
-  commitFile: function(path, content, message, shamap, callback) {
-    var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository+"/contents/"+path;
-    var parameters = {
-      path: path,
-      message: message,
-      content: content
-    };
-    if (shamap && shamap[path]) {
-      parameters.sha = shamap[path];
-    }
-    $.ajax({
-      type: "PUT",
-      url: url,
-      headers: {
-        "Authorization":" bearer "+ItemController.access_token
-      },
-      data: JSON.stringify(parameters),
-      dataType:"json",
-      success: function(data){
-        callback(data);
-      },
-      error: function(request, textStatus, errorThrown){
-        alert("Create File ERROR:"+textStatus+"["+path+"]");
+  commitChain: function(path, content, message, tree, filemap) {
+    CommonController.commit(ItemController.user, ItemController.repository, ItemController.token, path, content, message, tree, function() {
+      var file = null;
+      for (var key in filemap) {
+        file = filemap[key];
+        delete filemap[key];
+        break;
       }
+      if (!file) {
+        //done
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var content = reader.result;
+        var index = content.indexOf(",");
+        content = content.substring(index+1);
+        var path = MATERIALS+"/"+file.name;
+        ItemController.commitChain(path, content, "", tree, filemap);
+      };
+      reader.readAsDataURL(file);
     });
   },
   
-  newRepository: function(name, callback) {
-    var parameters = {
-      name: name,
-      auto_init: true
-    };
-    $.ajax({
-      type: "POST",
-      url: CREATE_REPOSITORY_API,
-      headers: {
-        "Authorization":" bearer "+ItemController.access_token
-      },
-      data: JSON.stringify(parameters),
-      dataType:"json",
-      success: function(data){
-        ItemController.repository = name;
-        callback(data);
-      },
-      error: function(request, textStatus, errorThrown){
-        var response = JSON.parse(request.responseText);
-        alert("ERROR:"+response.errors[0].message);
-      }
+  newRepository: function(name) {
+    CommonController.newRepository(ItemController.token, name, function(result, error) {
+      if (CommonController.showError(error) == true) return;
+
+      ItemController.repository = name;
+      ItemController.watch(ItemController.user, ItemController.repository, function(result, error) {
+        if (CommonController.showError(error) == true) return;
+        ItemController.updateRepository();
+      });
     });
   },
-
-  renameRepository: function(name, callback) {
-    var url = "https://api.github.com/repos/"+ItemController.user+"/"+ItemController.repository;
-    var parameters = {
-      name: name,
-    };
-    $.ajax({
-      type: "PATCH",
-      url: url,
-      headers: {
-        "Authorization":" bearer "+ItemController.access_token
-      },
-      data: JSON.stringify(parameters),
-      dataType:"json",
-      success: function(data){
-        ItemController.repository = name;
-        callback(data);
-      },
-      error: function(request, textStatus, errorThrown){
-        var response = JSON.parse(request.responseText);
-        alert("ERROR:"+response.errors[0].message);
-      }
+  
+  renameRepository: function(name) {
+    CommonController.renameRepository(ItemController.token, ItemController.user, name, ItemController.repository, function(result, error) {
+      if (CommonController.showError(error) == true) return;
+      ItemController.repository = name;
+      ItemController.updateRepository();
+    });
+  },
+  
+  fork: function(callback) {
+    CommonController.fork(ItemController.owner, ItemController.repository, ItemController.token, function(result, error) {
+      if (CommonController.showError(error) == true) return;
+      ItemController.watch(ItemController.user, ItemController.repository, function(result, error) {
+        if (CommonController.showError(error) == true) return;
+        var url = CommonController.getItemPageURL(ItemController.user, ItemController.repository);
+        window.location.href = url;
+      });
     });
   },
   

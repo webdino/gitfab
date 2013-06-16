@@ -7,13 +7,16 @@
     <meta charset="utf-8">
     <title data-l10n-id="title">gitfab | item</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="css/common.css" type="text/css">
-    <link rel="stylesheet" href="css/item.css" type="text/css">
-    <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="js/lib/showdown.js"></script>
-    <script type="text/javascript" src="js/lib/base64.js"></script>
-    <script type="text/javascript" src="js/common.js"></script>
-    <script type="text/javascript" src="js/item.js"></script>
+    <link rel="stylesheet" href="/css/common.css" type="text/css">
+    <link rel="stylesheet" href="/css/item.css" type="text/css">
+    <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/js/lib/showdown.js"></script>
+    <script type="text/javascript" src="/js/lib/base64.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/item.js"></script>
+    <script>
+<?php include('script-variables.php.inc'); ?>
+    </script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>

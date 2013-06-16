@@ -1,6 +1,6 @@
 <header>
 <div id="logo">
-  <a href="/itemlist.php">gitfab</a>
+  <a href="/">gitfab</a>
 </div>
 <div id="menus">
   <a id="create">create repository</a>

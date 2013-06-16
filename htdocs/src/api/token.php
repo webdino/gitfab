@@ -14,14 +14,26 @@
     "Content-Length: ".strlen($data)
   );
   
-  $opions = array(
+  $options = array(
     "http" => array(
        "method"  => "POST",
        "header"  => implode("\r\n", $header),
        "content" => $data
     )
   );
-  $context = stream_context_create($opions);
+  $context = stream_context_create($options);
   $result = file_get_contents($url, false, $context);
-  echo $result;
+
+  //retrieves the token
+  preg_match('/access_token=([^&]+)/', $result, $matches);
+  $token = $matches[1];
+
+  $valuemap = array();
+  if ($token) {
+    $valuemap["token"] = $token;
+  } else {
+    $valuemap["error"] = $result;
+  }
+
+  echo json_encode($valuemap);
 ?>

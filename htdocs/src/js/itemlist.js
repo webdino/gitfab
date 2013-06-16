@@ -4,39 +4,28 @@
 
 var ItemListController = {
   init: function() {
-    $.getJSON(LIST_API, ItemListController.loadItemList);
+    CommonController.getItemList(ItemListController.loadedItemList);
   },
   
-  loadItemList: function(result) {
-    ItemListController.parseItemList(result);
+  loadedItemList: function(result, error) {
+    ItemListController.parseItemList(result, error);
 
-    var parameters = CommonController.getParameters();
-    if (parameters.code) {
-      $.get(TOKEN_API+"code="+parameters.code, function(data) {
-        var regex = /access_token=([^&]+)/;
-        var result = regex.exec(data);
-        if (!result) {
-          $("#login").text(data);
-          return;
-        }
-        ItemListController.access_token = result[1];
-        $.getJSON(USER_API+ItemListController.access_token, ItemListController.loadAuthUser);
-      });
-    } else if (parameters.user && parameters.access_token) {
-      ItemListController.user = parameters.user;
-      ItemListController.access_token = parameters.access_token;
-      console.log(ItemListController.user+" "+ItemListController.access_token);
-      ItemListController.autholized();
+    CommonController.setParameters(ItemListController);
+    
+    if (ItemListController.user) {
+      CommonController.updateUI(ItemListController.user);
+    } else {
+      var parameters = CommonController.getParametersFromQuery();
+      if (!parameters.code) {
+        return;
+      }
+      CommonController.authorize(parameters.code, ItemListController.authorized);
     }
   },
   
-  parseItemList: function(result) {
-    if (result.data.message) {
-      alert(result.data.message);
-      return;
-    }
+  parseItemList: function(itemlist, error) {
+    if (CommonController.showError(error) == true) return;
     var ul = $("#item-list");
-    var itemlist = result.data;
     for (var i = 0, n = itemlist.length; i < n; i++) {
       var item = itemlist[i];
       var owner = item.owner.login;
@@ -44,7 +33,7 @@ var ItemListController = {
       var li = $(document.createElement("li"));
       li.addClass("item");
       var link = $(document.createElement("a"));
-      var url = ITEM_PAGE+"owner="+owner+"&repository="+repository;
+      var url = CommonController.getItemPageURL(owner, repository);
       link.attr("href", url);
       link.text(item.full_name);
       li.append(link);
@@ -52,22 +41,10 @@ var ItemListController = {
     }
   },
   
-  loadAuthUser: function(result) {
-    var username = result.data.login;
-    ItemListController.user = username;
-    ItemListController.autholized();
+  authorized: function(result, error) {
+    if (CommonController.showError(error) == true) return;
+    CommonController.updateUI(result.user);
   },
-  
-  autholized: function() {
-    CommonController.authorized(ItemListController.user, ItemListController.access_token);
-    var itemlist = $(".item a");
-    for (var i = 0, n = itemlist.length; i < n; i++) {
-      var item = $(itemlist[i]);
-      var href = item.attr("href");
-      href += "&access_token=" + ItemListController.access_token+"&user="+ItemListController.user;
-      item.attr("href", href);
-    }
-  }
 };
 
 $(document).ready(function() {
