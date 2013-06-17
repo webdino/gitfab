@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8">
     <title data-l10n-id="title">gitfab | item</title>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/item.css" type="text/css">
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
