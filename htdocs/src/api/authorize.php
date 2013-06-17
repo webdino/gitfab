@@ -6,8 +6,8 @@
   //token ----------
   $parameter = array(
     "code" => $code,
-    "client_id" => "8195addbac8300264b41",
-    "client_secret" => "a6443ae5dc56a838c246fe7930dec5e753892771"
+    "client_id" => getenv("CLIENT_ID"),
+    "client_secret" => getenv("CLIENT_SECRET")
   );
   $parameter = http_build_query($parameter, "", "&");
 

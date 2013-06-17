@@ -4,6 +4,6 @@
 </div>
 <div id="menus">
   <a id="create">create repository</a>
-  <a id="login" href="https://github.com/login/oauth/authorize?client_id=8195addbac8300264b41&scope=repo">login</a>
+  <a id="login" href="https://github.com/login/oauth/authorize?client_id=<?php echo getenv("CLIENT_ID"); ?>&scope=repo">login</a>
 </div>
 </header>
