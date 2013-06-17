@@ -2,6 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var MATERIALS = "materials";
+var MAIN_DOCUMENT = "README.md";
+
 var CommonController = {
   getParametersFromQuery: function() {
     var parameters = {};
@@ -53,7 +56,9 @@ var CommonController = {
   //github --------------------------
   authorize: function(code, callback) {
     var url = "/api/authorize.php?code="+code;
+    Logger.request(url);
     $.getJSON(url, function(result) {
+      Logger.response(url);
       if (result.error) {
         callback(null, result.error);
       } else {
@@ -76,7 +81,8 @@ var CommonController = {
   },
   
   getGitfabDocument: function(owner, repository, callback) {
-    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/readme?callback=?";
+//    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/readme?callback=?";
+    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/contents/"+MAIN_DOCUMENT+"?callback=?";
     CommonController.getGithubJSON(url, callback);
   },
   
@@ -104,7 +110,9 @@ var CommonController = {
 
   watch: function(owner, repository, callback) {
     var url = "/api/watch.php?owner="+owner+"&repository="+repository;
+    Logger.request(url);
     $.getJSON(url, function(result) {
+      Logger.response(url);
       if (result.message) {
         callback(null, result.message);
       } else {
@@ -135,6 +143,7 @@ var CommonController = {
   },
 
   ajaxGithub: function(url, method, token, parameters, callback) {
+    Logger.request(url);
     $.ajax({
       type: method,
       url: url,
@@ -144,9 +153,11 @@ var CommonController = {
       data: JSON.stringify(parameters),
       dataType:"json",
       success: function(data){
+        Logger.response(url);
         callback(data);
       },
       error: function(request, textStatus, errorThrown){
+        Logger.error(url);
         var response = JSON.parse(request.responseText);
         if (response.errors && response.errors[0] && response.errors[0].message) {
           callback(null, response.errors[0].message);
@@ -158,7 +169,9 @@ var CommonController = {
   },
   
   getGithubJSON: function(url, callback) {
+    Logger.request(url);
     $.getJSON(url, function(result) {
+      Logger.response(url);
       if (result.data.message) {
         callback(null, result.data.message);
       } else {

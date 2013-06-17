@@ -2,9 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var MATERIALS = "materials";
-var MAIN_DOCUMENT = "README.md";
-
 var ItemController = {
   init: function() {
     ItemController.markdownParser = new Showdown.converter();
@@ -26,14 +23,18 @@ var ItemController = {
         ItemController.setEditable();
       } else {
         //update repository
+        Logger.on();
         CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(result, error) {
+          Logger.off();
           if (CommonController.showError(error) == true) return;
           ItemController.parseGitFabDocument(result);
           ItemController.setEditable();
         });
       }
     } else if (ItemController.repository) {
+      Logger.on();
       CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(result, error) {
+        Logger.off();
         if (CommonController.showError(error) == true) return;
         ItemController.parseGitFabDocument(result);
       });
@@ -322,6 +323,7 @@ var ItemController = {
   
   commit: function(e) {
     //このタイトルのリポジトリを作成あるいはアップデート
+    Logger.on();
     var repository = $("#title").text();
     if (!ItemController.repository) {
       //new
@@ -390,6 +392,7 @@ var ItemController = {
       }
       if (!file) {
         //done
+        Logger.off();
         return;
       }
       var reader = new FileReader();
@@ -406,11 +409,17 @@ var ItemController = {
   
   newRepository: function(name) {
     CommonController.newRepository(ItemController.token, name, function(result, error) {
-      if (CommonController.showError(error) == true) return;
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
 
       ItemController.repository = name;
       ItemController.watch(ItemController.user, ItemController.repository, function(result, error) {
-        if (CommonController.showError(error) == true) return;
+        if (CommonController.showError(error) == true) {
+          Logger.off();
+          return;
+        }
         ItemController.updateRepository();
       });
     });
@@ -418,19 +427,33 @@ var ItemController = {
   
   renameRepository: function(name) {
     CommonController.renameRepository(ItemController.token, ItemController.user, name, ItemController.repository, function(result, error) {
-      if (CommonController.showError(error) == true) return;
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
       ItemController.repository = name;
       ItemController.updateRepository();
     });
   },
   
-  fork: function(callback) {
+  fork: function() {
+    Logger.on();
     CommonController.fork(ItemController.owner, ItemController.repository, ItemController.token, function(result, error) {
-      if (CommonController.showError(error) == true) return;
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
       ItemController.watch(ItemController.user, ItemController.repository, function(result, error) {
-        if (CommonController.showError(error) == true) return;
+        if (CommonController.showError(error) == true) {
+          Logger.off();
+          return;
+        };
         var url = CommonController.getItemPageURL(ItemController.user, ItemController.repository);
-        window.location.href = url;
+        Logger.log("reload: "+url);
+        setTimeout(function() {
+          window.location.href = url;
+          Logger.off();
+        }, 500);
       });
     });
   },

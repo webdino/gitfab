@@ -22,91 +22,9 @@
     <?php include('toolbar.php.inc'); ?>
     <div id="main" role="main">
       <ul id="item-list">
-      <!--
-        <li class="item">
-          <a href="item.php">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-          </a>
-        </li>
-        <li class="item">
-          <a href="item.php?s">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-          </a>
-        </li>
-        <li class="item">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-        </li>
-        <li class="item">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-        </li>
-        <li class="item">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-        </li>
-        <li class="item">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-        </li>
-        <li class="item">
-          <div class="thumbnail"></div>
-          <ul class="meta">
-            <li class="title">タイトル</li>
-            <li class="abstract">時計は２４時間をはかるためだけのものではなく、むしろ自分に必要な時間感覚を１単位とする時計をつくる。</li>
-            <li class="author">Daisuke Akatsuka</li>
-            <li class="date">2013.05.29</li>
-            <li class="like">★ 10</li>
-            <li class="fork">fork 10</li>
-          </ul>
-        </li>
-      -->
       </ul>
     </div>
     <?php include('footer.php.inc'); ?>
+    <?php include('logger.php.inc'); ?>
   </body>
 </html>

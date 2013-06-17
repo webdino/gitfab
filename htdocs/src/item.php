@@ -49,5 +49,6 @@
       </div>
     </div>
     <?php include('footer.php.inc'); ?>
+    <?php include('logger.php.inc'); ?>
   </body>
 </html>
