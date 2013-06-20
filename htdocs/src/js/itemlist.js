@@ -17,8 +17,8 @@ var ItemListController = {
       CommonController.setParameters(ItemListController);
       if (ItemListController.user) {
         CommonController.updateUI(ItemListController.user, ItemListController.avatar_url);
-        Logger.off();
       }
+      Logger.off();
     }
   },
   
