@@ -94,7 +94,6 @@ var CommonController = {
   },
   
   getGitfabDocument: function(owner, repository, callback) {
-//    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/readme?callback=?";
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/contents/"+MAIN_DOCUMENT+"?callback=?";
     CommonController.getGithubJSON(url, callback);
   },
@@ -106,6 +105,11 @@ var CommonController = {
   
   getRepositoryInformation: function(owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"?callback=?";
+    CommonController.getGithubJSON(url, callback);
+  },
+  
+  getForksInformation: function(owner, repository, callback) {
+    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/forks?callback=?";
     CommonController.getGithubJSON(url, callback);
   },
   

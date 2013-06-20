@@ -1,9 +1,15 @@
+#main {
+  float:left;
+  margin: 24px;
+}
+
+#main.editable {
+}
+
 #item {
   background-color: white;
   border: 1px solid gray;
   padding: 0 0 12px 12px;
-  margin: 24px auto;
-  width: 440px;
 }
 
 #tools {
@@ -59,18 +65,17 @@
   top: -30px;
 }
 
-#process-list-ul {
+#section-list-ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-.process {
+.section {
   clear: both;
 }
 
 .content {
-  width: 430px;
   border-top: 1px dotted black;
   padding-top: 6px;
   padding-bottom: 6px;
@@ -117,7 +122,6 @@
 }
 
 #textarea-container {
-  width: 430px;
   display: inline-block;
 }
 
@@ -129,10 +133,6 @@
 
 .right {
   text-align: right;
-}
-
-textarea {
-  width: 430px;
 }
 
 #send-button {
@@ -160,7 +160,6 @@ textarea {
 
 /** -------- editable -------------- **/
 .editable #item {
-  width: 490px;
 }
 
 .editable #fork {
@@ -183,7 +182,7 @@ textarea {
   pointer-events: auto;
 }
 
-.editable .process:last-child .content {
+.editable .section:last-child .content {
   border-bottom: 1px dotted black;
   margin-bottom: 24px;
 }
@@ -215,3 +214,91 @@ h1 {
   color: #ff1493;
 }
 
+/** --------- in sub -----------------**/
+#sub {
+  float: left;
+  margin: 24px 0;
+}
+/** temp **/
+#parent-item {
+  border: 1px solid gray;
+  background-color: white;
+  padding-top: 6px;
+}
+
+#parent-item a {
+  text-decoration: none;
+}
+
+#parent-item img {
+  width: 30px;
+  margin-right: 3px;
+}
+
+#parent-item span {
+  height: 30px;
+  line-height: 30px;
+  vertical-align: top;
+}
+
+#parent-item-label {
+  font-size: 10px;
+}
+
+#child-item-list-label {
+  font-size: 10px;
+}
+
+.child-item {
+  border: 1px solid gray;
+  background-color: white;
+  padding-top: 6px;
+  padding-left: 2px;
+  margin-top: 6px;
+} 
+
+.child-item a {
+  text-decoration: none;
+}
+
+.child-item img {
+  width: 30px;
+  margin-right: 3px;
+}
+
+.child-item span {
+  height: 30px;
+  line-height: 30px;
+  vertical-align: top;
+}
+
+.counter {
+  margin-right: 2px;
+  text-align: right;
+  font-size: 10px;
+}
+
+/** ------- static size --------------**/
+#main {
+  width: 450px;
+}
+
+#main.editable {
+  width: 500px;
+}
+
+.content {
+  width: 420px;
+}
+
+#textarea-container {
+  width: 420px;
+}
+
+textarea {
+  width: 420px;
+}
+
+#sub {
+  width: 200px;
+}

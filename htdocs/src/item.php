@@ -34,8 +34,8 @@
             <button id="commit-button">commit</button>
           </div>
         </section>
-        <section id="process-list">
-          <ul id="process-list-ul"></ul>
+        <section id="section-list">
+          <ul id="section-list-ul"></ul>
         </section>
         <section id="form">
           <div id="textarea-container">
@@ -46,6 +46,15 @@
           </div>
           <input id="upload" name="file" type="file" />
         </section>
+      </div>
+    </div>
+    <div id="sub">
+      <div id="parent-item-label"></div>
+      <div id="parent-item">
+      </div>
+      <hr/>
+      <div id="child-item-list-label"></div>
+      <div id="child-item-list">
       </div>
     </div>
     <?php include('footer.php.inc'); ?>

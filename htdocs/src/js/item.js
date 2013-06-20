@@ -24,11 +24,9 @@ var ItemController = {
       } else {
         //update repository
         ItemController.loadGitfabDocument(true);
-        ItemController.loadRepositoryInformation();
       }
     } else if (ItemController.repository) {
       ItemController.loadGitfabDocument(false);
-      ItemController.loadRepositoryInformation();
       
       if (!ItemController.user) {
         $("#fork").click(function() {
@@ -54,6 +52,7 @@ var ItemController = {
       if (isEditable == true) {
         ItemController.setEditable();
       }
+      ItemController.loadRepositoryInformation();
     });
   },
   
@@ -70,8 +69,44 @@ var ItemController = {
       $("#owner").append(userImg).append(userA);
       //parent
       if (result.parent) {
+        var ui = ItemController.createRepositoryUI(result.parent);
+        $("#parent-item").append(ui);
+        $("#parent-item-label").text("parent item");
+      } else {
+        $("#parent-item").hide();
+        $("#parent-item-label").text("this is a root item");
       }
+      if (result.forks_count == 0) {
+        return;
+      }
+      $("#child-item-list-label").text("child item list");
+      CommonController.getForksInformation(ItemController.owner, ItemController.repository, function(forks, error) {
+        for (var i = 0, n = forks.length; i < n; i++) {
+          var fork = forks[i];
+          var ui = ItemController.createRepositoryUI(fork);
+          var container = $(document.createElement("div"));
+          container.addClass("child-item");
+          container.append(ui);
+          $("#child-item-list").append(container);
+        }
+      });
     });
+  },
+  
+  createRepositoryUI: function(information) {
+    var owner = information.owner.login;
+    var repository = information.name;
+    var linker = $(document.createElement("a"));
+    linker.attr("href", CommonController.getItemPageURL(owner, repository));
+    var parentImg = $(document.createElement("img"));
+    parentImg.attr("src", information.owner.avatar_url);
+    var parentRepository = $(document.createElement("span"));
+    parentRepository.text(owner+"/"+repository);
+    var counter = $(document.createElement("div"));
+    counter.text("fork:"+information.forks_count+" like:0");
+    counter.addClass("counter");
+    linker.append(parentImg).append(parentRepository).append(counter);
+    return linker;
   },
   
   setEditable: function() {
@@ -147,7 +182,7 @@ var ItemController = {
   commitTextContent: function(e) {
     var text = ItemController.reusable_textarea.val();
     var target = ItemController.reusable_textarea.parent();
-    ItemController.updateProcess(text, target);
+    ItemController.updatesection(text, target);
     target.click(ItemController.editTextContent);
     ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
     target.attr("draggable", "true");
@@ -210,9 +245,9 @@ var ItemController = {
       target = ItemController.upload_target.get(0);
       text += target.markdown+"\n\n";
     } else {
-      //append a process via upload
-      var process = ItemController.append2dom("");
-      target = process.find(".content").get(0);
+      //append a section via upload
+      var section = ItemController.append2dom("");
+      target = section.find(".content").get(0);
       ItemController.upload_target = $(target);
     }
     var file = this.files[0];
@@ -222,14 +257,14 @@ var ItemController = {
     } else {
       text += "["+file.name+"]("+url+")";
     }
-    ItemController.updateProcess(text, ItemController.upload_target);
+    ItemController.updatesection(text, ItemController.upload_target);
     if (!target.files) {
       target.files = {};
     }
     target.files[url] = file;
   },
   
-  updateProcess: function(text, target) {
+  updatesection: function(text, target) {
     target.get(0).markdown = text;
     var html = ItemController.encode4html(text);
     target.html(html);
@@ -272,7 +307,7 @@ var ItemController = {
   },
   
   dropEnd: function(e) {
-    var target = $(e.currentTarget).parent(".process");
+    var target = $(e.currentTarget).parent(".section");
     var targetid = target.attr("id");
     var dataTransfer = e.originalEvent.dataTransfer;
     var sourceid = dataTransfer.getData('text/plain');
@@ -282,9 +317,9 @@ var ItemController = {
     e.stopPropagation();
     
     var source = $("#"+sourceid);
-    var processes = $(".process");
-    var sourceIndex = processes.index(source);
-    var targetIndex = processes.index(target);
+    var sections = $(".section");
+    var sourceIndex = sections.index(source);
+    var targetIndex = sections.index(target);
     var isBefore = sourceIndex > targetIndex;
     
     //exchange
@@ -310,9 +345,9 @@ var ItemController = {
   
   append2dom: function(text) {
     //elements
-    var process = $(document.createElement("li"));
-    process.addClass("process");
-    process.attr("id", ItemController.current_id++);
+    var section = $(document.createElement("li"));
+    section.addClass("section");
+    section.attr("id", ItemController.current_id++);
 
     var content = $(document.createElement("a"));
     content.attr("draggable", "true");
@@ -322,7 +357,7 @@ var ItemController = {
     content.bind('dragover', ItemController.dragOver);
     content.bind('drop', ItemController.dropEnd);
     content.click(ItemController.editTextContent);
-    ItemController.updateProcess(text, content);
+    ItemController.updatesection(text, content);
     
     var func = $(document.createElement("div"));
     func.addClass("function");
@@ -337,11 +372,11 @@ var ItemController = {
     upload.click(ItemController.kickUpload);
     remove.click(ItemController.remove);
 
-    process.append(content);
-    process.append(func);
+    section.append(content);
+    section.append(func);
     
-    $("#process-list-ul").append(process);
-    return process;
+    $("#section-list-ul").append(section);
+    return section;
   },
   
   commit: function(e) {
