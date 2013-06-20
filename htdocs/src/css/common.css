@@ -18,7 +18,7 @@ header {
   height: 50px;
   width: 100%;
   border-bottom: 1px solid gray;
-  background-color: #ccc;
+  background-color: #ddd;
 }
 
 header a {
@@ -36,14 +36,28 @@ header a {
 #menus {
   float: right;
   font-size: 12px;
+  height: 20px;
 }
 
 #create {
   display: none;
   margin-right: 6px;
+  vertical-align: top;
+  line-height: 20px;
 }
 
 #login {
+}
+
+#login img {
+  width: 20px;
+  height: 20px;
+  margin-right: 1px;
+}
+
+#login span {
+  vertical-align: top;
+  line-height: 20px;
 }
 
 #main {

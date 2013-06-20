@@ -21,4 +21,9 @@
   } else {
     echo "    var TOKEN = null;\n";
   }
+  if (isset($_SESSION["avatar_url"])) {
+    echo "    var AVATAR_URL = \"".$_SESSION["avatar_url"]."\";\n";
+  } else {
+    echo "    var AVATAR_URL = null;\n";
+  }
 ?>

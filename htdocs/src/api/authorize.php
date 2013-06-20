@@ -37,10 +37,12 @@
     } else {
       $result["token"] = $token;
       $result["user"] = $userJson->{"login"};
+      $result["avatar_url"] = $userJson->{"avatar_url"};
 
       session_start();
-      $_SESSION["user"] = $result["user"];
       $_SESSION["token"] = $result["token"];
+      $_SESSION["user"] = $result["user"];
+      $_SESSION["avatar_url"] = $result["avatar_url"];
     }
   } else {
     $result["error"] = $tokenContents;

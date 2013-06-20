@@ -35,10 +35,19 @@ var CommonController = {
     if (TOKEN) {
       object.token = TOKEN;
     }
+    if (AVATAR_URL) {
+      object.avatar_url = AVATAR_URL;
+    }
   },
 
-  updateUI: function(username) {
-    $("#login").text("logged in as "+username);
+  updateUI: function(username, avatarURL) {
+    var userImg = $(document.createElement("img"));
+    userImg.attr("src", avatarURL);
+    var userName = $(document.createElement("span"));
+    userName.text(username);
+    $("#login").html("");
+    $("#login").append(userImg);
+    $("#login").append(userName);
     var createurl = CommonController.getItemPageURL(username, ":create");
     $("#create").attr("href", createurl);
     $("#create").show();
@@ -83,6 +92,11 @@ var CommonController = {
   getGitfabDocument: function(owner, repository, callback) {
 //    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/readme?callback=?";
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/contents/"+MAIN_DOCUMENT+"?callback=?";
+    CommonController.getGithubJSON(url, callback);
+  },
+  
+  getOwnerInformation: function(owner, callback) {
+    var url = "https://api.github.com/users/"+owner+"?callback=?";
     CommonController.getGithubJSON(url, callback);
   },
   

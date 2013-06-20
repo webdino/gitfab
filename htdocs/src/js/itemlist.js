@@ -10,17 +10,15 @@ var ItemListController = {
   
   loadedItemList: function(result, error) {
     ItemListController.parseItemList(result, error);
-    CommonController.setParameters(ItemListController);
-    if (ItemListController.user) {
-      CommonController.updateUI(ItemListController.user);
-      Logger.off();
-    } else {
-      var parameters = CommonController.getParametersFromQuery();
-      if (!parameters.code) {
-        Logger.off();
-        return;
-      }
+    var parameters = CommonController.getParametersFromQuery();
+    if (parameters.code) {
       CommonController.authorize(parameters.code, ItemListController.authorized);
+    } else {
+      CommonController.setParameters(ItemListController);
+      if (ItemListController.user) {
+        CommonController.updateUI(ItemListController.user, ItemListController.avatar_url);
+        Logger.off();
+      }
     }
   },
   
@@ -36,16 +34,24 @@ var ItemListController = {
       var link = $(document.createElement("a"));
       var url = CommonController.getItemPageURL(owner, repository);
       link.attr("href", url);
-      link.text(item.full_name);
+
+      var avatar = $(document.createElement("img"));
+      avatar.attr("src", item.owner.avatar_url);
+      var textContent = $(document.createElement("span"));
+      textContent.text(item.full_name);
+      link.append(avatar);
+      link.append(textContent);
+      
       li.append(link);
       ul.append(li);
     }
   },
   
   authorized: function(result, error) {
+  console.log(result);
     Logger.off();
     if (CommonController.showError(error) == true) return;
-    CommonController.updateUI(result.user);
+    CommonController.updateUI(result.user, result.avatar_url);
   },
 };
 

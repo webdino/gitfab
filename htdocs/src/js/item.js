@@ -11,7 +11,7 @@ var ItemController = {
     CommonController.setParameters(ItemController);
 
     if (ItemController.user) {
-      CommonController.updateUI(ItemController.user);
+      CommonController.updateUI(ItemController.user, ItemController.avatar_url);
     }
 
     if (ItemController.user == ItemController.owner) {
@@ -23,21 +23,10 @@ var ItemController = {
         ItemController.setEditable();
       } else {
         //update repository
-        Logger.on();
-        CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(result, error) {
-          Logger.off();
-          if (CommonController.showError(error) == true) return;
-          ItemController.parseGitFabDocument(result);
-          ItemController.setEditable();
-        });
+        ItemController.loadGitfabDocument(true);
       }
     } else if (ItemController.repository) {
-      Logger.on();
-      CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(result, error) {
-        Logger.off();
-        if (CommonController.showError(error) == true) return;
-        ItemController.parseGitFabDocument(result);
-      });
+      ItemController.loadGitfabDocument(false);
       
       if (!ItemController.user) {
         $("#fork").click(function() {
@@ -52,6 +41,24 @@ var ItemController = {
       //not found
       $("#item").text("item not found");
     }
+  },
+  
+  loadGitfabDocument: function(isEditable) {
+    Logger.on();
+    CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(gitfabDocument, error) {
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
+      CommonController.getOwnerInformation(ItemController.owner, function(information, error) {
+        Logger.off();
+        if (CommonController.showError(error) == true) return;
+        ItemController.parseGitFabDocument(gitfabDocument, information);
+        if (isEditable == true) {
+          ItemController.setEditable();
+        }
+      });
+    });
   },
   
   setEditable: function() {
@@ -69,14 +76,19 @@ var ItemController = {
     $("#main").addClass("editable");
   },
   
-  parseGitFabDocument: function(result) {
+  parseGitFabDocument: function(result, information) {
     var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
     var title = ItemController.repository;
     var tags = lines[1].substring("## ".length);
     var owner = ItemController.owner ? ItemController.owner : ItemController.user;
-    $("#owner").text(owner);
+    $("#owner").html("");
+    var userName = $(document.createElement("span"));
+    userName.text(owner);
+    var userImg = $(document.createElement("img"));
+    userImg.attr("src", information.avatar_url);
+    $("#owner").append(userImg).append(userName);
     $("#title").text(title);
     $("#tags").text(tags);
     var text;
