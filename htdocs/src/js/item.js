@@ -24,9 +24,11 @@ var ItemController = {
       } else {
         //update repository
         ItemController.loadGitfabDocument(true);
+        ItemController.loadRepositoryInformation();
       }
     } else if (ItemController.repository) {
       ItemController.loadGitfabDocument(false);
+      ItemController.loadRepositoryInformation();
       
       if (!ItemController.user) {
         $("#fork").click(function() {
@@ -46,18 +48,29 @@ var ItemController = {
   loadGitfabDocument: function(isEditable) {
     Logger.on();
     CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(gitfabDocument, error) {
-      if (CommonController.showError(error) == true) {
-        Logger.off();
-        return;
+      Logger.off();
+      if (CommonController.showError(error) == true) return;
+      ItemController.parseGitFabDocument(gitfabDocument);
+      if (isEditable == true) {
+        ItemController.setEditable();
       }
-      CommonController.getOwnerInformation(ItemController.owner, function(information, error) {
-        Logger.off();
-        if (CommonController.showError(error) == true) return;
-        ItemController.parseGitFabDocument(gitfabDocument, information);
-        if (isEditable == true) {
-          ItemController.setEditable();
-        }
-      });
+    });
+  },
+  
+  loadRepositoryInformation: function() {
+    CommonController.getRepositoryInformation(ItemController.owner, ItemController.repository, function(result, error) {
+      //users
+      var userImg = $(document.createElement("img"));
+      userImg.attr("src", result.owner.avatar_url);
+      var userA = $(document.createElement("a"));
+      userA.attr("href", result.owner.html_url);
+      userA.attr("target", "_blank");
+      userA.text(result.owner.login);
+      $("#owner").html("");
+      $("#owner").append(userImg).append(userA);
+      //parent
+      if (result.parent) {
+      }
     });
   },
   
@@ -76,7 +89,7 @@ var ItemController = {
     $("#main").addClass("editable");
   },
   
-  parseGitFabDocument: function(result, information) {
+  parseGitFabDocument: function(result) {
     var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
@@ -86,9 +99,7 @@ var ItemController = {
     $("#owner").html("");
     var userName = $(document.createElement("span"));
     userName.text(owner);
-    var userImg = $(document.createElement("img"));
-    userImg.attr("src", information.avatar_url);
-    $("#owner").append(userImg).append(userName);
+    $("#owner").append(userName);
     $("#title").text(title);
     $("#tags").text(tags);
     var text;

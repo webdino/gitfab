@@ -66,8 +66,12 @@ var CommonController = {
   authorize: function(code, callback) {
     var url = "/api/authorize.php?code="+code;
     Logger.request(url);
-    $.getJSON(url, function(result) {
+    CommonController.getJSON(url, function(result, error) {
       Logger.response(url);
+      if (error) {
+        callback(null, error);
+        return;
+      }
       if (result.error) {
         callback(null, result.error);
       } else {
@@ -100,6 +104,11 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
+  getRepositoryInformation: function(owner, repository, callback) {
+    var url = "https://api.github.com/repos/"+owner+"/"+repository+"?callback=?";
+    CommonController.getGithubJSON(url, callback);
+  },
+  
   getSHATree: function(user, repository, callback) {
     var url = "https://api.github.com/repos/"+user+"/"+repository+"/git/trees/master?recursive=1&callback=?";
     CommonController.getGithubJSON(url, callback);
@@ -125,8 +134,12 @@ var CommonController = {
   watch: function(owner, repository, callback) {
     var url = "/api/watch.php?owner="+owner+"&repository="+repository;
     Logger.request(url);
-    $.getJSON(url, function(result) {
+    CommonController.getJSON(url, function(result, error) {
       Logger.response(url);
+      if (error) {
+        callback(null, error);
+        return;
+      }
       if (result.message) {
         callback(null, result.message);
       } else {
@@ -184,8 +197,11 @@ var CommonController = {
   
   getGithubJSON: function(url, callback) {
     Logger.request(url);
-    $.getJSON(url, function(result) {
-      Logger.response(url);
+    CommonController.getJSON(url, function(result, error) {
+      if (error) {
+        callback(null, error);
+        return;
+      }
       if (result.data.message) {
         callback(null, result.data.message);
       } else {
@@ -193,4 +209,13 @@ var CommonController = {
       }
     });
   },
+  
+  getJSON: function(url, callback) {
+    $.getJSON(url, function(result) {
+      callback(result);
+    })
+    .error(function(xhr, textStatus, errorThrown) {
+      callback(null, textStatus+":"+xhr.responseText);
+    })
+  }
 }
