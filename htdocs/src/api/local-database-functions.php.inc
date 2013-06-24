@@ -18,7 +18,7 @@ function closeConnection($connection) {
 
 function throwError($connection) {
   if (mysql_errno($connection)) {
-    throw new Exception(mysql_error($connection));
+    throw new Exception("ERROR:".mysql_errno($connection).":".mysql_error($connection));
   }
 }
 
@@ -104,5 +104,26 @@ function updateRepository($owner, $name, $oldname, $tags) {
   appendTags($id, $tags, $connection);
 
   closeConnection($connection);
+}
+
+function getTags($owner) {
+
+  $connection = openConnection();
+
+  $query = "SELECT DISTINCT T.name AS tag FROM tags AS T, repositories AS R";
+  if ($owner) {
+    $query .= " WHERE T.repository_id=R.id AND R.owner='".$owner."'";
+  }
+  $result = mysql_query($query, $connection);
+  throwError($connection);
+  $tags = array();
+  while ($row = mysql_fetch_assoc($result)) {
+    $tags[] = $row["tag"];
+  }
+  mysql_free_result($result);
+
+  closeConnection($connection);
+
+  return $tags;
 }
 ?>
