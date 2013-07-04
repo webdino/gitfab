@@ -383,6 +383,7 @@ var ItemController = {
     //このタイトルのリポジトリを作成あるいはアップデート
     Logger.on();
     var repository = $("#title").text();
+    ItemController.oldrepository = "";
     if (!ItemController.repository) {
       //new
       ItemController.newRepository(repository);
@@ -403,6 +404,11 @@ var ItemController = {
     CommonController.getSHATree(ItemController.user, ItemController.repository, ItemController.commitDocument);
   },
   
+  updateMetadata: function(callback) {
+    var tags = $("#tags").text();
+    CommonController.updateMetadata(ItemController.owner, ItemController.repository, ItemController.oldrepository, tags, callback);
+  },
+
   commitDocument: function(result, error) {
     if (CommonController.showError(error) == true) return;
 
@@ -449,8 +455,10 @@ var ItemController = {
         break;
       }
       if (!file) {
-        //done
-        Logger.off();
+        ItemController.updateMetadata(function() {
+          //done
+          Logger.off();
+        });
         return;
       }
       var reader = new FileReader();
@@ -489,6 +497,7 @@ var ItemController = {
         Logger.off();
         return;
       }
+      ItemController.oldrepository = ItemController.repository;
       ItemController.repository = name;
       ItemController.updateRepository();
     });
@@ -506,12 +515,14 @@ var ItemController = {
           Logger.off();
           return;
         };
-        var url = CommonController.getItemPageURL(ItemController.user, ItemController.repository);
-        Logger.log("reload: "+url);
-        setTimeout(function() {
-          window.location.href = url;
-          Logger.off();
-        }, 500);
+        ItemController.updateMetadata(function() {
+          var url = CommonController.getItemPageURL(ItemController.user, ItemController.repository);
+          Logger.log("reload: "+url);
+          setTimeout(function() {
+            window.location.href = url;
+            Logger.off();
+          }, 500);
+        });
       });
     });
   },

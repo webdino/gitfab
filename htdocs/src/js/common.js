@@ -173,6 +173,23 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
   },
 
+  updateMetadata: function(owner, repository, oldrepository, tags, callback) {
+    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags;
+    Logger.request(url);
+    CommonController.getJSON(url, function(result, error) {
+      Logger.response(url);
+      if (error) {
+        callback(null, error);
+        return;
+      }
+      if (result.message) {
+        callback(null, result.message);
+      } else {
+        callback(result);
+      }
+    });
+  },
+
   ajaxGithub: function(url, method, token, parameters, callback) {
     Logger.request(url);
     $.ajax({
