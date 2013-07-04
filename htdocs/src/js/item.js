@@ -406,7 +406,7 @@ var ItemController = {
   
   updateMetadata: function(callback) {
     var tags = $("#tags").text();
-    CommonController.updateMetadata(ItemController.owner, ItemController.repository, ItemController.oldrepository, tags, callback);
+    CommonController.updateMetadata(ItemController.user, ItemController.repository, ItemController.oldrepository, tags, callback);
   },
 
   commitDocument: function(result, error) {
@@ -515,6 +515,7 @@ var ItemController = {
           Logger.off();
           return;
         };
+        ItemController.oldrepository = "";
         ItemController.updateMetadata(function() {
           var url = CommonController.getItemPageURL(ItemController.user, ItemController.repository);
           Logger.log("reload: "+url);

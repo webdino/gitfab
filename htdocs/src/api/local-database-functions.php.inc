@@ -85,7 +85,8 @@ function updateRepository($owner, $name, $oldname, $tags) {
   $connection = openConnection();
 
   $id = -1;
-  if ($oldname != NULL) {
+  $oldname = $oldname != NULL ? trim($oldname) : "";
+  if (strlen($oldname) != 0) {
     //rename
     $id = findRepository($owner, $oldname, $connection);
     renameRepository($id, $name, $connection);

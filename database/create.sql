@@ -12,7 +12,6 @@ CREATE TABLE `repositories` (
 CREATE TABLE `tags` (
   `name` VARCHAR(128) NOT NULL,
   `repository_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`name`),
   UNIQUE KEY (`name`, `repository_id`),
   FOREIGN KEY (`repository_id`) REFERENCES `repositories` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
