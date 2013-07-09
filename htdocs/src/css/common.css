@@ -25,6 +25,17 @@ header a {
   text-decoration: none;
 }
 
+#main {
+  float:left;
+  margin: 24px 0 24px 24px;
+  width: 450px;
+}
+
+#sub {
+  float: left;
+  margin: 24px 0 24px 24px;
+}
+
 #logo {
   float: left;
   font-size: 30px;

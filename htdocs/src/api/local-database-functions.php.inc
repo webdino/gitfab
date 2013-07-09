@@ -107,7 +107,7 @@ function updateRepository($owner, $name, $oldname, $tags) {
   closeConnection($connection);
 }
 
-function getTags($owner) {
+function getTagList($owner) {
 
   $connection = openConnection();
 

@@ -24,6 +24,9 @@
       <ul id="item-list">
       </ul>
     </div>
+    <div id="sub">
+    <?php include('taglist.php.inc'); ?>
+    </div>
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>
   </body>

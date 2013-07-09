@@ -1,8 +1,8 @@
 #item-list {
   padding: 12px 0;
-  margin: 24px auto;
-  width: 490px;
   background-color: white;
+  margin: 0;
+  border: 1px solid gray;
 }
 
 .item {

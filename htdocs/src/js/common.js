@@ -135,23 +135,6 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
 
-  watch: function(owner, repository, callback) {
-    var url = "/api/watch.php?owner="+owner+"&repository="+repository;
-    Logger.request(url);
-    CommonController.getJSON(url, function(result, error) {
-      Logger.response(url);
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.message) {
-        callback(null, result.message);
-      } else {
-        callback(result);
-      }
-    });
-  },
-  
   fork: function(owner, repository, token, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/forks";
     CommonController.ajaxGithub(url, "POST", token, {}, callback);
@@ -171,23 +154,6 @@ var CommonController = {
       name: name,
     };
     CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
-  },
-
-  updateMetadata: function(owner, repository, oldrepository, tags, callback) {
-    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags;
-    Logger.request(url);
-    CommonController.getJSON(url, function(result, error) {
-      Logger.response(url);
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.message) {
-        callback(null, result.message);
-      } else {
-        callback(result);
-      }
-    });
   },
 
   ajaxGithub: function(url, method, token, parameters, callback) {
@@ -231,6 +197,65 @@ var CommonController = {
     });
   },
   
+  //local -----
+  watch: function(owner, repository, callback) {
+    var url = "/api/watch.php?owner="+owner+"&repository="+repository;
+    Logger.request(url);
+    CommonController.getJSON(url, function(result, error) {
+      Logger.response(url);
+      if (error) {
+        callback(null, error);
+        return;
+      }
+      if (result.message) {
+        callback(null, result.message);
+      } else {
+        callback(result);
+      }
+    });
+  },
+  
+  updateMetadata: function(owner, repository, oldrepository, tags, callback) {
+    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags;
+    Logger.request(url);
+    CommonController.getJSON(url, function(result, error) {
+      Logger.response(url);
+      if (error) {
+        callback(null, error);
+        return;
+      }
+      if (result.message) {
+        callback(null, result.message);
+      } else {
+        callback(result);
+      }
+    });
+  },
+
+  getTagList: function(owner, callback) {
+    var url = "/api/taglist.php";
+    if (owner) {
+      url += "?owner="+owner;
+    }
+    Logger.request(url);
+    CommonController.getJSON(url, function(result, error) {
+      Logger.response(url);
+      if (error) {
+        callback(null, error);
+        return;
+      }
+      if (result.message) {
+        callback(null, result.message);
+      } else {
+        callback(result);
+      }
+    });
+  },
+
+  getTagURL: function(tag) {
+    return "/?tag="+tag;
+  },
+
   getJSON: function(url, callback) {
     $.getJSON(url, function(result) {
       callback(result);

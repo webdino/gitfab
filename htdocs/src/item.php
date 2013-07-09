@@ -56,6 +56,7 @@
       <div id="child-item-list-label"></div>
       <div id="child-item-list">
       </div>
+    <?php include('taglist.php.inc'); ?>
     </div>
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>

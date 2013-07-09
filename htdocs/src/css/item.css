@@ -1,11 +1,3 @@
-#main {
-  float:left;
-  margin: 24px;
-}
-
-#main.editable {
-}
-
 #item {
   background-color: white;
   border: 1px solid gray;
@@ -215,10 +207,6 @@ h1 {
 }
 
 /** --------- in sub -----------------**/
-#sub {
-  float: left;
-  margin: 24px 0;
-}
 /** temp **/
 #parent-item {
   border: 1px solid gray;
@@ -245,6 +233,10 @@ h1 {
   font-size: 10px;
 }
 
+#child-item-list {
+  margin-bottom: 10px;
+}
+
 #child-item-list-label {
   font-size: 10px;
 }
@@ -255,6 +247,7 @@ h1 {
   padding-top: 6px;
   padding-left: 2px;
   margin-top: 6px;
+
 } 
 
 .child-item a {
@@ -279,10 +272,6 @@ h1 {
 }
 
 /** ------- static size --------------**/
-#main {
-  width: 450px;
-}
-
 #main.editable {
   width: 500px;
 }
