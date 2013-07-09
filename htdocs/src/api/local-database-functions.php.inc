@@ -111,15 +111,18 @@ function getTags($owner) {
 
   $connection = openConnection();
 
-  $query = "SELECT DISTINCT T.name AS tag FROM tags AS T, repositories AS R";
+  $query = "SELECT T.name AS tag, COUNT(T.name) AS c FROM tags AS T";
   if ($owner) {
+    $query .= " , repositories AS R";
     $query .= " WHERE T.repository_id=R.id AND R.owner='".$owner."'";
   }
+  $query .= " GROUP BY T.name";
+
   $result = mysql_query($query, $connection);
   throwError($connection);
   $tags = array();
   while ($row = mysql_fetch_assoc($result)) {
-    $tags[] = $row["tag"];
+    $tags[] = array("tag"=>$row["tag"], "count"=>intval($row["c"]));
   }
   mysql_free_result($result);
 
