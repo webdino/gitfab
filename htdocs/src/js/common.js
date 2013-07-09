@@ -215,8 +215,8 @@ var CommonController = {
     });
   },
   
-  updateMetadata: function(owner, repository, oldrepository, tags, callback) {
-    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags;
+  updateMetadata: function(owner, repository, oldrepository, tags, avatar, thumbnail, callback) {
+    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags+"&avatar="+avatar+"&thumbnail="+thumbnail;
     Logger.request(url);
     CommonController.getJSON(url, function(result, error) {
       Logger.response(url);

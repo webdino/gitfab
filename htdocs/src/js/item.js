@@ -406,7 +406,22 @@ var ItemController = {
   
   updateMetadata: function(callback) {
     var tags = $("#tags").text();
-    CommonController.updateMetadata(ItemController.user, ItemController.repository, ItemController.oldrepository, tags, callback);
+    var avatar = $("#owner img").attr("src");
+    var resources = $(".content img,.content video");
+    var thumbnail = "";
+    for (var i = 0, n = resources.length; i < n; i++) {
+      var resource = resources[i];
+      if (resource.tagName.toUpperCase() == "IMG") {
+        thumbnail = resource.getAttribute("src");
+        break;
+      }
+      var poster = resource.getAttribute("poster");
+      if (poster) {
+        thumbnail = poster;
+        break;
+      }
+    }
+    CommonController.updateMetadata(ItemController.user, ItemController.repository, ItemController.oldrepository, tags, avatar, thumbnail, callback);
   },
 
   commitDocument: function(result, error) {

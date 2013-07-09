@@ -20,12 +20,14 @@
   <body>
     <?php include('header.php.inc'); ?>
     <?php include('toolbar.php.inc'); ?>
-    <div id="main" role="main">
-      <ul id="item-list">
-      </ul>
-    </div>
-    <div id="sub">
-    <?php include('taglist.php.inc'); ?>
+    <div id="contents">
+      <div id="main" role="main">
+        <ul id="item-list">
+        </ul>
+      </div>
+      <div id="sub">
+        <?php include('taglist.php.inc'); ?>
+      </div>
     </div>
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>
