@@ -35,13 +35,19 @@ function findRepository($owner, $name, $connection) {
 }
 
 function newRepository($owner, $name, $connection) {
-  $query = "INSERT INTO repositories(owner,name) VALUES ('".$owner."','".$name."')";
+  $query = "INSERT INTO repositories(owner,name,created,updated) VALUES ('".$owner."','".$name."',CAST(now() AS DATETIME),CAST(now() AS DATETIME))";
   mysql_query($query, $connection);
   throwError($connection);
 }
 
 function renameRepository($id, $name, $connection) {
-  $query = "UPDATE repositories SET name='".$name."' WHERE id=".$id;
+  $query = "UPDATE repositories SET name='".$name."',updated=CAST(now() AS DATETIME) WHERE id=".$id;
+  mysql_query($query, $connection);
+  throwError($connection);
+}
+
+function updateRepositoryMeta($id, $avatar, $thumbnail, $connection) {
+  $query = "UPDATE repositories SET avatar='".$avatar."',thumbnail='".$thumbnail."',updated=CAST(now() AS DATETIME) WHERE id=".$id;
   mysql_query($query, $connection);
   throwError($connection);
 }
@@ -80,7 +86,7 @@ function appendTags($id, $tagstring, $connection) {
   throwError($connection);
 }
 
-function updateRepository($owner, $name, $oldname, $tags) {
+function updateRepository($owner, $name, $oldname, $tags, $avatar, $thumbnail) {
 
   $connection = openConnection();
 
@@ -102,9 +108,35 @@ function updateRepository($owner, $name, $oldname, $tags) {
     removeTags($id, $connection);
   }
 
+  updateRepositoryMeta($id, $avatar, $thumbnail, $connection);
   appendTags($id, $tags, $connection);
 
   closeConnection($connection);
+}
+
+function getItemList($owner, $tag) {
+
+  $connection = openConnection();
+
+  $query = "SELECT owner,name,avatar,thumbnail,created,updated FROM repositories";
+  if ($owner) {
+    $query .= " WHERE owner='".$owner."'";
+  } else if ($tag) {
+    $query .= " WHERE tag='".$tag."'";
+  }
+  $query .= " ORDER BY updated DESC";
+
+  $result = mysql_query($query, $connection);
+  throwError($connection);
+  $itemlist = array();
+  while ($row = mysql_fetch_assoc($result)) {
+    $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"created"=>$row["created"],"updated"=>$row["updated"]);
+  }
+  mysql_free_result($result);
+
+  closeConnection($connection);
+
+  return $itemlist;
 }
 
 function getTagList($owner) {
