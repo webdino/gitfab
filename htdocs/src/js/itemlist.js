@@ -31,20 +31,39 @@ var ItemListController = {
     var itemlist = result.itemlist;
     for (var i = 0, n = itemlist.length; i < n; i++) {
       var item = itemlist[i];
-      var owner = item.owner;
-      var repository = item.name;
       var li = $(document.createElement("li"));
       li.addClass("item");
       var link = $(document.createElement("a"));
-      var url = CommonController.getItemPageURL(owner, repository);
+      var url = CommonController.getItemPageURL(item.owner, item.name);
       link.attr("href", url);
+
+      var thumbnail = null;
+      if (item.thumbnail == "") {
+        thumbnail = $(document.createElement("div"));
+        thumbnail.addClass("dummy");
+        thumbnail.text("no thumbnail");
+      } else {
+        thumbnail = $(document.createElement("img"));
+        thumbnail.attr("src", item.thumbnail);
+      }
+      thumbnail.addClass("thumbnail");
 
       var avatar = $(document.createElement("img"));
       avatar.attr("src", item.avatar);
-      var textContent = $(document.createElement("span"));
-      textContent.text(owner+"/"+repository);
+      avatar.addClass("avatar");
+
+      var owner = $(document.createElement("div"));
+      owner.addClass("owner");
+      owner.text(item.owner);
+
+      var repository = $(document.createElement("div"));
+      repository.addClass("repository");
+      repository.text(item.name);
+
       link.append(avatar);
-      link.append(textContent);
+      link.append(repository);
+      link.append(owner);
+      link.append(thumbnail);
       
       li.append(link);
       ul.append(li);

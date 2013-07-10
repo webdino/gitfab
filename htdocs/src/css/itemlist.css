@@ -1,25 +1,62 @@
 #item-list {
-  padding: 12px 0;
-  background-color: white;
+  padding: 0;
   margin: 0;
-  border: 1px solid gray;
 }
 
 .item {
+  clear: both;
   list-style-type: none;
 }
 
 .item a {
   text-decoration: none;
+  color: white;
+  margin-bottom: 12px;
 }
 
-.item img {
-  padding: 0 3px 0 12px;
-  width: 30px;
-  height: 30px;
+.thumbnail {
+  float: left;
+  width: 100%;
+  margin-top: -52px;
+  margin-bottom: 6px;
 }
 
-.item span {
-  vertical-align: top;
-  line-height: 30px;
+.dummy {
+  height: 200px;
+  background-color: #333;
+  line-height: 200px;
+  color: gray;
+  text-align: center;
+}
+
+.avatar {
+  border: 1px solid white;
+  float: left;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  z-index: 2;
+  top: 5px;
+  left: 5px;
+}
+
+.owner {
+  float: left;
+  position: relative;
+  z-index: 2;
+  width: 80%;
+  left: 12px;
+  top: 17px;
+  font-size: 12px;  
+}
+
+.repository {
+  float: left;
+  position: relative;
+  z-index: 2;
+  width: 80%;
+  left: 12px;
+  top: 15px;
+  font-size: 20px;
 }
