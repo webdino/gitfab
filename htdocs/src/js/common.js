@@ -198,6 +198,17 @@ var CommonController = {
   },
   
   //local -----
+  getItemListFromDatabase: function(tag, owner, callback) {
+    var url = "/api/itemlist.php";
+    if (tag) {
+      url += "?tag="+tag;
+    } else if (owner) {
+      url += "?owner="+owner;
+    }
+    Logger.request(url);
+    CommonController.getJSON(url, callback);
+  },
+
   watch: function(owner, repository, callback) {
     var url = "/api/watch.php?owner="+owner+"&repository="+repository;
     Logger.request(url);

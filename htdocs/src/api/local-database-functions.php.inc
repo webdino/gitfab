@@ -118,11 +118,11 @@ function getItemList($owner, $tag) {
 
   $connection = openConnection();
 
-  $query = "SELECT owner,name,avatar,thumbnail,created,updated FROM repositories";
+  $query = "SELECT R.owner,R.name,R.avatar,R.thumbnail,R.created,R.updated FROM repositories AS R";
   if ($owner) {
-    $query .= " WHERE owner='".$owner."'";
+    $query .= " WHERE R.owner='".$owner."'";
   } else if ($tag) {
-    $query .= " WHERE tag='".$tag."'";
+    $query .= ",tags AS T WHERE T.repository_id=R.id AND T.name='".$tag."'";
   }
   $query .= " ORDER BY updated DESC";
 

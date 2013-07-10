@@ -5,11 +5,14 @@
 var ItemListController = {
   init: function() {
     Logger.on();
-    CommonController.getItemList(ItemListController.loadedItemList);
+    var parameters = CommonController.getParametersFromQuery();
+    CommonController.getItemListFromDatabase(parameters.tag, parameters.owner, ItemListController.loadedItemList);
+//    CommonController.getItemList(ItemListController.loadedItemList);
   },
   
   loadedItemList: function(result, error) {
-    ItemListController.parseItemList(result, error);
+//    ItemListController.parseItemList(result, error);
+    ItemListController.parseItemListOfDatabase(result, error);
     var parameters = CommonController.getParametersFromQuery();
     if (parameters.code) {
       CommonController.authorize(parameters.code, ItemListController.authorized);
@@ -19,6 +22,32 @@ var ItemListController = {
         CommonController.updateUI(ItemListController.user, ItemListController.avatar_url);
       }
       Logger.off();
+    }
+  },
+
+  parseItemListOfDatabase: function(result, error) {
+    if (CommonController.showError(error) == true) return;
+    var ul = $("#item-list");
+    var itemlist = result.itemlist;
+    for (var i = 0, n = itemlist.length; i < n; i++) {
+      var item = itemlist[i];
+      var owner = item.owner;
+      var repository = item.name;
+      var li = $(document.createElement("li"));
+      li.addClass("item");
+      var link = $(document.createElement("a"));
+      var url = CommonController.getItemPageURL(owner, repository);
+      link.attr("href", url);
+
+      var avatar = $(document.createElement("img"));
+      avatar.attr("src", item.avatar);
+      var textContent = $(document.createElement("span"));
+      textContent.text(owner+"/"+repository);
+      link.append(avatar);
+      link.append(textContent);
+      
+      li.append(link);
+      ul.append(li);
     }
   },
   
