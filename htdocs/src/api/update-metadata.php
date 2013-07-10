@@ -12,7 +12,7 @@
     updateRepository($owner, $repository, $oldrepository, $tags, $avatar, $thumbnail);
     $result["ok"] = "ok";
   } catch (Exception $e) {
-    $result["error"] = $e;
+    $result["error"] = $e->getMessage();
   }
 
   echo json_encode($result);

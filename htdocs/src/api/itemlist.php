@@ -7,7 +7,7 @@
   try {
     $result["itemlist"] = getItemList($owner, $tag);
   } catch (Exception $e) {
-    $result["error"] = $e;
+    $result["error"] = $e->getMessage();
   }
 
   echo json_encode($result);

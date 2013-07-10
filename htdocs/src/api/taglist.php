@@ -7,7 +7,7 @@
     $taglist = getTagList($owner);
     $result["taglist"] = $taglist;
   } catch (Exception $e) {
-    $result["error"] = $e;
+    $result["error"] = $e->getMessage();
   }
 
   echo json_encode($result);

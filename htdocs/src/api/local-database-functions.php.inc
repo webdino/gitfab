@@ -5,57 +5,48 @@ function openConnection() {
   $username = $url["user"];
   $password = $url["pass"];
   $db = substr($url["path"],1);
-  $connection = mysql_connect($server, $username, $password);
-  throwError($connection);
-  mysql_select_db($db, $connection);
-  throwError($connection);
+  $dsn = "mysql:dbname=".$db.";host=".$server;
+  $connection = new PDO($dsn, $username, $password);
   return $connection;
 }
 
 function closeConnection($connection) { 
-  mysql_close($connection);
-}
-
-function throwError($connection) {
-  if (mysql_errno($connection)) {
-    throw new Exception("ERROR:".mysql_errno($connection).":".mysql_error($connection));
-  }
 }
 
 function findRepository($owner, $name, $connection) {
-  $query = "SELECT id FROM repositories WHERE owner='".$owner."' AND name='".$name."'";
-  $result = mysql_query($query, $connection);
-  throwError($connection);
+  $query = "SELECT id FROM repositories WHERE owner=? AND name=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($owner, $name));
   $id = -1;
-  if ($row = mysql_fetch_assoc($result)) {
+  if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $id = $row["id"];
   }
-  mysql_free_result($result);
+  $statement->closeCursor();
   return $id;
 }
 
 function newRepository($owner, $name, $connection) {
-  $query = "INSERT INTO repositories(owner,name,created,updated) VALUES ('".$owner."','".$name."',CAST(now() AS DATETIME),CAST(now() AS DATETIME))";
-  mysql_query($query, $connection);
-  throwError($connection);
+  $query = "INSERT INTO repositories(owner,name,created,updated) VALUES (?,?,CAST(now() AS DATETIME),CAST(now() AS DATETIME))";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($owner, $name));
 }
 
 function renameRepository($id, $name, $connection) {
-  $query = "UPDATE repositories SET name='".$name."',updated=CAST(now() AS DATETIME) WHERE id=".$id;
-  mysql_query($query, $connection);
-  throwError($connection);
+  $query = "UPDATE repositories SET name=?,updated=CAST(now() AS DATETIME) WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($name, $id));
 }
 
 function updateRepositoryMeta($id, $avatar, $thumbnail, $connection) {
-  $query = "UPDATE repositories SET avatar='".$avatar."',thumbnail='".$thumbnail."',updated=CAST(now() AS DATETIME) WHERE id=".$id;
-  mysql_query($query, $connection);
-  throwError($connection);
+  $query = "UPDATE repositories SET avatar=?,thumbnail=?,updated=CAST(now() AS DATETIME) WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($avatar, $thumbnail, $id));
 }
 
 function removeTags($id, $connection) {
-  $query = "DELETE FROM tags WHERE repository_id=".$id;
-  mysql_query($query, $connection);
-  throwError($connection);
+  $query = "DELETE FROM tags WHERE repository_id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($id));
 }
 
 function appendTags($id, $tagstring, $connection) {
@@ -75,91 +66,113 @@ function appendTags($id, $tagstring, $connection) {
   }
 
   $query = "INSERT INTO tags(name,repository_id) VALUES ";
+  $parameter = array();
   for ($i = 0; $i < $tagLength; $i++) {
     if ($i != 0) {
       $query .= ",";
     }
     $tag = $tags[$i];
-    $query .= "('".$tag."',".$id.")";
+    $query .= "(?,?)";
+    $parameter[] = $tag;
+    $parameter[] = $id;
   }
-  mysql_query($query, $connection);
-  throwError($connection);
+  $statement = $connection->prepare($query);
+  $statement->execute($parameter);
 }
 
 function updateRepository($owner, $name, $oldname, $tags, $avatar, $thumbnail) {
 
-  $connection = openConnection();
+  try {
+    $connection = openConnection();
+    $connection->beginTransaction();
 
-  $id = -1;
-  $oldname = $oldname != NULL ? trim($oldname) : "";
-  if (strlen($oldname) != 0) {
+    $id = -1;
+    $oldname = $oldname != NULL ? trim($oldname) : "";
+    if (strlen($oldname) != 0) {
     //rename
-    $id = findRepository($owner, $oldname, $connection);
-    renameRepository($id, $name, $connection);
-  } else {
-    $id = findRepository($owner, $name, $connection);
-  }
-  if ($id == -1) {
+      $id = findRepository($owner, $oldname, $connection);
+      renameRepository($id, $name, $connection);
+    } else {
+      $id = findRepository($owner, $name, $connection);
+    }
+    if ($id == -1) {
     //new
-    newRepository($owner, $name, $connection);
-    $id = findRepository($owner, $name, $connection);
-  } else {
+      newRepository($owner, $name, $connection);
+      $id = findRepository($owner, $name, $connection);
+    } else {
     //remove tags
-    removeTags($id, $connection);
+      removeTags($id, $connection);
+    }
+
+    updateRepositoryMeta($id, $avatar, $thumbnail, $connection);
+    appendTags($id, $tags, $connection);
+
+    $connection->commit();
+    closeConnection($connection);
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
   }
-
-  updateRepositoryMeta($id, $avatar, $thumbnail, $connection);
-  appendTags($id, $tags, $connection);
-
-  closeConnection($connection);
 }
 
 function getItemList($owner, $tag) {
+  try {
+    $connection = openConnection();
 
-  $connection = openConnection();
+    $query = "SELECT R.owner,R.name,R.avatar,R.thumbnail,R.created,R.updated FROM repositories AS R";
+    $parameter = array();
+    if ($owner) {
+      $query .= " WHERE R.owner=?";
+      $parameter[] = $owner;
+    } else if ($tag) {
+      $query .= ",tags AS T WHERE T.repository_id=R.id AND T.name=?";
+      $parameter[] = $tag;
+    }
+    $query .= " ORDER BY updated DESC";
+    $statement = $connection->prepare($query);
+    $statement->execute($parameter);
+    $itemlist = array();
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+      $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"created"=>$row["created"],"updated"=>$row["updated"]);
+    }
+    $statement->closeCursor();
 
-  $query = "SELECT R.owner,R.name,R.avatar,R.thumbnail,R.created,R.updated FROM repositories AS R";
-  if ($owner) {
-    $query .= " WHERE R.owner='".$owner."'";
-  } else if ($tag) {
-    $query .= ",tags AS T WHERE T.repository_id=R.id AND T.name='".$tag."'";
+    closeConnection($connection);
+
+    return $itemlist;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
   }
-  $query .= " ORDER BY updated DESC";
-
-  $result = mysql_query($query, $connection);
-  throwError($connection);
-  $itemlist = array();
-  while ($row = mysql_fetch_assoc($result)) {
-    $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"created"=>$row["created"],"updated"=>$row["updated"]);
-  }
-  mysql_free_result($result);
-
-  closeConnection($connection);
-
-  return $itemlist;
 }
 
 function getTagList($owner) {
+  try {
+    $connection = openConnection();
 
-  $connection = openConnection();
+    $query = "SELECT T.name AS tag, COUNT(T.name) AS c FROM tags AS T";
+    $parameter = array();
+    if ($owner) {
+      $query .= " , repositories AS R";
+      $query .= " WHERE T.repository_id=R.id AND R.owner=?";
+      $parameter[] = $owner;
+    }
+    $query .= " GROUP BY T.name";
 
-  $query = "SELECT T.name AS tag, COUNT(T.name) AS c FROM tags AS T";
-  if ($owner) {
-    $query .= " , repositories AS R";
-    $query .= " WHERE T.repository_id=R.id AND R.owner='".$owner."'";
+    $statement = $connection->prepare($query);
+    $statement->execute($parameter);
+    $tags = array();
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+      $tags[] = array("tag"=>$row["tag"], "count"=>intval($row["c"]));
+    }
+    $statement->closeCursor();
+
+    closeConnection($connection);
+
+    return $tags;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
   }
-  $query .= " GROUP BY T.name";
-
-  $result = mysql_query($query, $connection);
-  throwError($connection);
-  $tags = array();
-  while ($row = mysql_fetch_assoc($result)) {
-    $tags[] = array("tag"=>$row["tag"], "count"=>intval($row["c"]));
-  }
-  mysql_free_result($result);
-
-  closeConnection($connection);
-
-  return $tags;
 }
 ?>
