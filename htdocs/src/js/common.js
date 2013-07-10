@@ -51,7 +51,12 @@ var CommonController = {
     var createurl = CommonController.getItemPageURL(username, ":create");
     $("#create").attr("href", createurl);
     $("#create").show();
+    var dashboardurl = CommonController.getDashboardURL(username);
+    $("#dashboard").attr("href", dashboardurl);
+    $("#dashboard").show();
+
     $("#toolbar").show();
+
   },
   
   showError: function(error) {
@@ -88,7 +93,11 @@ var CommonController = {
   getItemPageURL: function(owner, repository) {
     return "/"+owner+"/"+repository+"/";
   },
-  
+
+  getDashboardURL: function(owner) {
+    return "/?owner="+owner;
+  },
+
   getFileURL: function(user, repository, path) {
     return "https://raw.github.com/"+user+"/"+repository+"/master/"+path;
   },

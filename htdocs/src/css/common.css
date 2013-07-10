@@ -37,6 +37,7 @@ header a {
 #sub {
   float: left;
   margin: 24px 0 24px 24px;
+  width: 200px;
 }
 
 #logo {
@@ -53,25 +54,26 @@ header a {
   height: 20px;
 }
 
+#dashboard {
+  display: none;
+}
+
 #create {
   display: none;
-  margin-right: 6px;
-  vertical-align: top;
-  line-height: 20px;
 }
 
 #login {
 }
 
 #login img {
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
   margin-right: 1px;
+  position: relative;
+  top: 2px;
 }
 
 #login span {
-  vertical-align: top;
-  line-height: 20px;
 }
 
 footer {
