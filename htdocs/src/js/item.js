@@ -372,8 +372,8 @@ var ItemController = {
     upload.click(ItemController.kickUpload);
     remove.click(ItemController.remove);
 
-    section.append(content);
     section.append(func);
+    section.append(content);
     
     $("#section-list-ul").append(section);
     return section;

@@ -21,29 +21,29 @@
   </head>
   <body>
     <?php include('header.php.inc'); ?>
-    <?php include('toolbar.php.inc'); ?>
     <div id="contents">
+      <?php include('toolbar.php.inc'); ?>
       <div id="main" role="main">
         <div id="item">
           <section id="tools">
             <a id="fork" href="#">fork</a>
+            <div id="commit-button-container">
+              <button id="commit-button">commit</button>
+            </div>
           </section>
           <section id="meta">
             <div id="owner"></div> / <div id="title"></div>
             <div id="tags"></div>
-            <div id="commit-button-container">
-              <button id="commit-button">commit</button>
-            </div>
           </section>
           <section id="section-list">
             <ul id="section-list-ul"></ul>
           </section>
           <section id="form">
-            <div id="textarea-container">
-              <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
-            </div>
             <div id="upload-container">
               <div id="upload-button" class="button upload"></div>
+            </div>
+            <div id="textarea-container">
+              <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
             </div>
             <input id="upload" name="file" type="file" />
           </section>
@@ -57,7 +57,6 @@
         <div id="child-item-list-label"></div>
         <div id="child-item-list">
         </div>
-        <?php include('taglist.php.inc'); ?>
       </div>
     </div>
     <?php include('footer.php.inc'); ?>

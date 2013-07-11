@@ -115,6 +115,31 @@ function updateRepository($owner, $name, $oldname, $tags, $avatar, $thumbnail) {
   }
 }
 
+function getMetaData($owner, $name) {
+  try {
+    $connection = openConnection();
+
+    $query = "SELECT avatar,thumbnail,created,updated FROM repositories WHERE owner=? AND name=?";
+    $statement = $connection->prepare($query);
+    $statement->execute(array($owner, $name));
+    $result = array();
+    if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+      $result["avatar"] = $row["avatar"];
+      $result["thumbnail"] = $row["thumbnail"];
+      $result["created"] = $row["created"];
+      $result["updated"] = $row["updated"];
+    }
+    $statement->closeCursor();
+
+    closeConnection($connection);
+
+    return $result;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  }
+}
+
 function getItemList($owner, $tag) {
   try {
     $connection = openConnection();

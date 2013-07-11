@@ -1,7 +1,7 @@
 #item {
   background-color: white;
   border: 1px solid gray;
-  padding: 0 0 12px 12px;
+  padding: 0 12px 12px 12px;
 }
 
 #tools {
@@ -15,7 +15,7 @@
 }
 
 #meta {
-  margin: 24px 0 8px 0;
+  margin-bottom: 8px;
 }
 
 #owner {
@@ -48,13 +48,12 @@
 }
 
 #commit-button-container {
+  margin-top: 6px;
   text-align: right;
   display: none;
 }
 
 #commit-button {
-  position: relative;
-  top: -30px;
 }
 
 #section-list-ul {
@@ -64,11 +63,11 @@
 }
 
 .section {
+  border-top: 1px dotted black;
   clear: both;
 }
 
 .content {
-  border-top: 1px dotted black;
   padding-top: 6px;
   padding-bottom: 6px;
   margin-bottom: 6px;
@@ -77,6 +76,7 @@
   color: black;
   display: inline-block;
   pointer-events: none;
+  width: 100%;
 }
 
 .image-container {
@@ -115,6 +115,7 @@
 
 #textarea-container {
   display: inline-block;
+  width: 100%;
 }
 
 #upload-container {
@@ -172,6 +173,7 @@
 
 .editable .content {
   pointer-events: auto;
+  margin-top: -40px;
 }
 
 .editable .section:last-child .content {
@@ -271,19 +273,6 @@ h1 {
   font-size: 10px;
 }
 
-/** ------- static size --------------**/
-#main.editable {
-  width: 500px;
-}
-
-.content {
-  width: 420px;
-}
-
-#textarea-container {
-  width: 420px;
-}
-
 textarea {
-  width: 420px;
+  width: 100%;
 }
