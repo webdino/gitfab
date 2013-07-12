@@ -77,6 +77,8 @@
   display: inline-block;
   pointer-events: none;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .image-container {
@@ -88,6 +90,8 @@
   text-align: center;
   float: right;
   display: none;
+  position: relative;
+  z-index: 2;
 }
 
 .button {
