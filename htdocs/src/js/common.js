@@ -214,42 +214,22 @@ var CommonController = {
     } else if (owner) {
       url += "?owner="+owner;
     }
-    Logger.request(url);
-    CommonController.getJSON(url, callback);
+    CommonController.getLocalJSON(url, callback);
   },
 
   watch: function(owner, repository, callback) {
     var url = "/api/watch.php?owner="+owner+"&repository="+repository;
-    Logger.request(url);
-    CommonController.getJSON(url, function(result, error) {
-      Logger.response(url);
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.message) {
-        callback(null, result.message);
-      } else {
-        callback(result);
-      }
-    });
+    CommonController.getLocalJSON(url, callback);
   },
   
+  getMataData: function(owner, repository, callback) {
+    var url = "/api/metadata.php?owner="+owner+"&repository="+repository;
+    CommonController.getLocalJSON(url, callback);
+  },
+
   updateMetadata: function(owner, repository, oldrepository, tags, avatar, thumbnail, callback) {
     var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags+"&avatar="+avatar+"&thumbnail="+thumbnail;
-    Logger.request(url);
-    CommonController.getJSON(url, function(result, error) {
-      Logger.response(url);
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.message) {
-        callback(null, result.message);
-      } else {
-        callback(result);
-      }
-    });
+    CommonController.getLocalJSON(url, callback);
   },
 
   getTagList: function(owner, callback) {
@@ -257,6 +237,14 @@ var CommonController = {
     if (owner) {
       url += "?owner="+owner;
     }
+    CommonController.getLocalJSON(url, callback);
+  },
+
+  getTagURL: function(tag) {
+    return "/?tag="+tag;
+  },
+
+  getLocalJSON: function(url, callback) {
     Logger.request(url);
     CommonController.getJSON(url, function(result, error) {
       Logger.response(url);
@@ -272,8 +260,40 @@ var CommonController = {
     });
   },
 
-  getTagURL: function(tag) {
-    return "/?tag="+tag;
+  createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS) {
+    var link = $(document.createElement("a"));
+    var url = CommonController.getItemPageURL(ownerS, repositoryS);
+    link.attr("href", url);
+
+    var thumbnail = null;
+    if (thumbnailS == "") {
+      thumbnail = $(document.createElement("div"));
+      thumbnail.addClass("dummy");
+      thumbnail.text("no thumbnail");
+    } else {
+      thumbnail = $(document.createElement("img"));
+      thumbnail.attr("src", thumbnailS);
+    }
+    thumbnail.addClass("thumbnail");
+
+    var avatar = $(document.createElement("img"));
+    avatar.attr("src", avatarS);
+    avatar.addClass("avatar");
+
+    var owner = $(document.createElement("div"));
+    owner.addClass("owner");
+    owner.text(ownerS);
+
+    var repository = $(document.createElement("div"));
+    repository.addClass("repository");
+    repository.text(repositoryS);
+
+    link.append(avatar);
+    link.append(repository);
+    link.append(owner);
+    link.append(thumbnail);
+
+    return link;
   },
 
   getJSON: function(url, callback) {

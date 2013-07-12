@@ -210,67 +210,23 @@ h1 {
 
 /** --------- in sub -----------------**/
 /** temp **/
-#parent-item {
-  border: 1px solid gray;
-  background-color: white;
-  padding-top: 6px;
-}
-
-#parent-item a {
-  text-decoration: none;
-}
-
-#parent-item img {
-  width: 30px;
-  margin-right: 3px;
-}
-
-#parent-item span {
-  height: 30px;
-  line-height: 30px;
-  vertical-align: top;
-}
 
 #parent-item-label {
   font-size: 10px;
 }
 
-#child-item-list {
-  margin-bottom: 10px;
+#parent-item a {
+  color: white;
+  text-decoration: none;
 }
 
 #child-item-list-label {
   font-size: 10px;
 }
 
-.child-item {
-  border: 1px solid gray;
-  background-color: white;
-  padding-top: 6px;
-  padding-left: 2px;
-  margin-top: 6px;
-
-} 
-
 .child-item a {
+  color: white;
   text-decoration: none;
-}
-
-.child-item img {
-  width: 30px;
-  margin-right: 3px;
-}
-
-.child-item span {
-  height: 30px;
-  line-height: 30px;
-  vertical-align: top;
-}
-
-.counter {
-  margin-right: 2px;
-  text-align: right;
-  font-size: 10px;
 }
 
 textarea {

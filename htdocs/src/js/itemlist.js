@@ -33,39 +33,8 @@ var ItemListController = {
       var item = itemlist[i];
       var li = $(document.createElement("li"));
       li.addClass("item");
-      var link = $(document.createElement("a"));
-      var url = CommonController.getItemPageURL(item.owner, item.name);
-      link.attr("href", url);
-
-      var thumbnail = null;
-      if (item.thumbnail == "") {
-        thumbnail = $(document.createElement("div"));
-        thumbnail.addClass("dummy");
-        thumbnail.text("no thumbnail");
-      } else {
-        thumbnail = $(document.createElement("img"));
-        thumbnail.attr("src", item.thumbnail);
-      }
-      thumbnail.addClass("thumbnail");
-
-      var avatar = $(document.createElement("img"));
-      avatar.attr("src", item.avatar);
-      avatar.addClass("avatar");
-
-      var owner = $(document.createElement("div"));
-      owner.addClass("owner");
-      owner.text(item.owner);
-
-      var repository = $(document.createElement("div"));
-      repository.addClass("repository");
-      repository.text(item.name);
-
-      link.append(avatar);
-      link.append(repository);
-      link.append(owner);
-      link.append(thumbnail);
-      
-      li.append(link);
+      var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail);
+      li.append(ui);
       ul.append(li);
     }
   },

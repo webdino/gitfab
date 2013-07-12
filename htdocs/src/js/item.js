@@ -58,19 +58,11 @@ var ItemController = {
   
   loadRepositoryInformation: function() {
     CommonController.getRepositoryInformation(ItemController.owner, ItemController.repository, function(result, error) {
-      //users
-      var userImg = $(document.createElement("img"));
-      userImg.attr("src", result.owner.avatar_url);
-      var userA = $(document.createElement("a"));
-      userA.attr("href", result.owner.html_url);
-      userA.attr("target", "_blank");
-      userA.text(result.owner.login);
-      $("#owner").html("");
-      $("#owner").append(userImg).append(userA);
       //parent
       if (result.parent) {
-        var ui = ItemController.createRepositoryUI(result.parent);
-        $("#parent-item").append(ui);
+        var owner = result.parent.owner.login;
+        var repository = result.parent.name;
+        ItemController.appendRepositoryUITo($("#parent-item"), owner, repository);
         $("#parent-item-label").text("parent item");
       } else {
         $("#parent-item").hide();
@@ -83,16 +75,31 @@ var ItemController = {
       CommonController.getForksInformation(ItemController.owner, ItemController.repository, function(forks, error) {
         for (var i = 0, n = forks.length; i < n; i++) {
           var fork = forks[i];
-          var ui = ItemController.createRepositoryUI(fork);
+          var owner = fork.owner.login;
+          var repository = fork.name;
           var container = $(document.createElement("div"));
           container.addClass("child-item");
-          container.append(ui);
           $("#child-item-list").append(container);
+          ItemController.appendRepositoryUITo(container, owner, repository);
         }
       });
     });
   },
   
+  appendRepositoryUITo: function(container, owner, name) {
+    CommonController.getMataData(owner, name, function(result, error) {
+      if (error) {
+        CommonController.showError(error);
+        return;
+      }
+      var metadata = result.metadata;
+      var avatar = metadata.avatar;
+      var thumbnail = metadata.thumbnail;
+      var ui = CommonController.createRepositoryUI(owner, name, avatar, thumbnail);
+      container.append(ui);
+    });
+  },
+
   createRepositoryUI: function(information) {
     var owner = information.owner.login;
     var repository = information.name;

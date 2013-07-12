@@ -1,6 +1,6 @@
 <?php
   $owner = $_GET["owner"];
-  $name = $_GET["name"];
+  $name = $_GET["repository"];
 
   include('local-database-functions.php.inc');
   $result = array();
