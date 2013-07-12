@@ -9,6 +9,7 @@ var ItemController = {
     ItemController.current_id = 0;
 
     CommonController.setParameters(ItemController);
+    document.title = "gitfab "+ItemController.owner+"/"+ItemController.repository;
 
     if (ItemController.user) {
       CommonController.updateUI(ItemController.user, ItemController.avatar_url);
