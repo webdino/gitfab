@@ -59,6 +59,14 @@ var ItemController = {
   
   loadRepositoryInformation: function() {
     CommonController.getRepositoryInformation(ItemController.owner, ItemController.repository, function(result, error) {
+
+      var userName = $(document.createElement("span"));
+      userName.text(result.owner.login);
+      var userImg = $(document.createElement("img"));
+      userImg.attr("src", result.owner.avatar_url);
+      $("#owner").html("");
+      $("#owner").append(userImg).append(userName);    
+
       //parent
       if (result.parent) {
         var owner = result.parent.owner.login;
@@ -101,22 +109,6 @@ var ItemController = {
     });
   },
 
-  createRepositoryUI: function(information) {
-    var owner = information.owner.login;
-    var repository = information.name;
-    var linker = $(document.createElement("a"));
-    linker.attr("href", CommonController.getItemPageURL(owner, repository));
-    var parentImg = $(document.createElement("img"));
-    parentImg.attr("src", information.owner.avatar_url);
-    var parentRepository = $(document.createElement("span"));
-    parentRepository.text(owner+"/"+repository);
-    var counter = $(document.createElement("div"));
-    counter.text("fork:"+information.forks_count+" like:0");
-    counter.addClass("counter");
-    linker.append(parentImg).append(parentRepository).append(counter);
-    return linker;
-  },
-  
   setEditable: function() {
     //reusable elements
     ItemController.reusable_input = $(document.createElement("input"));
@@ -139,7 +131,6 @@ var ItemController = {
     var title = ItemController.repository;
     var tags = lines[1].substring("## ".length);
     var owner = ItemController.owner ? ItemController.owner : ItemController.user;
-    $("#owner").html("");
     var userName = $(document.createElement("span"));
     userName.text(owner);
     $("#owner").append(userName);
@@ -259,7 +250,9 @@ var ItemController = {
       ItemController.upload_target = $(target);
     }
     var file = this.files[0];
-    var url = URL.createObjectURL(file);
+
+    var urlObject = window.URL ? window.URL : window.webkitURL;
+    var url = urlObject.createObjectURL(file);
     if (file.type.match(/image.*/)) {
       text += "!["+file.name+"]("+url+")";
     } else {
@@ -414,13 +407,16 @@ var ItemController = {
   
   updateMetadata: function(callback) {
     var tags = $("#tags").text();
-    var avatar = $("#owner img").attr("src");
+    var avatar = $("#login img").attr("src");
     var resources = $(".content img,.content video");
     var thumbnail = "";
     for (var i = 0, n = resources.length; i < n; i++) {
       var resource = resources[i];
       if (resource.tagName.toUpperCase() == "IMG") {
-        thumbnail = resource.getAttribute("src");
+        thumbnail = resource.getAttribute("fileurl");
+        if (!thumbnail) {
+          thumbnail = resource.getAttribute("src");
+        }
         break;
       }
       var poster = resource.getAttribute("poster");
@@ -459,6 +455,7 @@ var ItemController = {
         //replace url
         var fileURL = CommonController.getFileURL(ItemController.user, ItemController.repository, MATERIALS+"/"+file.name);
         text = text.replace(key, fileURL);
+        $("img[src='"+key+"']").attr("fileurl", fileURL);
       }
       content.markdown = text;
       content.files = {};
