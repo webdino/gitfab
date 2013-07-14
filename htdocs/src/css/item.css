@@ -47,13 +47,11 @@
   top: -2px;
 }
 
-#commit-button-container {
-  margin-top: 6px;
-  text-align: right;
-  display: none;
+#fork-button {
 }
 
 #commit-button {
+  display: none;
 }
 
 #section-list-ul {
@@ -68,17 +66,11 @@
 }
 
 .content {
-  padding-top: 6px;
-  padding-bottom: 6px;
-  margin-bottom: 6px;
   cursor: default;
   text-decoration: none;
   color: black;
-  display: inline-block;
   pointer-events: none;
   width: 100%;
-  position: relative;
-  z-index: 1;
 }
 
 .image-container {
@@ -86,18 +78,14 @@
 }
 
 .function {
-  width: 60px;
-  text-align: center;
-  float: right;
   display: none;
-  position: relative;
-  z-index: 2;
+  text-align: right;
 }
 
 .button {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 26px;
+  height: 26px;
   margin: 0 3px;
   cursor: pointer;
   display: none;
@@ -123,17 +111,11 @@
 }
 
 #upload-container {
-  float: right;
-  width: 60px;
-  text-align: center;
+  text-align: right;
 }
 
 .right {
   text-align: right;
-}
-
-#send-button {
-  margin-top: 3px;
 }
 
 #upload {
@@ -159,8 +141,12 @@
 .editable #item {
 }
 
-.editable #fork {
+.editable #fork-button {
   display: none;
+}
+
+.editable #commit-button {
+  display: inline-block;
 }
 
 .editable #title {
@@ -171,16 +157,11 @@
   cursor: pointer;
 }
 
-.editable #commit-button-container {
-  display: block;
-}
-
 .editable .content {
   pointer-events: auto;
-  margin-top: -40px;
 }
 
-.editable .section:last-child .content {
+.editable .section:last-child {
   border-bottom: 1px dotted black;
   margin-bottom: 24px;
 }
@@ -199,14 +180,13 @@
 
 /** -------- in markdown ----------- **/
 .content img {
-  width: 200px;
+  max-width: 100%;
   pointer-events: auto;
 }
 
 .content a {
   pointer-events: auto;
 }
-
 
 h1 {
   color: #ff1493;

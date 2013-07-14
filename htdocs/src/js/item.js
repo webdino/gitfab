@@ -28,13 +28,12 @@ var ItemController = {
       }
     } else if (ItemController.repository) {
       ItemController.loadGitfabDocument(false);
-      
       if (!ItemController.user) {
-        $("#fork").click(function() {
+        $("#fork-button").click(function() {
           alert("please login");
         });
       } else {
-        $("#fork").click(function () {
+        $("#fork-button").click(function () {
           ItemController.fork();
         });
       }
@@ -373,8 +372,8 @@ var ItemController = {
     upload.click(ItemController.kickUpload);
     remove.click(ItemController.remove);
 
-    section.append(func);
     section.append(content);
+    section.append(func);
     
     $("#section-list-ul").append(section);
     return section;

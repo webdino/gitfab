@@ -26,10 +26,8 @@
       <div id="main" role="main">
         <div id="item">
           <section id="tools">
-            <a id="fork" href="#">fork</a>
-            <div id="commit-button-container">
-              <button id="commit-button">commit</button>
-            </div>
+            <button id="fork-button">fork</button>
+            <button id="commit-button">commit</button>
           </section>
           <section id="meta">
             <div id="owner"></div> / <div id="title"></div>
@@ -39,11 +37,11 @@
             <ul id="section-list-ul"></ul>
           </section>
           <section id="form">
-            <div id="upload-container">
-              <div id="upload-button" class="button upload"></div>
-            </div>
             <div id="textarea-container">
               <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
+            </div>
+            <div id="upload-container">
+              <div id="upload-button" class="button upload"></div>
             </div>
             <input id="upload" name="file" type="file" />
           </section>
