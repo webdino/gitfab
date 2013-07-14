@@ -127,7 +127,7 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
-  commit: function(user, repository, token, path, content, message, tree, callback) {
+  commit: function(token, user, repository, path, content, message, tree, callback) {
     var parameters = {
       path: path,
       message: message,
@@ -144,7 +144,7 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
 
-  fork: function(owner, repository, token, callback) {
+  fork: function(token, owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/forks";
     CommonController.ajaxGithub(url, "POST", token, {}, callback);
   },
@@ -163,6 +163,17 @@ var CommonController = {
       name: name,
     };
     CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
+  },
+
+  deleteRepository: function(token, user, name, callback) {
+    var url = "https://api.github.com/repos/"+user+"/"+name;
+    CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
+      if (error) {
+        callback(null, error);
+        return;
+      }
+      CommonController.updateMetadata(user, "", name, "", "", "", callback);
+    });
   },
 
   ajaxGithub: function(url, method, token, parameters, callback) {

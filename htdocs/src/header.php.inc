@@ -5,6 +5,6 @@
 <div id="menus">
   <a id="dashboard">dashboard | </a>
   <a id="create">create a item | </a>
-  <a id="login" href="https://github.com/login/oauth/authorize?client_id=<?php echo getenv("CLIENT_ID"); ?>&scope=repo">login</a>
+  <a id="login" href="https://github.com/login/oauth/authorize?client_id=<?php echo getenv("CLIENT_ID"); ?>&scope=repo,delete_repo">login</a>
 </div>
 </header>

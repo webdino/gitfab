@@ -15,6 +15,7 @@
 }
 
 #meta {
+  clear: both;
   margin-bottom: 8px;
 }
 
@@ -51,6 +52,10 @@
 }
 
 #commit-button {
+  display: none;
+}
+
+#delete-button {
   display: none;
 }
 
@@ -141,8 +146,18 @@
 .editable #item {
 }
 
+.editable #tools {
+  margin-bottom: 2px;
+}
+
 .editable #fork-button {
   display: none;
+}
+
+.editable #delete-button {
+  display: inline-block;
+  float: left;
+  margin-left: -1px;
 }
 
 .editable #commit-button {

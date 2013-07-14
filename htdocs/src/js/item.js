@@ -117,6 +117,8 @@ var ItemController = {
     $("#append-button").click(ItemController.append);
     $("#upload-button").click(ItemController.appendViaUpload);
     $("#commit-button").click(ItemController.commit);
+    $("#delete-button").click(ItemController.deleteRepository);
+
     $("#upload").change(ItemController.upload);
     $("#title").click(ItemController.editTitle);
     $("#tags").click(ItemController.editTags);
@@ -466,7 +468,7 @@ var ItemController = {
   },
 
   commitChain: function(path, content, message, tree, filemap) {
-    CommonController.commit(ItemController.user, ItemController.repository, ItemController.token, path, content, message, tree, function() {
+    CommonController.commit(ItemController.token, ItemController.user, ItemController.repository, path, content, message, tree, function() {
       var file = null;
       for (var key in filemap) {
         file = filemap[key];
@@ -522,9 +524,27 @@ var ItemController = {
     });
   },
   
+  deleteRepository: function() {
+    if (!window.confirm("are you sure to remove this item?")) {
+      return;
+    }
+    Logger.on();
+    CommonController.deleteRepository(ItemController.token, ItemController.owner, ItemController.repository, function(result, error) {
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
+      Logger.log("reload:/");
+      setTimeout(function() {
+        window.location.href = "/";
+        Logger.off();
+      }, 500);
+    });
+  },
+
   fork: function() {
     Logger.on();
-    CommonController.fork(ItemController.owner, ItemController.repository, ItemController.token, function(result, error) {
+    CommonController.fork(ItemController.token, ItemController.owner, ItemController.repository, function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;

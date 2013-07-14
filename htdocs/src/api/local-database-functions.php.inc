@@ -37,6 +37,15 @@ function renameRepository($id, $name, $connection) {
   $statement->execute(array($name, $id));
 }
 
+function deleteRepository($id, $connection) {
+  $query = "DELETE FROM tags WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($id));
+  $query = "DELETE FROM repositories WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($id));
+}
+
 function updateRepositoryMeta($id, $avatar, $thumbnail, $connection) {
   $query = "UPDATE repositories SET avatar=?,thumbnail=?,updated=CAST(now() AS DATETIME) WHERE id=?";
   $statement = $connection->prepare($query);
@@ -88,10 +97,14 @@ function updateRepository($owner, $name, $oldname, $tags, $avatar, $thumbnail) {
 
     $id = -1;
     $oldname = $oldname != NULL ? trim($oldname) : "";
+    $name = $name != NULL ? trim($name) : "";
     if (strlen($oldname) != 0) {
-    //rename
       $id = findRepository($owner, $oldname, $connection);
-      renameRepository($id, $name, $connection);
+      if (strlen($name) != 0) {
+        renameRepository($id, $name, $connection);
+      } else {
+        deleteRepository($id, $connection);
+      }
     } else {
       $id = findRepository($owner, $name, $connection);
     }
