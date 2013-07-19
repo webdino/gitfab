@@ -168,6 +168,8 @@ var ItemController = {
     target.unbind("click", ItemController.editTextContent);
     
     var text = target.get(0).markdown;
+    var areaHeight = window.innerHeight < target.height() ? window.innerHeight : target.height();
+    ItemController.reusable_textarea.height(areaHeight);
     ItemController.reusable_textarea.val(text);
     target.empty();
     target.append(ItemController.reusable_textarea);
