@@ -6,13 +6,7 @@ var ItemListController = {
   init: function() {
     Logger.on();
     var parameters = CommonController.getParametersFromQuery();
-    var tag = parameters.tag;
-    var owner = parameters.owner;
-    if (tag) {
-      document.title = "gitfab tag:"+tag;
-    } else if (owner) {
-      document.title = "gitfab owner:"+owner;
-    }
+    document.title = "gitfab"+(parameters.QueryString ? "/?"+parameters.QueryString : "");
     ItemListController.parameters = parameters;
     CommonController.getItemListFromDatabase(parameters.tag, parameters.owner, ItemListController.loadedItemList);
   },

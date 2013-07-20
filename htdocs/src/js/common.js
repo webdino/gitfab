@@ -18,6 +18,7 @@ var CommonController = {
         var keyvalue = param.split("=");
         parameters[keyvalue[0]] = keyvalue[1];
       }
+      parameters["QueryString"] = queryString;
     }
     return parameters;
   },
