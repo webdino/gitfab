@@ -21,8 +21,8 @@
   </head>
   <body>
     <?php include('header.php.inc'); ?>
+    <?php include('toolbar.php.inc'); ?>
     <div id="contents">
-      <?php include('toolbar.php.inc'); ?>
       <div id="main" role="main">
         <div id="item">
           <section id="tools">

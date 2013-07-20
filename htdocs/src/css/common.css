@@ -50,10 +50,15 @@ header a {
 #menus {
   float: right;
   font-size: 12px;
-  height: 40px;
-  line-height: 40px;
   margin-top: -3px;
   margin-right: 3px;
+}
+
+#searchbox {
+  display: inline-block;
+  margin-right: 10px;
+  line-height: 36px;
+  float: right;
 }
 
 #dashboard {
@@ -64,12 +69,21 @@ header a {
   display: none;
 }
 
+#login {
+  line-height:40px;
+}
+
+#login-text {
+  position: relative;
+  top: 3px;
+}
+
 #login img {
   width: 28px;
   height: 28px;
   position: relative;
-  top: 10px;
-  right: 2px;
+  top: 9px;
+  right: 3px;
 }
 
 footer {
@@ -83,13 +97,12 @@ footer {
 
 #toolbar {
   display: none;
-  /*
   text-align: center;
-  background-color: #333;
+  background-color: black;
+  color: white;
   height: 30px;
   line-height: 30px;
-  color: white;
-  */
+  clear: both;
 }
 
 #toolbar a {

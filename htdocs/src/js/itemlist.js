@@ -13,14 +13,63 @@ var ItemListController = {
     } else if (owner) {
       document.title = "gitfab owner:"+owner;
     }
+    ItemListController.parameters = parameters;
     CommonController.getItemListFromDatabase(parameters.tag, parameters.owner, ItemListController.loadedItemList);
-//    CommonController.getItemList(ItemListController.loadedItemList);
   },
   
   loadedItemList: function(result, error) {
-//    ItemListController.parseItemList(result, error);
-    ItemListController.parseItemListOfDatabase(result, error);
-    var parameters = CommonController.getParametersFromQuery();
+    if (CommonController.showError(error) != true) {
+      if (result.itemlist.length == 0) {
+        if (ItemListController.parameters.tag) {
+          CommonController.getTagList(null, ItemListController.loadedTagList);
+          return;
+        }
+      } else {
+        ItemListController.parseItemList(result);
+      }
+    }
+    ItemListController.postLoadItemList();      
+  },
+
+  parseItemList: function(result) {
+    var ul = $("#item-list");
+    var itemlist = result.itemlist;
+    var length = itemlist.length;
+    for (var i = 0; i < length; i++) {
+      var item = itemlist[i];
+      var li = $(document.createElement("li"));
+      li.addClass("item");
+      var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail);
+      li.append(ui);
+      ul.append(li);
+    }
+  },
+  
+  loadedTagList: function(result, error) {
+    if (CommonController.showError(error) != true) {
+      var taglist = result.taglist;
+      var container = $("#item-list");
+      var title = $(document.createElement("div"));
+      title.text("item not found. please select from following tags.");
+      title.attr("id", "tag-title");
+      container.append(title);
+      var defaultFontSize = 30;
+      for (var i = 0, n = taglist.length; i < n; i++) {
+        var tagResult = taglist[i];
+        var element = $(document.createElement("a"));
+        element.text(tagResult.tag);
+        element.css("font-size", defaultFontSize+"px");
+        element.addClass("tag");
+        var url = CommonController.getTagURL(tagResult.tag);
+        element.attr("href", url);
+        container.append(element);
+      }
+    }
+    ItemListController.postLoadItemList();      
+  },
+
+  postLoadItemList: function() {
+    var parameters = ItemListController.parameters;
     if (parameters.code) {
       CommonController.authorize(parameters.code, ItemListController.authorized);
     } else {
@@ -32,47 +81,7 @@ var ItemListController = {
     }
   },
 
-  parseItemListOfDatabase: function(result, error) {
-    if (CommonController.showError(error) == true) return;
-    var ul = $("#item-list");
-    var itemlist = result.itemlist;
-    for (var i = 0, n = itemlist.length; i < n; i++) {
-      var item = itemlist[i];
-      var li = $(document.createElement("li"));
-      li.addClass("item");
-      var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail);
-      li.append(ui);
-      ul.append(li);
-    }
-  },
-  
-  parseItemList: function(itemlist, error) {
-    if (CommonController.showError(error) == true) return;
-    var ul = $("#item-list");
-    for (var i = 0, n = itemlist.length; i < n; i++) {
-      var item = itemlist[i];
-      var owner = item.owner.login;
-      var repository = item.name;
-      var li = $(document.createElement("li"));
-      li.addClass("item");
-      var link = $(document.createElement("a"));
-      var url = CommonController.getItemPageURL(owner, repository);
-      link.attr("href", url);
-
-      var avatar = $(document.createElement("img"));
-      avatar.attr("src", item.owner.avatar_url);
-      var textContent = $(document.createElement("span"));
-      textContent.text(item.full_name);
-      link.append(avatar);
-      link.append(textContent);
-      
-      li.append(link);
-      ul.append(li);
-    }
-  },
-  
   authorized: function(result, error) {
-  console.log(result);
     Logger.off();
     if (CommonController.showError(error) == true) return;
     CommonController.updateUI(result.user, result.avatar_url);

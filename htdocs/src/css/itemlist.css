@@ -13,3 +13,12 @@
   color: white;
   margin-bottom: 12px;
 }
+
+#tag-title {
+  text-align: center;
+}
+
+.tag {
+  margin: 0 10px;
+  float: left;
+}
