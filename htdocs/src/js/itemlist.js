@@ -8,7 +8,11 @@ var ItemListController = {
     var parameters = CommonController.getParametersFromQuery();
     document.title = "gitfab"+(parameters.QueryString ? "/?"+parameters.QueryString : "");
     ItemListController.parameters = parameters;
-    CommonController.getItemListFromDatabase(parameters.tag, parameters.owner, ItemListController.loadedItemList);
+    if (parameters.tag != null && parameters.tag.length == 0) {
+      CommonController.getTagList(null, ItemListController.loadedTagList);
+    } else {
+      CommonController.getItemListFromDatabase(parameters.tag, parameters.owner, ItemListController.loadedItemList);
+    }
   },
   
   loadedItemList: function(result, error) {
