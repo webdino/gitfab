@@ -24,12 +24,12 @@
     <?php include('toolbar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
+        <section id="tools">
+          <button id="fork-button">fork</button>
+          <button id="delete-button">delete</button>
+          <button id="commit-button">commit</button>
+        </section>
         <div id="item">
-          <section id="tools">
-            <button id="fork-button">fork</button>
-            <button id="delete-button">delete</button>
-            <button id="commit-button">commit</button>
-          </section>
           <section id="meta">
             <div id="owner"></div> / <div id="title"></div>
             <div id="tags"></div>

@@ -1,12 +1,21 @@
-#item {
-  background-color: white;
-  border: 1px solid gray;
-  padding: 0 12px 12px 12px;
+#main {
+  margin: 30px 0;
 }
 
 #tools {
   text-align: right;
   font-size: 10px;
+  background-color: gray;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: #333;
+  padding: 4px 0 2px 0;
+}
+
+#item {
+  background-color: white;
+  border: 1px solid #333;
+  padding: 12px;
 }
 
 #fork {
@@ -49,14 +58,19 @@
 }
 
 #fork-button {
+  color: blue;
+  cursor: pointer;
 }
 
 #commit-button {
   display: none;
+  cursor: pointer;
 }
 
 #delete-button {
   display: none;
+  color: red;
+  cursor: pointer;
 }
 
 #section-list-ul {
@@ -147,7 +161,6 @@
 }
 
 .editable #tools {
-  margin-bottom: 2px;
 }
 
 .editable #fork-button {
@@ -156,8 +169,6 @@
 
 .editable #delete-button {
   display: inline-block;
-  float: left;
-  margin-left: -1px;
 }
 
 .editable #commit-button {
