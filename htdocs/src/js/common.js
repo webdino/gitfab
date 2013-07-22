@@ -2,7 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var MATERIALS = "gitfab";
+var GITFAB_DIR = "gitfab";
+var MATERIALS = GITFAB_DIR+"/resources";
 var MAIN_DOCUMENT = "README.md";
 
 var CommonController = {
