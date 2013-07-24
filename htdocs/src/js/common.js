@@ -309,7 +309,7 @@ var CommonController = {
     });
   },
 
-  createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS) {
+  createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS, tagsA) {
     var link = $(document.createElement("a"));
     var url = CommonController.getItemPageURL(ownerS, repositoryS);
     link.attr("href", url);
@@ -329,17 +329,41 @@ var CommonController = {
     avatar.attr("src", avatarS);
     avatar.addClass("avatar");
 
+    var headline = $(document.createElement("div"));
+    headline.addClass("headline");
+
     var owner = $(document.createElement("div"));
     owner.addClass("owner");
-    owner.text(ownerS);
+    var ownera = $(document.createElement("a"));
+    ownera.text(ownerS);
+    ownera.attr("href", CommonController.getDashboardURL(ownerS));
+    owner.append(ownera);
+
+    var splitter = $(document.createElement("div"));
+    splitter.addClass("splitter");
+    splitter.text("/");
 
     var repository = $(document.createElement("div"));
     repository.addClass("repository");
     repository.text(repositoryS);
 
+    var tags = $(document.createElement("div"));
+    tags.addClass("tags");
+    for (var i = 0, n = tagsA.length; i < n; i++) {
+      var tagS = tagsA[i];
+      var a = $(document.createElement("a"));
+      a.text(tagS);
+      var url = CommonController.getTagURL(tagS);
+      a.attr("href", url);
+      tags.append(a);
+    }
+
+    headline.append(owner);
+    headline.append(splitter);
+    headline.append(repository);
     link.append(avatar);
-    link.append(repository);
-    link.append(owner);
+    link.append(headline);
+    link.append(tags);
     link.append(thumbnail);
 
     return link;

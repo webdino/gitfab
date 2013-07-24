@@ -132,7 +132,7 @@ function getMetaData($owner, $name) {
   try {
     $connection = openConnection();
 
-    $query = "SELECT avatar,thumbnail,created,updated FROM repositories WHERE owner=? AND name=?";
+    $query = "SELECT id,avatar,thumbnail,created,updated FROM repositories WHERE owner=? AND name=?";
     $statement = $connection->prepare($query);
     $statement->execute(array($owner, $name));
     $result = array();
@@ -141,6 +141,17 @@ function getMetaData($owner, $name) {
       $result["thumbnail"] = $row["thumbnail"];
       $result["created"] = $row["created"];
       $result["updated"] = $row["updated"];
+
+      $query4tags = "SELECT name FROM tags WHERE repository_id=?";
+      $param4tags = array($row["id"]);
+      $statement4tags = $connection->prepare($query4tags);
+      $statement4tags->execute($param4tags);
+      $tags = array();
+      while ($row4tags = $statement4tags->fetch(PDO::FETCH_ASSOC)) {
+        $tags[] = $row4tags["name"];
+      }
+      $statement4tags->closeCursor();
+      $result["tags"] = $tags;
     }
     $statement->closeCursor();
 
@@ -157,7 +168,9 @@ function getItemList($owner, $tag) {
   try {
     $connection = openConnection();
 
-    $query = "SELECT R.owner,R.name,R.avatar,R.thumbnail,R.created,R.updated FROM repositories AS R";
+    $query = "SELECT R.id,R.owner,R.name,R.avatar,R.thumbnail,R.created,R.updated FROM repositories AS R";
+    $query4tags = "SELECT name FROM tags WHERE repository_id=?";
+
     $parameter = array();
     if ($owner) {
       $query .= " WHERE R.owner=?";
@@ -171,7 +184,16 @@ function getItemList($owner, $tag) {
     $statement->execute($parameter);
     $itemlist = array();
     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-      $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"created"=>$row["created"],"updated"=>$row["updated"]);
+      $param4tags = array($row["id"]);
+      $statement4tags = $connection->prepare($query4tags);
+      $statement4tags->execute($param4tags);
+      $tags = array();
+      while ($row4tags = $statement4tags->fetch(PDO::FETCH_ASSOC)) {
+        $tags[] = $row4tags["name"];
+      }
+      $statement4tags->closeCursor();
+
+      $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"created"=>$row["created"],"updated"=>$row["updated"], "tags"=>$tags);
     }
     $statement->closeCursor();
 

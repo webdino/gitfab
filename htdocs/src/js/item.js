@@ -50,18 +50,6 @@ var ItemController = {
       ItemController.setEditable();
     }
     ItemController.loadRepositoryInformation();
-    /*
-    Logger.on();
-    CommonController.getGitfabDocumentViaProxy(ItemController.owner, ItemController.repository, function(gitfabDocument, error) {
-      Logger.off();
-      if (CommonController.showError(error) == true) return;
-      ItemController.parseGitFabDocument(gitfabDocument);
-      if (isEditable == true) {
-        ItemController.setEditable();
-      }
-      ItemController.loadRepositoryInformation();
-    });
-*/
   },
   
   loadRepositoryInformation: function() {
@@ -95,6 +83,7 @@ var ItemController = {
           var repository = fork.name;
           var container = $(document.createElement("div"));
           container.addClass("child-item");
+          container.addClass("item");
           $("#child-item-list").append(container);
           ItemController.appendRepositoryUITo(container, owner, repository);
         }
@@ -111,7 +100,8 @@ var ItemController = {
       var metadata = result.metadata;
       var avatar = metadata.avatar;
       var thumbnail = metadata.thumbnail;
-      var ui = CommonController.createRepositoryUI(owner, name, avatar, thumbnail);
+      var tags = metadata.tags;
+      var ui = CommonController.createRepositoryUI(owner, name, avatar, thumbnail, tags);
       container.append(ui);
     });
   },

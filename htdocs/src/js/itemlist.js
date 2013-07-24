@@ -37,7 +37,7 @@ var ItemListController = {
       var item = itemlist[i];
       var li = $(document.createElement("li"));
       li.addClass("item");
-      var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail);
+      var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail, item.tags);
       li.append(ui);
       ul.append(li);
     }

@@ -118,6 +118,17 @@ footer {
   text-align: center;
 }
 
+.item {
+  clear: both;
+  list-style-type: none;
+}
+
+.item a {
+  text-decoration: none;
+  color: white;
+  margin-bottom: 12px;
+}
+
 .avatar {
   border: 1px solid white;
   float: left;
@@ -130,22 +141,54 @@ footer {
   left: 5px;
 }
 
-.owner {
+.headline {
   float: left;
   position: relative;
   z-index: 2;
+  font-size: 20px;
   width: 80%;
+  top: 8px;
   left: 16px;
-  top: 10px;
-  font-size: 12px;  
+}
+
+.owner {
+  display: inline-block;
+}
+
+.owner a:hover{
+  color: #ff1493;
+}
+
+.splitter {
+  display: inline-block;
 }
 
 .repository {
+  display: inline-block;
+}
+
+.repository:hover {
+  color: #ff1493;
+}
+
+.tags {
   float: left;
   position: relative;
   z-index: 2;
   width: 80%;
+  top: 10px;
   left: 16px;
-  top: 8px;
-  font-size: 20px;
+  font-size: 12px;
+}
+
+.tags a:after {
+  content: ", ";
+}
+
+.tags a:last-child:after {
+  content: "";
+}
+
+.tags a:hover {
+  color: #ff1493;
 }

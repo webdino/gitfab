@@ -7,17 +7,6 @@
   margin: 0;
 }
 
-.item {
-  clear: both;
-  list-style-type: none;
-}
-
-.item a {
-  text-decoration: none;
-  color: white;
-  margin-bottom: 12px;
-}
-
 #tag-title {
   text-align: center;
 }

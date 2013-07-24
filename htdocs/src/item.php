@@ -57,7 +57,7 @@
       </div>
       <div id="sub">
         <div id="parent-item-label"></div>
-        <div id="parent-item">
+        <div id="parent-item" class="item">
         </div>
         <hr/>
         <div id="child-item-list-label"></div>

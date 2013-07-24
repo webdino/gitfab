@@ -246,18 +246,8 @@ h1 {
   font-size: 10px;
 }
 
-#parent-item a {
-  color: white;
-  text-decoration: none;
-}
-
 #child-item-list-label {
   font-size: 10px;
-}
-
-.child-item a {
-  color: white;
-  text-decoration: none;
 }
 
 textarea {
