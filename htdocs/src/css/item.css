@@ -28,27 +28,51 @@
 }
 
 #meta {
-  margin-bottom: 8px;
+  height: 65px;
+}
+
+#avatar {
+  border: 1px solid white;
+  float: left;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  top: 5px;
+  left: 5px;
+}
+
+#headline {
+  float: left;
+  position: relative;
+  font-size: 20px;
+  width: 80%;
+  top: 8px;
+  left: 16px;
 }
 
 #owner {
   display: inline-block;
 }
 
-#owner img {
-  width: 50px;
-  height: 50px;
-  margin-right: 8px;
-}
-
-#title {
+#repository {
   display: inline-block;
 }
 
+#repository #reusable_input {
+  height: 20px;
+  font-size: 20px;
+  width: 80%;
+}
+
+
 #tags {
-  font-size: 10px;
-  height: 10px;
-  margin-top: 16px;
+  float: left;
+  position: relative;
+  width: 80%;
+  top: 10px;
+  left: 16px;
+  font-size: 12px;
 }
 
 #tags:before {
@@ -56,9 +80,15 @@
 }
 
 #tags.editing {
-  position: relative;
-  top: -2px;
+  top: 8px;
 }
+
+#tags #reusable_input {
+  height: 12px;
+  font-size: 12px;
+  width: 80%;
+}
+
 
 #fork-button {
   color: blue;
@@ -144,15 +174,6 @@
   display: none;
 }
 
-#reusable_input.title {
-  height: 10px;
-}
-
-#reusable_input.tags {
-  height: 10px;
-  font-size: 10px;
-}
-
 #reusable_textarea {
   position: relative;
   top: 10px;
@@ -187,7 +208,7 @@
   display: inline-block;
 }
 
-.editable #title {
+.editable #repository {
   cursor: pointer;
 }
 

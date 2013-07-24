@@ -20,7 +20,7 @@ var ItemController = {
         //new repository
         ItemController.repository = null;
         $("#owner").text(ItemController.user);
-        $("#title").text("input-your-repository-name");
+        $("#repository").text("input-your-repository-name");
         ItemController.setEditable();
       } else {
         //update repository
@@ -54,13 +54,8 @@ var ItemController = {
   
   loadRepositoryInformation: function() {
     CommonController.getRepositoryInformation(ItemController.owner, ItemController.repository, function(result, error) {
-
-      var userName = $(document.createElement("span"));
-      userName.text(result.owner.login);
-      var userImg = $(document.createElement("img"));
-      userImg.attr("src", result.owner.avatar_url);
-      $("#owner").html("");
-      $("#owner").append(userImg).append(userName);    
+      //user's icon
+      $("#avatar").attr("src", result.owner.avatar_url);
 
       //parent
       if (result.parent) {
@@ -118,7 +113,7 @@ var ItemController = {
     $("#delete-button").click(ItemController.deleteRepository);
 
     $("#upload").change(ItemController.upload);
-    $("#title").click(ItemController.editTitle);
+    $("#repository").click(ItemController.editTitle);
     $("#tags").click(ItemController.editTags);
     $("#customize-css span").click(ItemController.customizeCSS);
     $("#main").addClass("editable");
@@ -136,7 +131,7 @@ var ItemController = {
     var userName = $(document.createElement("span"));
     userName.text(owner);
     $("#owner").append(userName);
-    $("#title").text(title);
+    $("#repository").text(title);
     $("#tags").text(tags);
     var text;
     for (var i = 4, n = lines.length; i < n; i++) {
@@ -192,13 +187,12 @@ var ItemController = {
   },
   
   editTitle: function(e) {
-    var title = $("#title");
+    var title = $("#repository");
     title.unbind("click", ItemController.editTitle);
     var text = title.text();
     title.empty();
     title.addClass("editing");
     ItemController.reusable_input.val(text);
-    ItemController.reusable_input.addClass("title");
     ItemController.reusable_input.change(ItemController.commitTitle);
     ItemController.reusable_input.blur(ItemController.commitTitle);
     title.append(ItemController.reusable_input);
@@ -207,11 +201,10 @@ var ItemController = {
   
   commitTitle: function(e) {
     var text = ItemController.reusable_input.val();
-    var title = $("#title");
+    var title = $("#repository");
     title.text(text);
     title.removeClass("editing");
     title.click(ItemController.editTitle);
-    ItemController.reusable_input.removeClass("title");
     ItemController.reusable_input.unbind("change", ItemController.commitTitle);
     ItemController.reusable_input.unbind("blur", ItemController.commitTitle);
   },
@@ -223,7 +216,6 @@ var ItemController = {
     tags.empty();
     tags.addClass("editing");
     ItemController.reusable_input.val(text);
-    ItemController.reusable_input.addClass("tags");
     ItemController.reusable_input.change(ItemController.commitTags);
     ItemController.reusable_input.blur(ItemController.commitTags);
     tags.append(ItemController.reusable_input);
@@ -235,7 +227,6 @@ var ItemController = {
     tags.text(text);
     tags.removeClass("editing");
     tags.click(ItemController.editTags);
-    ItemController.reusable_input.removeClass("tags");
     ItemController.reusable_input.unbind("change", ItemController.commitTags);
     ItemController.reusable_input.unbind("blur", ItemController.commitTags);
   },
@@ -386,7 +377,7 @@ var ItemController = {
   commit: function(e) {
     //このタイトルのリポジトリを作成あるいはアップデート
     Logger.on();
-    var repository = $("#title").text();
+    var repository = $("#repository").text();
     ItemController.oldrepository = "";
     if (!ItemController.repository) {
       //new

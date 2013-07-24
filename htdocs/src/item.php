@@ -33,10 +33,19 @@
           <button id="commit-button">commit</button>
         </section>
         <div id="item">
+          <div id="customize-css"><span>customize css</span></div>
           <section id="meta">
-            <div id="customize-css"><span>customize css</span></div>
+            <img id="avatar">
+            <div id="headline">
+              <div id="owner"></div>
+               / 
+              <div id="repository"></div>
+            </div>
+            <div id="tags"></div>
+<!--
             <div id="owner"></div> / <div id="title"></div>
             <div id="tags"></div>
+-->
           </section>
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
           <section id="gitfab-document"><?php include('./api/gitfab-document.php'); ?></section>
