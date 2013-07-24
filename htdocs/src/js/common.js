@@ -5,6 +5,7 @@
 var GITFAB_DIR = "gitfab";
 var MATERIALS = GITFAB_DIR+"/resources";
 var MAIN_DOCUMENT = "README.md";
+var CUSTOM_CSS = GITFAB_DIR+"/custom.css";
 
 var CommonController = {
   getParametersFromQuery: function() {
@@ -109,6 +110,11 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
+  getCustomCSS: function(owner, repository, callback) {
+    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/contents/"+CUSTOM_CSS+"?callback=?";
+    CommonController.getGithubJSON(url, callback);
+  },
+
   getOwnerInformation: function(owner, callback) {
     var url = "https://api.github.com/users/"+owner+"?callback=?";
     CommonController.getGithubJSON(url, callback);
@@ -125,7 +131,7 @@ var CommonController = {
   },
   
   getSHATree: function(user, repository, callback) {
-    var url = "https://api.github.com/repos/"+user+"/"+repository+"/git/trees/master?recursive=1&callback=?";
+    var url = "https://api.github.com/repos/"+user+"/"+repository+"/git/trees/master?recursive=2&callback=?";
     CommonController.getGithubJSON(url, callback);
   },
   
@@ -194,6 +200,12 @@ var CommonController = {
       },
       error: function(request, textStatus, errorThrown){
         Logger.error(url);
+        if (textStatus) {
+          Logger.error(textStatus);
+        }
+        if (errorThrown) {
+          Logger.error(errorThrown);
+        }
         var response = JSON.parse(request.responseText);
         if (response.errors && response.errors[0] && response.errors[0].message) {
           callback(null, response.errors[0].message);
@@ -256,6 +268,18 @@ var CommonController = {
   getTagURL: function(tag) {
     return "/?tag="+tag;
   },
+
+  getCSSTemplate: function(callback) {
+    var url = "/css/customize-template.css";
+    Logger.request(url);
+    $.get(url, function(result) {
+      Logger.response(url);
+      callback(result);
+    })
+    .error(function(xhr, textStatus, errorThrown) {
+      callback(null, textStatus+":"+xhr.responseText);
+    })
+  },  
 
   getLocalJSON: function(url, callback) {
     Logger.request(url);

@@ -9,6 +9,9 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/item.css" type="text/css">
+<?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
+    <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
+<?php } ?>
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/showdown.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
@@ -31,6 +34,7 @@
         </section>
         <div id="item">
           <section id="meta">
+            <div id="customize-css"><span>customize css</span></div>
             <div id="owner"></div> / <div id="title"></div>
             <div id="tags"></div>
           </section>

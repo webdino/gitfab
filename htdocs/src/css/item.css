@@ -24,7 +24,6 @@
 }
 
 #meta {
-  clear: both;
   margin-bottom: 8px;
 }
 
@@ -156,6 +155,15 @@
   left: -2px;
 }
 
+#customize-css {
+  display: none;
+  margin-bottom: 12px;
+}
+
+#customize-css span {
+  cursor: pointer;
+  color: blue;
+}
 /** -------- editable -------------- **/
 .editable #item {
 }
@@ -201,6 +209,10 @@
 }
 
 .editable #form {
+  display: block;
+}
+
+.editable #customize-css {
   display: block;
 }
 

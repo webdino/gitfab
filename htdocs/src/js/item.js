@@ -122,6 +122,7 @@ var ItemController = {
     $("#upload").change(ItemController.upload);
     $("#title").click(ItemController.editTitle);
     $("#tags").click(ItemController.editTags);
+    $("#customize-css span").click(ItemController.customizeCSS);
     $("#main").addClass("editable");
   },
   
@@ -470,7 +471,11 @@ var ItemController = {
   },
 
   commitChain: function(path, content, message, tree, filemap) {
-    CommonController.commit(ItemController.token, ItemController.user, ItemController.repository, path, content, message, tree, function() {
+    CommonController.commit(ItemController.token, ItemController.user, ItemController.repository, path, content, message, tree, function(result, error) {
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
       var file = null;
       for (var key in filemap) {
         file = filemap[key];
@@ -479,8 +484,14 @@ var ItemController = {
       }
       if (!file) {
         ItemController.updateMetadata(function() {
-          //done
-          Logger.off();
+          if (ItemController.css) {
+            CommonController.commit(ItemController.token, ItemController.user, ItemController.repository, CUSTOM_CSS, ItemController.base64.encodeStringAsUTF8(ItemController.css), "", tree, function(result, error) {
+              CommonController.showError(error);
+              Logger.off();
+            });
+          } else {
+            Logger.off();
+          }
         });
         return;
       }
@@ -571,7 +582,58 @@ var ItemController = {
   
   encode4html: function(text) {
     return ItemController.markdownParser.makeHtml(text);
+  },
+
+  customizeCSS: function(e) {
+    var target = $("#customize-css span");
+    target.unbind("click", ItemController.customizeCSS);
+    var areaHeight = window.innerHeight;
+    ItemController.reusable_textarea.height(areaHeight);
+    ItemController.reusable_textarea.val("");
+    var parent = target.parent();
+    parent.append(ItemController.reusable_textarea);
+    ItemController.reusable_textarea.focus();
+    ItemController.reusable_textarea.blur(ItemController.applyCSS);
+
+    if (ItemController.css) {
+      ItemController.reusable_textarea.val(ItemController.css);
+    } else {
+      Logger.on();
+      CommonController.getCustomCSS(ItemController.owner, ItemController.repository, function(result, error) {
+        if (error) {
+          Logger.log(error);
+          CommonController.getCSSTemplate(function(result, error) {
+            if (CommonController.showError(error) == true) return;
+            ItemController.reusable_textarea.val(result);
+            Logger.off();
+          });
+        } else {
+          var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+          ItemController.reusable_textarea.val(content);
+          Logger.off();
+        }
+      });
+    }
+  },
+
+  applyCSS: function(e) {
+    var target = $("#customize-css span");
+    target.click(ItemController.customizeCSS);
+    ItemController.reusable_textarea.unbind("blur", ItemController.applyCSS);
+    ItemController.reusable_textarea.remove();
+    var cssContent = ItemController.reusable_textarea.val();
+    var ID = "customecss";
+    var stylesheet = $("#"+ID);
+    if (stylesheet.length == 0) {
+      stylesheet = $(document.createElement("style"));
+      stylesheet.attr("type", "text/css");
+      stylesheet.attr("id", ID);
+      document.body.appendChild(stylesheet.get(0));
+    }
+    stylesheet.text(cssContent);
+    ItemController.css = cssContent;
   }
+
 };
 
 $(document).ready(function() {
