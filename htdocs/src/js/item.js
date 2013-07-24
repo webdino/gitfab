@@ -155,15 +155,16 @@ var ItemController = {
   },
   
   editTextContent: function(e) {
+    var tagname = e.originalEvent.target.tagName;
+    if (tagname == "A" || tagname == "VIDEO") {
+      return;
+    }
+    e.preventDefault();
     if (!ItemController.user) {
-      e.preventDefault();
       return;
     }
+    e.preventDefault();
     var currentTarget = e.currentTarget;
-    var originalTarget = e.originalEvent.target;
-    if (originalTarget.tagName == "A" && originalTarget != currentTarget) {
-      return;
-    }
     
     var target = $(currentTarget);
     target.unbind("click", ItemController.editTextContent);
@@ -179,7 +180,6 @@ var ItemController = {
 
     //この属性があると、textarea をクリックした場合でも blur イベントが発生してしまう。
     target.removeAttr("draggable");
-    target.removeAttr("href");
   },
   
   commitTextContent: function(e) {
@@ -189,7 +189,6 @@ var ItemController = {
     target.click(ItemController.editTextContent);
     ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
     target.attr("draggable", "true");
-    target.attr("href", "#");
   },
   
   editTitle: function(e) {
@@ -317,6 +316,7 @@ var ItemController = {
     var dataTransfer = e.originalEvent.dataTransfer;
     var sourceid = dataTransfer.getData('text/plain');
     if (targetid == sourceid) {
+      e.preventDefault();
       return;
     }
     e.stopPropagation();
@@ -356,7 +356,6 @@ var ItemController = {
 
     var content = $(document.createElement("a"));
     content.attr("draggable", "true");
-    content.attr("href", "#");
     content.addClass("content");
     content.bind('dragstart', ItemController.dragStart);
     content.bind('dragover', ItemController.dragOver);
@@ -442,7 +441,7 @@ var ItemController = {
     userDocument += "\n";
     userDocument += "## "+$("#tags").text();
     userDocument += "\n";
-    userDocument += "This document is for [gitfab](http://gitfab.org)";
+    userDocument += "This document is made by [gitfab](http://gitfab.org)";
     userDocument += "\n";
     userDocument += "---";
     userDocument += "\n";

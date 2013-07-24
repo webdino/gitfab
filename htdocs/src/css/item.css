@@ -87,8 +87,8 @@
   cursor: default;
   text-decoration: none;
   color: black;
-  pointer-events: none;
   width: 100%;
+  pointer-events: none;
 }
 
 .image-container {
@@ -217,6 +217,11 @@
 }
 
 /** -------- in markdown ----------- **/
+.content video {
+  max-width: 100%;
+  pointer-events: auto;
+}
+
 .content img {
   max-width: 100%;
   pointer-events: auto;
