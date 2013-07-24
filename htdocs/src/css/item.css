@@ -18,6 +18,10 @@
   padding: 12px;
 }
 
+#gitfab-document {
+  display: none;
+}
+
 #fork {
   margin-right: 6px;
   text-decoration: none;

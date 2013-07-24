@@ -44,6 +44,13 @@ var ItemController = {
   },
   
   loadGitfabDocument: function(isEditable) {
+    var gitfabDocument = document.getElementById("gitfab-document").innerHTML;
+    ItemController.parseGitFabDocument(gitfabDocument);
+    if (isEditable == true) {
+      ItemController.setEditable();
+    }
+    ItemController.loadRepositoryInformation();
+    /*
     Logger.on();
     CommonController.getGitfabDocumentViaProxy(ItemController.owner, ItemController.repository, function(gitfabDocument, error) {
       Logger.off();
@@ -54,6 +61,7 @@ var ItemController = {
       }
       ItemController.loadRepositoryInformation();
     });
+*/
   },
   
   loadRepositoryInformation: function() {
@@ -127,8 +135,8 @@ var ItemController = {
   },
   
   parseGitFabDocument: function(result) {
-    //via proxy
     var content = result;
+    //from github api
 //    var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
