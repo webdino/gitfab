@@ -281,6 +281,18 @@ var CommonController = {
     })
   },  
 
+  getGitfabDocumentViaProxy: function(owner, repository, callback) {
+    var url = "/api/gitfab-document.php?owner="+owner+"&repository="+repository;
+    Logger.request(url);
+    $.get(url, function(result) {
+      Logger.response(url);
+      callback(result);
+    })
+    .error(function(xhr, textStatus, errorThrown) {
+      callback(null, textStatus+":"+xhr.responseText);
+    })
+  },
+
   getLocalJSON: function(url, callback) {
     Logger.request(url);
     CommonController.getJSON(url, function(result, error) {

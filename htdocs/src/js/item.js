@@ -45,7 +45,7 @@ var ItemController = {
   
   loadGitfabDocument: function(isEditable) {
     Logger.on();
-    CommonController.getGitfabDocument(ItemController.owner, ItemController.repository, function(gitfabDocument, error) {
+    CommonController.getGitfabDocumentViaProxy(ItemController.owner, ItemController.repository, function(gitfabDocument, error) {
       Logger.off();
       if (CommonController.showError(error) == true) return;
       ItemController.parseGitFabDocument(gitfabDocument);
@@ -127,7 +127,9 @@ var ItemController = {
   },
   
   parseGitFabDocument: function(result) {
-    var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+    //via proxy
+    var content = result;
+//    var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
     var title = ItemController.repository;
