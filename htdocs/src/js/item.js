@@ -19,6 +19,7 @@ var ItemController = {
       if (ItemController.repository == ":create") {
         //new repository
         ItemController.repository = null;
+        $("#avatar").attr("src", ItemController.avatar_url);
         $("#owner").text(ItemController.user);
         $("#repository").text("input-your-repository-name");
         ItemController.setEditable();
@@ -259,6 +260,8 @@ var ItemController = {
       target.files = {};
     }
     target.files[url] = file;
+
+    ItemController.updateIndex();
   },
   
   updatesection: function(text, target) {
@@ -337,6 +340,8 @@ var ItemController = {
     var text = textarea.val();
     ItemController.append2dom(text);
     textarea.val("");
+
+    ItemController.updateIndex();
   },
 
   appendViaUpload: function(e) {
