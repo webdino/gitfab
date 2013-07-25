@@ -347,23 +347,26 @@ var CommonController = {
     repository.addClass("repository");
     repository.text(repositoryS);
 
-    var tags = $(document.createElement("div"));
-    tags.addClass("tags");
-    for (var i = 0, n = tagsA.length; i < n; i++) {
-      var tagS = tagsA[i];
-      var a = $(document.createElement("a"));
-      a.text(tagS);
-      var url = CommonController.getTagURL(tagS);
-      a.attr("href", url);
-      tags.append(a);
-    }
-
     headline.append(owner);
     headline.append(splitter);
     headline.append(repository);
     link.append(avatar);
     link.append(headline);
-    link.append(tags);
+
+    if (tagsA) {
+      var tags = $(document.createElement("div"));
+      tags.addClass("tags");
+      for (var i = 0, n = tagsA.length; i < n; i++) {
+        var tagS = tagsA[i];
+        var a = $(document.createElement("a"));
+        a.text(tagS);
+        var url = CommonController.getTagURL(tagS);
+        a.attr("href", url);
+        tags.append(a);
+      }
+      link.append(tags);
+    }
+
     link.append(thumbnail);
 
     return link;

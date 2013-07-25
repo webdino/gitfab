@@ -89,7 +89,6 @@
   width: 80%;
 }
 
-
 #fork-button {
   color: blue;
   cursor: pointer;
@@ -104,6 +103,22 @@
   display: none;
   color: red;
   cursor: pointer;
+}
+
+#index {
+  clear: both;
+  border-top: 1px dotted black;
+}
+
+#index h1{
+  margin-bottom: 0px;
+}
+
+#index ul{
+  margin-top: 0px;
+}
+
+#index a{
 }
 
 #section-list-ul {

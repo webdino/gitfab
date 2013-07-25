@@ -147,6 +147,7 @@ var ItemController = {
         text = line;
       }
     }
+    ItemController.updateIndex();
   },
   
   editTextContent: function(e) {
@@ -221,6 +222,7 @@ var ItemController = {
     tags.append(ItemController.reusable_input);
     ItemController.reusable_input.focus();
   },
+
   commitTags: function(e) {
     var text = ItemController.reusable_input.val();
     var tags = $("#tags");
@@ -622,6 +624,22 @@ var ItemController = {
     }
     stylesheet.text(cssContent);
     ItemController.css = cssContent;
+  },
+
+  updateIndex: function() {
+    var container = $("#index ul");
+    container.empty();
+    //find heading
+    var headings = $(".content h1");
+    for (var i = 0, n = headings.length; i < n; i++) {
+      var h1 = headings.get(i);
+      var li = $(document.createElement("li"));
+      var a = $(document.createElement("a"));
+      a.attr("href", "#"+i);
+      a.text(h1.textContent);
+      li.append(a);
+      container.append(li);
+    }
   }
 
 };
