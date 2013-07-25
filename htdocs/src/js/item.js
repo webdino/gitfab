@@ -326,6 +326,9 @@ var ItemController = {
     } else {
       target.after(source);
     }
+
+    ItemController.updateIndex();
+
     return false;
   },
   

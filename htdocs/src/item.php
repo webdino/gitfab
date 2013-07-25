@@ -42,10 +42,10 @@
               <div id="repository"></div>
             </div>
             <div id="tags"></div>
-<!--
-            <div id="owner"></div> / <div id="title"></div>
-            <div id="tags"></div>
--->
+          </section>
+          <section id="index">
+            <h1>index</h1>
+            <ul></ul>
           </section>
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
           <section id="gitfab-document"><?php include('./api/gitfab-document.php'); ?></section>
