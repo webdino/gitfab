@@ -260,8 +260,6 @@ var ItemController = {
       target.files = {};
     }
     target.files[url] = file;
-
-    ItemController.updateIndex();
   },
   
   updatesection: function(text, target) {
@@ -269,6 +267,7 @@ var ItemController = {
     var html = ItemController.encode4html(text);
     target.html(html);
     target.find("a").attr("target", "_blank");
+    ItemController.updateIndex();
   },
   
   kickUpload: function(e) {
