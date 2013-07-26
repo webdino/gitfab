@@ -108,6 +108,14 @@ var ItemController = {
     ItemController.reusable_input.attr("id", "reusable_input");
     ItemController.reusable_textarea = $(document.createElement("textarea"));
     ItemController.reusable_textarea.attr("id", "reusable_textarea");
+    //
+    var buttoncontainer = $(document.createElement("div"));
+    var button = $(document.createElement("button"));
+    button.text("apply");
+    buttoncontainer.attr("id", "reusable_applybutton");
+    buttoncontainer.append(button);
+    ItemController.reusable_applybutton = buttoncontainer;
+
     $("#append-button").click(ItemController.append);
     $("#upload-button").click(ItemController.appendViaUpload);
     $("#commit-button").click(ItemController.commit);
@@ -116,7 +124,7 @@ var ItemController = {
     $("#upload").change(ItemController.upload);
     $("#repository").click(ItemController.editTitle);
     $("#tags").click(ItemController.editTags);
-    $("#customize-css span").click(ItemController.customizeCSS);
+    $("#customize-css .text-button").click(ItemController.customizeCSS);
     $("#main").addClass("editable");
   },
   
@@ -152,38 +160,25 @@ var ItemController = {
   },
   
   editTextContent: function(e) {
-    var tagname = e.originalEvent.target.tagName;
-    if (tagname == "A" || tagname == "VIDEO") {
-      return;
-    }
     e.preventDefault();
-    if (!ItemController.user) {
-      return;
-    }
-    e.preventDefault();
-    var currentTarget = e.currentTarget;
-    
-    var target = $(currentTarget);
-    target.unbind("click", ItemController.editTextContent);
-    
+
+    var target = $(e.currentTarget.parentNode.parentNode).find(".content");
     var text = target.get(0).markdown;
-    var areaHeight = window.innerHeight < target.height() ? window.innerHeight : target.height();
-    ItemController.reusable_textarea.height(areaHeight);
     ItemController.reusable_textarea.val(text);
     target.empty();
-    target.append(ItemController.reusable_textarea);
+    target.append(ItemController.reusable_textarea);    
     ItemController.reusable_textarea.focus();
     ItemController.reusable_textarea.blur(ItemController.commitTextContent);
-
     //この属性があると、textarea をクリックした場合でも blur イベントが発生してしまう。
     target.removeAttr("draggable");
+
+    target.append(ItemController.reusable_applybutton);
   },
   
   commitTextContent: function(e) {
     var text = ItemController.reusable_textarea.val();
     var target = ItemController.reusable_textarea.parent();
     ItemController.updatesection(text, target);
-    target.click(ItemController.editTextContent);
     ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
     target.attr("draggable", "true");
   },
@@ -285,6 +280,9 @@ var ItemController = {
   },
   
   remove: function(e) {
+    if (!window.confirm("are you sure to remove this section?")) {
+      return;
+    }
     var target = $(e.currentTarget.parentNode.parentNode);
     target.remove();
   },
@@ -360,24 +358,30 @@ var ItemController = {
     content.bind('dragstart', ItemController.dragStart);
     content.bind('dragover', ItemController.dragOver);
     content.bind('drop', ItemController.dropEnd);
-    content.click(ItemController.editTextContent);
     ItemController.updatesection(text, content);
     
     var func = $(document.createElement("div"));
     func.addClass("function");
+
+    var edit = $(document.createElement("div"));
+    edit.text("edit");
+    edit.addClass("text-button");
     var upload = $(document.createElement("div"));
-    upload.addClass("button");
-    upload.addClass("upload");
+    upload.text("upload");
+    upload.addClass("text-button");
     var remove = $(document.createElement("div"));
-    remove.addClass("button");
-    remove.addClass("remove");
-    func.append(upload);
-    func.append(remove);
+    remove.text("remove");
+    remove.addClass("text-button");
+    edit.click(ItemController.editTextContent);
     upload.click(ItemController.kickUpload);
     remove.click(ItemController.remove);
 
-    section.append(content);
+    func.append(edit);
+    func.append(upload);
+    func.append(remove);
+
     section.append(func);
+    section.append(content);
     
     $("#section-list-ul").append(section);
     return section;
@@ -584,15 +588,12 @@ var ItemController = {
   },
 
   customizeCSS: function(e) {
-    var target = $("#customize-css span");
-    target.unbind("click", ItemController.customizeCSS);
-    var areaHeight = window.innerHeight;
-    ItemController.reusable_textarea.height(areaHeight);
-    ItemController.reusable_textarea.val("");
+    var target = $("#customize-css .text-button");
     var parent = target.parent();
     parent.append(ItemController.reusable_textarea);
     ItemController.reusable_textarea.focus();
     ItemController.reusable_textarea.blur(ItemController.applyCSS);
+    parent.append(ItemController.reusable_applybutton);
 
     if (ItemController.css) {
       ItemController.reusable_textarea.val(ItemController.css);
@@ -616,10 +617,10 @@ var ItemController = {
   },
 
   applyCSS: function(e) {
-    var target = $("#customize-css span");
-    target.click(ItemController.customizeCSS);
     ItemController.reusable_textarea.unbind("blur", ItemController.applyCSS);
     ItemController.reusable_textarea.remove();
+    ItemController.reusable_applybutton.remove();
+
     var cssContent = ItemController.reusable_textarea.val();
     var ID = "customecss";
     var stylesheet = $("#"+ID);

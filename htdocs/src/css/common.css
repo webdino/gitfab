@@ -201,3 +201,9 @@ footer {
 .tags a:hover {
   color: #ff1493;
 }
+
+.text-button {
+  color: blue;
+  cursor: pointer;
+  display: inline-block;
+}

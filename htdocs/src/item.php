@@ -12,6 +12,7 @@
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
+    <link rel="stylesheet" href="/css/editor.css" type="text/css">
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/showdown.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
@@ -33,7 +34,7 @@
           <button id="commit-button">commit</button>
         </section>
         <div id="item">
-          <div id="customize-css"><span>customize css</span></div>
+          <div id="customize-css"><div class="text-button">customize css</div></div>
           <section id="meta">
             <img id="avatar">
             <div id="headline">
@@ -58,7 +59,7 @@
               <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
             </div>
             <div id="upload-container">
-              <div id="upload-button" class="button upload"></div>
+              <button id="upload-button">file upload</button>
             </div>
             <input id="upload" name="file" type="file" />
           </section>

@@ -147,8 +147,14 @@
 .function {
   display: none;
   text-align: right;
+  font-size: 10px;
 }
 
+.function .text-button {
+  margin-left: 6px;
+}
+
+/*
 .button {
   display: inline-block;
   width: 26px;
@@ -167,6 +173,7 @@
   background: url(../images/upload.png) no-repeat;
   background-size: contain;
 }
+*/
 
 #form {
   display: none;
@@ -190,9 +197,10 @@
 }
 
 #reusable_textarea {
-  position: relative;
-  top: 10px;
-  left: -2px;
+}
+
+#reusable_applybutton {
+  text-align: right;
 }
 
 #customize-css {
@@ -200,10 +208,6 @@
   margin-bottom: 12px;
 }
 
-#customize-css span {
-  cursor: pointer;
-  color: blue;
-}
 /** -------- editable -------------- **/
 .editable #item {
 }
@@ -288,4 +292,5 @@ h1 {
 
 textarea {
   width: 100%;
+  height: 10em;
 }
