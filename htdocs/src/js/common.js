@@ -339,19 +339,17 @@ var CommonController = {
     ownera.attr("href", CommonController.getDashboardURL(ownerS));
     owner.append(ownera);
 
-    var splitter = $(document.createElement("div"));
-    splitter.addClass("splitter");
-    splitter.text("/");
+//    var splitter = $(document.createElement("div"));
+//    splitter.addClass("splitter");
+//    splitter.text("/");
 
     var repository = $(document.createElement("div"));
     repository.addClass("repository");
     repository.text(repositoryS);
 
-    headline.append(owner);
-    headline.append(splitter);
     headline.append(repository);
-    link.append(avatar);
-    link.append(headline);
+    headline.append(owner);
+//    headline.append(splitter);
 
     if (tagsA) {
       var tags = $(document.createElement("div"));
@@ -364,9 +362,11 @@ var CommonController = {
         a.attr("href", url);
         tags.append(a);
       }
-      link.append(tags);
+      headline.append(tags);
     }
 
+    link.append(avatar);
+    link.append(headline);
     link.append(thumbnail);
 
     return link;

@@ -3,20 +3,27 @@
   src: url("../fonts/FabFont.ttf");
 }
 
+@font-face {
+  font-family: "Open Sans Light";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/OpenSans-Light-webfont.woff");
+}
+
 body {
   padding: 0;
   margin: 0;
   background-color: #eee;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans Light', sans-serif;
   font-weight: 400;
 }
 
 input {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans Light', sans-serif;
 }
 
 textarea {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans Light', sans-serif;
 }
 
 header {
@@ -91,9 +98,26 @@ footer {
   clear: both;
   border-top: 1px solid gray;
   background-color: white;
-  height: 60px;
-  padding-top: 20px;
   text-align: center;
+  line-height: 100px;
+}
+
+footer a {
+  text-decoration: none;
+  color: black;
+}
+
+#gitfab-logo {
+  position: relative;
+  top: 18px;
+  margin-right: 20px;
+}
+
+#gitfab-logo div {
+  display: inline-block;
+  width: 170px;
+  height: 62px;
+  background: url(/images/gitFAB.png) no-repeat;
 }
 
 #toolbar {
@@ -130,50 +154,51 @@ footer {
 .item {
   clear: both;
   list-style-type: none;
+/*  text-shadow: 1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray; */
 }
 
 .item a {
   text-decoration: none;
   color: white;
-  margin-bottom: 12px;
 }
 
 .avatar {
   border: 1px solid white;
   float: left;
   padding: 0;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   position: relative;
   z-index: 2;
-  top: 5px;
-  left: 5px;
+  top: 22px;
+  left: 10px;
 }
 
 .headline {
   float: left;
   position: relative;
   z-index: 2;
-  font-size: 20px;
   width: 80%;
-  top: 8px;
-  left: 16px;
+  top: 18px;
+  left: 22px;
 }
 
 .owner {
-  display: inline-block;
+  font-size: 12px;
+  position: relative;
+  top: 5px;
+}
+
+.owner:before {
+  content: "by ";
 }
 
 .owner a:hover{
   color: #ff1493;
 }
 
-.splitter {
-  display: inline-block;
-}
-
 .repository {
-  display: inline-block;
+  font-size: 22px;
 }
 
 .repository:hover {
@@ -181,13 +206,15 @@ footer {
 }
 
 .tags {
-  float: left;
-  position: relative;
   z-index: 2;
   width: 80%;
-  top: 10px;
-  left: 16px;
   font-size: 12px;
+  position: relative;
+  top: 4px;
+}
+
+.tags:before {
+  content: "tags: ";
 }
 
 .tags a:after {

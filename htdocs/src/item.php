@@ -5,8 +5,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title data-l10n-id="title">gitfab</title>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <title data-l10n-id="title">gitFAB</title>
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/item.css" type="text/css">
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>

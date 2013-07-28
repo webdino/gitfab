@@ -1,7 +1,7 @@
 <header>
-<div id="logo">
-  <a href="/">gitfab</a>
-</div>
+<a href="/">
+  <div id="logo">gitFAB</div>
+</a>
 <div id="menus">
   <a id="login" href="https://github.com/login/oauth/authorize?client_id=<?php echo getenv("CLIENT_ID"); ?>&scope=repo,delete_repo"><span id="login-text">login</span></a>
 </div>
