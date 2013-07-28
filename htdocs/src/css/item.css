@@ -130,6 +130,7 @@
 .section {
   border-top: 1px dotted black;
   clear: both;
+  font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro",メイリオ,Meiryo,Verdana,"ＭＳ Ｐゴシック","MS PGothic","VL Pゴシック","Takao Pゴシック","IPA Pゴシック",'Open Sans Light',sans-serif
 }
 
 .content {
