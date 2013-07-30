@@ -90,6 +90,11 @@
   width: 80%;
 }
 
+#slide-button {
+  color: blue;
+  cursor: pointer;
+}
+
 #fork-button {
   color: blue;
   cursor: pointer;
@@ -98,6 +103,7 @@
 #commit-button {
   display: none;
   cursor: pointer;
+  color: blue;
 }
 
 #delete-button {

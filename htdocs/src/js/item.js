@@ -42,6 +42,9 @@ var ItemController = {
       //not found
       $("#item").text("item not found");
     }
+
+    $("#slide-button").click(ItemController.slideshow);
+
   },
   
   loadGitfabDocument: function(isEditable) {
@@ -412,9 +415,7 @@ var ItemController = {
     CommonController.getSHATree(ItemController.user, ItemController.repository, ItemController.commitDocument);
   },
   
-  updateMetadata: function(callback) {
-    var tags = $("#tags").text();
-    var avatar = $("#login img").attr("src");
+  findThumbnail: function() {
     var resources = $(".content img,.content video");
     var thumbnail = "";
     for (var i = 0, n = resources.length; i < n; i++) {
@@ -432,6 +433,13 @@ var ItemController = {
         break;
       }
     }
+    return thumbnail; 
+  },
+
+  updateMetadata: function(callback) {
+    var tags = $("#tags").text();
+    var avatar = $("#login img").attr("src");
+    var thumbnail = ItemController.findThumbnail();
     CommonController.updateMetadata(ItemController.user, ItemController.repository, ItemController.oldrepository, tags, avatar, thumbnail, callback);
   },
 
@@ -648,8 +656,30 @@ var ItemController = {
       li.append(a);
       container.append(li);
     }
-  }
+  },
 
+  slideshow: function() {
+    var contentlist = [];
+
+    var meta = $(document.getElementById("meta").cloneNode(true));
+    var thumbnail = ItemController.findThumbnail();
+    meta.css("background-image", "url("+thumbnail+")");
+    var index = $(document.getElementById("index").cloneNode(true));
+    contentlist.push(meta.get(0));
+    contentlist.push(index.get(0));
+    //contents
+    var contents = $(".content");
+    for (var i = 0, n = contents.length; i < n; i++) {
+      var content = contents.get(i);
+      var element = $(document.createElement("section"));
+      element.addClass("content");
+      element.html(content.innerHTML);
+      contentlist.push(element.get(0));
+    }
+
+    Slide.setContentList(contentlist);
+    Slide.show();
+  }
 };
 
 $(document).ready(function() {

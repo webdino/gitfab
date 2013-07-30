@@ -11,7 +11,6 @@
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
-    <link rel="stylesheet" href="/css/editor.css" type="text/css">
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/showdown.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
@@ -28,6 +27,7 @@
     <div id="contents">
       <div id="main" role="main">
         <section id="tools">
+          <button id="slide-button">slide show</button>
           <button id="fork-button">fork</button>
           <button id="delete-button">delete</button>
           <button id="commit-button">commit</button>
@@ -76,5 +76,6 @@
     </div>
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>
+    <?php include('slide.php.inc'); ?>
   </body>
 </html>
