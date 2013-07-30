@@ -28,6 +28,7 @@
 }
 
 #meta {
+  font-family: Helvetica,sans-serif;
   height: 80px;
 }
 
@@ -35,8 +36,8 @@
   border: 1px solid white;
   float: left;
   padding: 0;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   position: relative;
   top: 5px;
   left: 5px;
@@ -45,10 +46,11 @@
 #headline {
   float: left;
   position: relative;
-  font-size: 20px;
+  font-size: 26px;
   width: 80%;
-  top: 8px;
+  top: 18px;
   left: 16px;
+  height: 24px;
 }
 
 #owner {
@@ -60,8 +62,8 @@
 }
 
 #repository #reusable_input {
-  height: 20px;
-  font-size: 20px;
+  height: 26px;
+  font-size: 26px;
   width: 80%;
 }
 
@@ -70,9 +72,9 @@
   float: left;
   position: relative;
   width: 80%;
-  top: 10px;
+  top: 28px;
   left: 16px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 #tags:before {
@@ -80,12 +82,11 @@
 }
 
 #tags.editing {
-  top: 8px;
 }
 
 #tags #reusable_input {
-  height: 12px;
-  font-size: 12px;
+  height: 14px;
+  font-size: 14px;
   width: 80%;
 }
 
@@ -108,7 +109,7 @@
 #index {
   clear: both;
   border-top: 1px dotted black;
-  font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro",メイリオ,Meiryo,Verdana,"ＭＳ Ｐゴシック","MS PGothic","VL Pゴシック","Takao Pゴシック","IPA Pゴシック",'Open Sans Light',sans-serif
+  font-family: Helvetica,sans-serif;
 }
 
 #index h1{
@@ -139,7 +140,7 @@
   color: black;
   width: 100%;
   pointer-events: none;
-  font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro",メイリオ,Meiryo,Verdana,"ＭＳ Ｐゴシック","MS PGothic","VL Pゴシック","Takao Pゴシック","IPA Pゴシック",'Open Sans Light',sans-serif
+  font-family: Helvetica,sans-serif;
 }
 
 .image-container {
