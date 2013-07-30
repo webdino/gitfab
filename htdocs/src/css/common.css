@@ -94,23 +94,29 @@ header a {
   right: 3px;
 }
 
+#help {
+  float: right;
+  line-height:40px;
+  font-size: 20px;
+  margin-left: 5px;
+}
+
 footer {
   clear: both;
   border-top: 1px solid gray;
   background-color: white;
   text-align: center;
-  line-height: 100px;
 }
 
 footer a {
   text-decoration: none;
-  color: black;
 }
 
 #gitfab-logo {
   position: relative;
   top: 18px;
   margin-right: 20px;
+  line-height: 100px;
 }
 
 #gitfab-logo div {
@@ -118,6 +124,22 @@ footer a {
   width: 170px;
   height: 62px;
   background: url(/images/gitFAB.png) no-repeat;
+}
+
+#contributers {
+  display: inline-block;
+  margin-right: 15px;
+  line-height: 100px;
+}
+
+#contributers a {
+  color: black;
+}
+
+#bottom {
+  display: inline-block;
+  margin-right: 15px;
+  line-height: 100px;
 }
 
 #toolbar {

@@ -8,9 +8,14 @@
   curl_setopt($ch, CURLOPT_HTTPGET, 1);
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_FAILONERROR, true);
   curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER["HTTP_USER_AGENT"]);
   $contents = curl_exec($ch);
-  curl_close($ch);
 
-  echo $contents;
+  if(curl_errno($ch)) {
+    echo "";
+  } else {
+    echo $contents;
+  }
+  curl_close($ch);
 ?>

@@ -49,11 +49,17 @@ var ItemController = {
   
   loadGitfabDocument: function(isEditable) {
     var gitfabDocument = document.getElementById("gitfab-document").innerHTML;
-    ItemController.parseGitFabDocument(gitfabDocument);
-    if (isEditable == true) {
-      ItemController.setEditable();
+    if (gitfabDocument.length == 0) {
+      //not found
+      $("#tools").hide();
+      $("#item").text(ItemController.owner+"/"+ItemController.repository+" is not found");
+    } else {
+      ItemController.parseGitFabDocument(gitfabDocument);
+      if (isEditable == true) {
+        ItemController.setEditable();
+      }
+      ItemController.loadRepositoryInformation();
     }
-    ItemController.loadRepositoryInformation();
   },
   
   loadRepositoryInformation: function() {
