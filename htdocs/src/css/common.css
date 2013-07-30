@@ -19,11 +19,11 @@ body {
 }
 
 input {
-  font-family: 'Open Sans Light', sans-serif;
+  font-family: Helvetica, sans-serif;
 }
 
 textarea {
-  font-family: 'Open Sans Light', sans-serif;
+  font-family: Helvetica, sans-serif;
 }
 
 header {
@@ -154,6 +154,7 @@ footer a {
 .item {
   clear: both;
   list-style-type: none;
+  font-family: Helvetica,sans-serif;
 /*  text-shadow: 1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray; */
 }
 
@@ -179,14 +180,14 @@ footer a {
   position: relative;
   z-index: 2;
   width: 80%;
-  top: 18px;
+  top: 28px;
   left: 22px;
 }
 
 .owner {
   font-size: 12px;
   position: relative;
-  top: 5px;
+  top: 6px;
 }
 
 .owner:before {
@@ -198,7 +199,7 @@ footer a {
 }
 
 .repository {
-  font-size: 22px;
+  font-size: 26px;
 }
 
 .repository:hover {
@@ -210,7 +211,7 @@ footer a {
   width: 80%;
   font-size: 12px;
   position: relative;
-  top: 4px;
+  top: 7px;
 }
 
 .tags:before {
