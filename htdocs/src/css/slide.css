@@ -16,6 +16,10 @@
   height: 100%;
 }
 
+#slide-container #index {
+  border: none;
+}
+
 /** users **/
 #slide-container {
   background-color: white;
