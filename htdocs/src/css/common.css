@@ -116,7 +116,7 @@ footer a {
   position: relative;
   top: 18px;
   margin-right: 20px;
-  line-height: 100px;
+  line-height: 62px;
 }
 
 #gitfab-logo div {
@@ -129,7 +129,6 @@ footer a {
 #contributers {
   display: inline-block;
   margin-right: 15px;
-  line-height: 100px;
 }
 
 #contributers a {
@@ -139,7 +138,6 @@ footer a {
 #bottom {
   display: inline-block;
   margin-right: 15px;
-  line-height: 100px;
 }
 
 #toolbar {
