@@ -146,9 +146,7 @@ var ItemController = {
     var title = ItemController.repository;
     var tags = lines[1].substring("## ".length);
     var owner = ItemController.owner ? ItemController.owner : ItemController.user;
-    var userName = $(document.createElement("span"));
-    userName.text(owner);
-    $("#owner").append(userName);
+    $("#owner").text(owner);
     $("#repository").text(title);
     $("#tags").text(tags);
     var text;

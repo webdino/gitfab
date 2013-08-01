@@ -35,13 +35,12 @@
         <div id="item">
           <div id="customize-css"><div class="text-button">customize css</div></div>
           <section id="meta">
-            <img id="avatar">
-            <div id="headline">
-              <div id="owner"></div>
-               / 
-              <div id="repository"></div>
+            <img id="avatar" class="avatar">
+            <div id="headline" class="headline">
+              <div id="repository" class="repository"></div>
+              <div id="owner" class="owner"></div>
+              <div id="tags" class="tags"></div>
             </div>
-            <div id="tags"></div>
           </section>
           <section id="index">
             <h1>index</h1>
