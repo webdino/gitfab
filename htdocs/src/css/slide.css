@@ -40,6 +40,10 @@
   background-repeat: no-repeat;
 }
 
+#slide-container #meta .headline {
+  text-shadow: black 1px 1px;
+}
+
 #slide-container #index {
   font-size: 28px;
 }
