@@ -34,6 +34,10 @@
   top: -22px;
 }
 
+#meta .headline {
+  text-shadow: none;
+}
+
 #slide-button {
   color: blue;
   cursor: pointer;
