@@ -202,6 +202,7 @@ footer a {
   width: 80%;
   top: 28px;
   left: 22px;
+  text-shadow: black 1px 1px;
 }
 
 .owner {
