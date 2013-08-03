@@ -6,12 +6,12 @@ var ItemListController = {
   init: function() {
     Logger.on();
     var parameters = CommonController.getParametersFromQuery();
-    document.title = "gitFAB"+(parameters.QueryString ? "/?"+parameters.QueryString : "");
+    document.title = "gitFAB"+(OWNER?"/"+OWNER+"/":"")+ (parameters.QueryString ? "/?"+parameters.QueryString : "");
     ItemListController.parameters = parameters;
     if (parameters.tag != null && parameters.tag.length == 0) {
       CommonController.getTagList(null, ItemListController.loadedTagList);
     } else {
-      CommonController.getItemListFromDatabase(parameters.tag, parameters.owner, ItemListController.loadedItemList);
+      CommonController.getItemListFromDatabase(parameters.tag, OWNER, ItemListController.loadedItemList);
     }
   },
   

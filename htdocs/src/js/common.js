@@ -98,7 +98,7 @@ var CommonController = {
   },
 
   getDashboardURL: function(owner) {
-    return "/?owner="+owner;
+    return "/"+owner+"/";
   },
 
   getFileURL: function(user, repository, path) {
