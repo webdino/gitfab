@@ -10,7 +10,7 @@
 <div id="bottom">
 <a href="https://github.com/mozilla-japan/gitfab/">source code @ github</a>
  | 
-<a href="">help</a>
+<a href="/gitfab/help/">help</a>
 </div>
 
 </footer>
