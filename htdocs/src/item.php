@@ -63,6 +63,9 @@
           </section>
         </div>
       </div>
+      <div id="facebook">
+        <?php include('facebook.php.inc'); ?>
+      </div>
       <div id="sub">
         <div id="parent-item-label"></div>
         <div id="parent-item" class="item">
