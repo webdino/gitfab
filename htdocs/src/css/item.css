@@ -93,8 +93,11 @@
   text-decoration: none;
   color: black;
   width: 100%;
-  pointer-events: none;
   font-family: Helvetica,sans-serif;
+}
+
+.content * {
+  pointer-events: auto;
 }
 
 .image-container {
@@ -211,16 +214,13 @@
 /** -------- in markdown ----------- **/
 .content video {
   max-width: 100%;
-  pointer-events: auto;
 }
 
 .content img {
   max-width: 100%;
-  pointer-events: auto;
 }
 
 .content a {
-  pointer-events: auto;
 }
 
 h1 {

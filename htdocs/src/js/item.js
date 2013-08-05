@@ -54,7 +54,7 @@ var ItemController = {
       $("#tools").hide();
       $("#item").text(ItemController.owner+"/"+ItemController.repository+" is not found");
     } else {
-      ItemController.parseGitFabDocument(gitfabDocument);
+      ItemController.parseGitFabDocument(gitfabDocument, isEditable);
       if (isEditable == true) {
         ItemController.setEditable();
       }
@@ -137,7 +137,7 @@ var ItemController = {
     $("#main").addClass("editable");
   },
   
-  parseGitFabDocument: function(result) {
+  parseGitFabDocument: function(result, isEditable) {
     var content = result;
     //from github api
 //    var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
@@ -153,7 +153,7 @@ var ItemController = {
     for (var i = 4, n = lines.length; i < n; i++) {
       var line = lines[i];
       if (line == "---") {
-        ItemController.append2dom(text);
+        ItemController.append2dom(text, isEditable);
         text = null;
         continue;
       }
@@ -295,10 +295,6 @@ var ItemController = {
   },
   
   dragStart: function(e) {
-    if (!ItemController.user) {
-      e.preventDefault();
-      return false;
-    }
     var source = $(e.currentTarget);
     var dataTransfer = e.originalEvent.dataTransfer;
     dataTransfer.setData("text/plain", source.parent().attr("id"));
@@ -353,42 +349,43 @@ var ItemController = {
     $("#upload").click();
   },
   
-  append2dom: function(text) {
+  append2dom: function(text, isEditable) {
     //elements
     var section = $(document.createElement("li"));
     section.addClass("section");
     section.attr("id", ItemController.current_id++);
 
     var content = $(document.createElement("a"));
-    content.attr("draggable", "true");
     content.addClass("content");
-    content.bind('dragstart', ItemController.dragStart);
-    content.bind('dragover', ItemController.dragOver);
-    content.bind('drop', ItemController.dropEnd);
     ItemController.updatesection(text, content);
-    
-    var func = $(document.createElement("div"));
-    func.addClass("function");
 
-    var edit = $(document.createElement("div"));
-    edit.text("edit");
-    edit.addClass("text-button");
-    var upload = $(document.createElement("div"));
-    upload.text("upload");
-    upload.addClass("text-button");
-    var remove = $(document.createElement("div"));
-    remove.text("remove");
-    remove.addClass("text-button");
-    edit.click(ItemController.editTextContent);
-    upload.click(ItemController.kickUpload);
-    remove.click(ItemController.remove);
+    if (isEditable == true) {
+      content.attr("draggable", "true");
+      content.bind('dragstart', ItemController.dragStart);
+      content.bind('dragover', ItemController.dragOver);
+      content.bind('drop', ItemController.dropEnd);
 
-    func.append(edit);
-    func.append(upload);
-    func.append(remove);
-
-    section.append(func);
+      var func = $(document.createElement("div"));
+      func.addClass("function");
+      var edit = $(document.createElement("div"));
+      edit.text("edit");
+      edit.addClass("text-button");
+      var upload = $(document.createElement("div"));
+      upload.text("upload");
+      upload.addClass("text-button");
+      var remove = $(document.createElement("div"));
+      remove.text("remove");
+      remove.addClass("text-button");
+      edit.click(ItemController.editTextContent);
+      upload.click(ItemController.kickUpload);
+      remove.click(ItemController.remove);
+      func.append(edit);
+      func.append(upload);
+      func.append(remove);
+      section.append(func);
+    }
     section.append(content);
+
     
     $("#section-list-ul").append(section);
     return section;
