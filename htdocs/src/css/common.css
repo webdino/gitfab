@@ -43,6 +43,13 @@ header a {
   margin: 0 auto;
 }
 
+#contents a {
+  text-decoration: none;
+  color:#3387b6;
+}
+#contents a:visited { color:#3387b6; }
+#contents a:hover { text-decoration: underline;	}
+
 #logo {
   float: left;
   font-size: 30px;
@@ -154,6 +161,8 @@ footer a {
   color: white;
   text-decoration: none;
 }
+
+#toolbar a:hover { text-decoration: underline; }
 
 /** repository **/
 .thumbnail {
