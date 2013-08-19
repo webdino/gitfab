@@ -338,9 +338,8 @@ var ItemController = {
   append: function(e) {
     var textarea = $("#textarea");
     var text = textarea.val();
-    ItemController.append2dom(text);
+    ItemController.append2dom(text, true);
     textarea.val("");
-
     ItemController.updateIndex();
   },
 
