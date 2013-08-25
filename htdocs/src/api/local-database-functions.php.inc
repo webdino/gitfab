@@ -38,7 +38,7 @@ function renameRepository($id, $name, $connection) {
 }
 
 function deleteRepository($id, $connection) {
-  $query = "DELETE FROM tags WHERE id=?";
+  $query = "DELETE FROM tags WHERE repository_id=?";
   $statement = $connection->prepare($query);
   $statement->execute(array($id));
   $query = "DELETE FROM repositories WHERE id=?";
