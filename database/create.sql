@@ -7,6 +7,7 @@ CREATE TABLE `repositories` (
   `name` VARCHAR(128) NOT NULL,
   `avatar` VARCHAR(200) ,
   `thumbnail` VARCHAR(200) ,
+  `thumbnail_aspect` FLOAT UNSIGNED,
   `created` DATETIME NOT NULL,
   `updated` DATETIME NOT NULL,
   PRIMARY KEY (`id`),

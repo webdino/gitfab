@@ -168,7 +168,7 @@ function getItemList($owner, $tag) {
   try {
     $connection = openConnection();
 
-    $query = "SELECT R.id,R.owner,R.name,R.avatar,R.thumbnail,R.created,R.updated FROM repositories AS R";
+    $query = "SELECT R.id,R.owner,R.name,R.avatar,R.thumbnail,R.aspect,R.created,R.updated FROM repositories AS R";
     $query4tags = "SELECT name FROM tags WHERE repository_id=?";
 
     $parameter = array();
@@ -193,7 +193,7 @@ function getItemList($owner, $tag) {
       }
       $statement4tags->closeCursor();
 
-      $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"created"=>$row["created"],"updated"=>$row["updated"], "tags"=>$tags);
+      $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"aspect"=>$row["aspect"],"created"=>$row["created"],"updated"=>$row["updated"], "tags"=>$tags);
     }
     $statement->closeCursor();
 
