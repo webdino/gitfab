@@ -3,12 +3,72 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var GridLayout = {
-  doLayout: function(gridsize, containerwidth, margin, elements, informations) {
+  doLayout: function(containerwidth, container, elements, informations) {
+    var DEFAULT_REPOSITORY_UI_SIZE = 200;
+    var GRID_MARGIN = 10;
+//    GridLayout.doVerticalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
+//    GridLayout.doHorizontalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
+    GridLayout.doSquareLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
+  },
+
+  doSquareLayout: function(gridsize, containerwidth, margin, container, elements, informations) {
+    var columns = Math.floor(containerwidth/(gridsize+margin));
+    if (columns == 0) {
+      columns = 1;
+    }
+    var wOfItem = (containerwidth-(margin*columns+1))/columns;
+
+    for (var i = 0, n = elements.length, x = margin; i < n; i++) {
+      var information = informations[i];
+      var element = elements[i];
+      element.addClass("grid");
+      var height = wOfItem;
+      var width = wOfItem;
+      element.css({width:width+"px", height:height+"px", "margin-left": margin+"px"});
+      container.append(element);
+    }
+  },
+
+  doVerticalLayout: function(gridsize, containerwidth, margin, container, elements, informations) {
+    var columns = Math.floor(containerwidth/gridsize);
+    if (columns == 0) {
+      columns = 1;
+    }
+    var wOfItem = containerwidth/columns;
+
+    var columnHs = [];
+    for (var i = 0; i < columns; i++) {
+      columnHs.push(0);
+    }
+    var maxH = 0;
+    for (var i = 0, n = elements.length; i < n; i++) {
+      var information = informations[i];
+      var element = elements[i];
+      container.append(element);
+      var width = wOfItem;
+      var height = wOfItem/information.aspect;
+      var minH = Number.MAX_VALUE;
+      var minIndex = 0;
+      for (var j = 0; j < columns; j++) {
+        if (minH > columnHs[j]) {
+          minH = columnHs[j];
+          minIndex = j;
+        }
+      }
+      element.css({position:"absolute", width:width+"px", height:height+"px", top:columnHs[minIndex]+"px", left:(minIndex*width)+"px"});
+      columnHs[minIndex] += height;
+      maxH = Math.max(maxH, columnHs[minIndex]);
+    }
+    container.height(maxH);
+  },
+
+  doHorizontalLayout: function(gridsize, containerwidth, margin, container, elements, informations) {
     var area = gridsize*gridsize;
     var lineElements = [];
     for (var i = 0, n = elements.length, x = margin; i < n; i++) {
       var information = informations[i];
       var element = elements[i];
+      container.append(element);
       var ratio = area / information.aspect;
       var sqrt = Math.sqrt(ratio);
       var height = sqrt;

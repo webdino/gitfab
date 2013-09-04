@@ -1,7 +1,6 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 var ItemListController = {
   init: function() {
     Logger.on();
@@ -31,16 +30,20 @@ var ItemListController = {
 
   parseItemList: function(result) {
     var ul = $("#item-list");
+    ul.hide();
     var itemlist = result.itemlist;
     var length = itemlist.length;
+    var elements = [];
     for (var i = 0; i < length; i++) {
       var item = itemlist[i];
       var li = $(document.createElement("li"));
       li.addClass("item");
       var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail, item.tags);
       li.append(ui);
-      ul.append(li);
+      elements.push(li);
     }
+    GridLayout.doLayout($("#main").width(), ul, elements, itemlist);
+    ul.show();
   },
   
   loadedTagList: function(result, error) {

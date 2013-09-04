@@ -8,9 +8,11 @@
     <title data-l10n-id="title">gitFAB</title>
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/itemlist.css" type="text/css">
+    <link rel="stylesheet" href="/css/gridlayout.css" type="text/css">
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/itemlist.js"></script>
+    <script type="text/javascript" src="/js/gridlayout.js"></script>
     <script>
 <?php include('script-variables.php.inc'); ?>
     </script>

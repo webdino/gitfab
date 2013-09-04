@@ -1,6 +1,6 @@
 .grid {
   display:inline-block;
-  margin-top: 10px;
+  margin-top: 20px;
   vertical-align: top;
   position: relative;
 }
@@ -24,4 +24,41 @@
   -o-transform: rotate(3deg);
   -ms-transform: rotate(3deg);
   transform: rotate(3deg);
+}
+
+/* override features */
+#main {
+/*  border-top: 1px solid gray; */
+/*  background-color: black; */
+  padding: 0 20px 20px 20px;
+  margin: 0 auto;
+  position: relative;
+  max-width: 700px;
+}
+
+.headline {
+  top: 3px;
+  left: 10px;
+}
+
+.repository {
+  font-size: 15px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  top: 7px;
+  left: 7px;
+}
+
+.owner {
+  top: 0px;
+}
+
+.tags {
+  position: absolute;
+  bottom: 5px;
+  left: 0px;
+  width: 100%;
 }

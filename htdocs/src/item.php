@@ -62,17 +62,18 @@
             <input id="upload" name="file" type="file" />
           </section>
         </div>
-      </div>
-      <div id="facebook">
-        <?php include('facebook.php.inc'); ?>
-      </div>
-      <div id="sub">
-        <div id="parent-item-label"></div>
-        <div id="parent-item" class="item">
+
+        <div id="facebook">
+          <?php include('facebook.php.inc'); ?>
         </div>
-        <hr/>
-        <div id="child-item-list-label"></div>
-        <div id="child-item-list">
+        <div id="sub">
+          <div id="parent-item-label"></div>
+          <div id="parent-item" class="item">
+          </div>
+          <hr/>
+          <div id="child-item-list-label"></div>
+          <div id="child-item-list">
+          </div>
         </div>
       </div>
     </div>
