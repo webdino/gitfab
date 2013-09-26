@@ -9,13 +9,7 @@ require.config({
 	}
     }
 });
-require(["jQuery", "github/user"], function($, User){
-    $(function(){
-	var chikoski = new User("chikoski");
-	console.log(chikoski.name);
-	chikoski.loadProfile(function(status, user){
-	    console.log(status);
-	    console.log(user);
-	});
-    });
+require(["jQuery","common","itemlist","gridlayout"], function($,common,itemlist,gridlayout){
+//	itemlist.ItemListController.init();
+
 });

@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-    var DIR_DEST       = "public";
+    var DIR_DEST       = "src/out";
     var DIR_TEST       = "public/test";
     var DIR_COMPONENTS  = "components";
     var DIR_SRC        = "src";
@@ -79,7 +79,7 @@ module.exports = function(grunt) {
 	requirejs:{
 	    github:{
 		options:requirejs.extend({
-		    name: "github/main",
+		    name: "main",
 		    skipModuleInsertion: false,
 		    optimize: "none",
 		    out: "<%= dirs.dest.js %>/github.js"
