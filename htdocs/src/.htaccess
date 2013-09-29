@@ -1,6 +1,5 @@
 Options -Indexes
 DirectoryIndex itemlist.php
-
 <ifModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /

@@ -9,7 +9,8 @@ require.config({
 	}
     }
 });
-require(["jQuery","common","itemlist","gridlayout"], function($,common,itemlist,gridlayout){
+require(["jQuery","common","item","gridlayout","slide","logger","taglist","lib/showdown","lib/base64"], 
+	function($,common,item,gridlayout,slide,logger,taglist,showdown,base64){
 //	itemlist.ItemListController.init();
 
 });

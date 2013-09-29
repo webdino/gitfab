@@ -8,16 +8,16 @@
   <head>
     <meta charset="utf-8">
     <title data-l10n-id="title">gitFAB</title>
-    <link rel="stylesheet" href="/css/common.css" type="text/css">
-    <link rel="stylesheet" href="/css/item.css" type="text/css">
+
+    <link rel="stylesheet" href="/css/item.min.css" type="text/css">
+    <!-- <link rel="stylesheet" href="/css/common.css" type="text/css"> -->
+    <!-- <link rel="stylesheet" href="/css/item.css" type="text/css"> -->
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
-    <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="/js/lib/showdown.js"></script>
-    <script type="text/javascript" src="/js/lib/base64.js"></script>
-    <script type="text/javascript" src="/js/common.js"></script>
-    <script type="text/javascript" src="/js/item.js"></script>
+    <script type="text/javascript" src="/js/require.min.js"></script>
+    <script type="text/javascript" src="/js/main-item.min.js"></script>
+
     <script>
 <?php include('script-variables.php.inc'); ?>
     </script>
