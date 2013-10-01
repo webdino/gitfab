@@ -1,3 +1,5 @@
+<?php session_start();
+?>
 <!DOCTYPE html>
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this file,
@@ -6,15 +8,15 @@
   <head>
     <meta charset="utf-8">
     <title data-l10n-id="title">gitFAB</title>
-    <link rel="stylesheet" href="/css/common.css" type="text/css">
-    <link rel="stylesheet" href="/css/itemlist.css" type="text/css">
-    <link rel="stylesheet" href="/css/gridlayout.css" type="text/css">
-    <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="/js/common.js"></script>
-    <script type="text/javascript" src="/js/itemlist.js"></script>
-    <script type="text/javascript" src="/js/gridlayout.js"></script>
+    <link rel="stylesheet" href="css/itemlist.min.css" type="text/css">
+    <!-- <link rel="stylesheet" href="css/common.css" type="text/css"> -->
+    <!-- <link rel="stylesheet" href="css/itemlist.css" type="text/css"> -->
+    <!-- <link rel="stylesheet" href="css/gridlayout.css" type="text/css"> -->
+    <script type="text/javascript" src="js/require.min.js"></script>
+    <script type="text/javascript" src="js/main-itemlist.min.js"></script>
+
     <script>
-<?php include('script-variables.php.inc'); ?>
+      <?php include('script-variables.php.inc'); ?>
     </script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>

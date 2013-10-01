@@ -12,14 +12,21 @@ module.exports = function(grunt) {
 	test: DIR_SRC + "/test",
 	js: DIR_SRC + "/js",
 	css: DIR_SRC + "/css",
-	php: DIR_SRC
+	php: DIR_SRC,
+	less: DIR_SRC+"/less",
+	images: DIR_SRC + "/" + "images",
+	fonts: DIR_SRC + "/" + "fonts",
+	api: DIR_SRC + "/" + "api"
     };
 
     dirs.dest = {
 	base: DIR_DEST,
 	html: DIR_DEST,
 	js: DIR_DEST + "/" + "js",
-	css: DIR_DEST + "/" + "css"
+	css: DIR_DEST + "/" + "css",
+	images: DIR_DEST + "/" + "images",
+	fonts: DIR_DEST + "/" + "fonts",
+	api: DIR_DEST + "/" + "api"
     };
 
     dirs.test = {
@@ -32,7 +39,11 @@ module.exports = function(grunt) {
     dirs.components = {
 	base: DIR_COMPONENTS,
 	jquery: DIR_COMPONENTS + "/jquery",
-	requirejs: DIR_COMPONENTS + "/requirejs"
+	requirejs: DIR_COMPONENTS + "/requirejs",
+    };
+
+    dirs.temp = {
+		gitfab: DIR_SRC + "/gitfab"
     };
 
     var files = {
@@ -49,12 +60,18 @@ module.exports = function(grunt) {
     requirejs.options = {
 	baseUrl: "<%= dirs.src.js %>",
 	paths: {
-	    "jQuery": "../../<%= dirs.components.jquery %>/jquery.min"
+	    "jQuery": "../../<%= dirs.components.jquery %>/jquery.min",
+	    "require": "../../<%= dirs.components.requirejs %>/require.min"
+
 	},
 	shim: {
 	    "jQuery": {
 		exports: "jQuery"
+	    },  
+	    "require": {
+		exports: "require"
 	    }
+
 	}
     };
     requirejs.extend = function(obj){
@@ -77,54 +94,126 @@ module.exports = function(grunt) {
 	    node_modules: ["<%= dirs.node_modules %>"]
 	},
 	requirejs:{
-	    github:{
+	    itemlist:{
 		options:requirejs.extend({
-		    name: "github/main",
+		    name: "grunt-itemlist",
 		    skipModuleInsertion: false,
 		    optimize: "none",
-		    out: "<%= dirs.dest.js %>/github.js"
+		    out: "<%= dirs.temp.gitfab%>/main-itemlist.js"
 		})
+	    },
+	   	item:{
+			options:requirejs.extend({
+			    name: "grunt-item",
+			    skipModuleInsertion: false,
+			    optimize: "none",
+			    out: "<%= dirs.temp.gitfab%>/main-item.js"
+			})
 	    }
 	},
 	uglify: {
 	    requirejs: {
 		files: {
-		    '<%= dirs.components.requirejs %>/require.min.js':'<%= dirs.components.requirejs %>/require.js'
+		    '<%= dirs.dest.js%>/require.min.js':'<%= dirs.components.requirejs %>/require.js'
 		}
+	    },
+		itemlist: {
+			files: {
+		    	'<%= dirs.dest.js%>/main-itemlist.min.js':'<%= dirs.temp.gitfab%>/main-itemlist.js'
+			}
+	    },
+	    item: {
+			files: {
+		    	'<%= dirs.dest.js%>/main-item.min.js':'<%= dirs.temp.gitfab%>/main-item.js'
+			}
 	    }
+
 	},
+	concat: {
+		itemlist:{
+			src:['<%= dirs.src.css%>/common.css',
+				 '<%= dirs.src.css%>/gridlayout.css',
+				 '<%= dirs.src.css%>/itemlist.css',
+				 '<%= dirs.src.css%>/logger.css'],
+			dest:'<%= dirs.dest.css%>/itemlist.min.css'
+		},		
+		item:{
+			src:['<%= dirs.src.css%>/common.css',
+				 '<%= dirs.src.css%>/logger.css',
+				 '<%= dirs.src.css%>/slide.css',
+				 '<%= dirs.src.css%>/item.css'],
+			dest:'<%= dirs.dest.css%>/item.min.css'
+		}
+	},
+	
 	watch: {
 	    test: {
-		files: files.test,
-		tasks: ['copy:test']
+			files: files.test,
+			tasks: ['copy:test']
 	    }
 	},
+
 	copy: {
 	    deps: {
-		src: files.js.components,
-		dest: '<%= dirs.dest.js %>',
-		expand: true,
-		flatten: true
+			src: files.js.components,
+			dest: '<%= dirs.dest.js %>',
+			expand: true,
+			flatten: true
 	    },
 	    html: {
-		src: files.php,
+			src: files.php,
     		dest: '<%= dirs.dest.html %>',
     		flatten: true,
     		expand: true
 	    },
+	    images:{
+	    	src:'<%= dirs.src.images %>/*.png',
+	    	dest:'<%= dirs.dest.images %>',
+	    	flatten: true,
+    		expand: true
+	    },
+	    fonts:{
+	    	src:['<%= dirs.src.fonts %>/*.ttf','<%= dirs.src.fonts %>/*.woff'],
+	    	dest:'<%= dirs.dest.fonts %>',
+	    	flatten: true,
+    		expand: true
+	    },
+	    api:{
+	    	src:['<%= dirs.src.api %>/*.php*'],
+	    	dest:'<%= dirs.dest.api %>',
+	    	flatten: true,
+    		expand: true
+	    },
+	    htaccess:{
+	    	src:'<%= dirs.src %>/.htaccess',
+	    	dest:'<%= dirs.dest %>/.htaccess',
+	    	flatten: true,
+    		expand: true
+	    },
+
 	    test:{
-		src: files.test,
-		dest: '<%= dirs.test.base %>',
-		expand: true,
-		flatten: true
+			src: files.test,
+			dest: '<%= dirs.test.base %>',
+			expand: true,
+			flatten: true
 	    }
-	}
+	},
+	less: {
+		dist:{
+			options: {
+	       		paths: ['<%= dirs.src.less %>']
+	      	},
+	        files: {
+	          "<%= dirs.dest.css %>/test-gitfab.css":"<%= dirs.src.less %>/*.less"
+    	    }
+    	}
+  	}	
 
     });
 
-    grunt.registerTask('build:deps', ['uglify:requirejs', 'copy:deps']);
-    grunt.registerTask('build', ['build:deps', 'requirejs', 'uglify']);
-    grunt.registerTask('default', ['build']);
+    //grunt.registerTask('build:deps', ['uglify:requirejs', 'copy:deps']);
+    //grunt.registerTask('build', ['build:deps', 'requirejs', 'uglify']);
+    grunt.registerTask('default', ['requirejs', 'uglify','concat','less:dist','copy']);
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');

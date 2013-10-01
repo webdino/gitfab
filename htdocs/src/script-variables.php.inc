@@ -1,4 +1,5 @@
 <?php
+
   if (isset($_GET["owner"])) {
     echo "    var OWNER = \"".$_GET["owner"]."\";\n";
   } else {
@@ -9,8 +10,8 @@
   } else {
     echo "    var REPOSITORY = null;\n";
   }
-
-  session_start();
+  
+//  session_start();
   if (isset($_SESSION["user"])) {
     echo "    var USER = \"".$_SESSION["user"]."\";\n";
   } else {
@@ -26,4 +27,5 @@
   } else {
     echo "    var AVATAR_URL = null;\n";
   }
+
 ?>
