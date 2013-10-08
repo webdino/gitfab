@@ -51,8 +51,8 @@
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
           <section id="gitfab-document"><?php include('./api/gitfab-document.php'); ?></section>
 <?php } ?>
-          <section id="section-list">
-            <ul id="section-list-ul"></ul>
+          <section id="item-list">
+            <ul id="item-list-ul"></ul>
           </section>
           <section id="form">
             <div id="textarea-container">

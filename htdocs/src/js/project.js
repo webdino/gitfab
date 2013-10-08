@@ -185,7 +185,7 @@ var projectController = {
   commitTextContent: function(e) {
     var text = projectController.reusable_textarea.val();
     var target = projectController.reusable_textarea.parent();
-    projectController.updatesection(text, target);
+    projectController.updateitem(text, target);
     projectController.reusable_textarea.unbind("blur", projectController.commitTextContent);
     target.attr("draggable", "true");
   },
@@ -243,9 +243,9 @@ var projectController = {
       target = projectController.upload_target.get(0);
       text += target.markdown+"\n\n";
     } else {
-      //append a section via upload
-      var section = projectController.append2dom("");
-      target = section.find(".content").get(0);
+      //append a item via upload
+      var item = projectController.append2dom("");
+      target = item.find(".content").get(0);
       projectController.upload_target = $(target);
     }
     var file = this.files[0];
@@ -257,14 +257,14 @@ var projectController = {
     } else {
       text += "["+file.name+"]("+url+")";
     }
-    projectController.updatesection(text, projectController.upload_target);
+    projectController.updateitem(text, projectController.upload_target);
     if (!target.files) {
       target.files = {};
     }
     target.files[url] = file;
   },
   
-  updatesection: function(text, target) {
+  updateitem: function(text, target) {
     target.get(0).markdown = text;
     var html = projectController.encode4html(text);
     target.html(html);
@@ -287,7 +287,7 @@ var projectController = {
   },
   
   remove: function(e) {
-    if (!window.confirm("are you sure to remove this section?")) {
+    if (!window.confirm("are you sure to remove this item?")) {
       return;
     }
     var target = $(e.currentTarget.parentNode.parentNode);
@@ -307,7 +307,7 @@ var projectController = {
   },
   
   dropEnd: function(e) {
-    var target = $(e.currentTarget).parent(".section");
+    var target = $(e.currentTarget).parent(".item");
     var targetid = target.attr("id");
     var dataTransfer = e.originalEvent.dataTransfer;
     var sourceid = dataTransfer.getData('text/plain');
@@ -318,9 +318,9 @@ var projectController = {
     e.stopPropagation();
     
     var source = $("#"+sourceid);
-    var sections = $(".section");
-    var sourceIndex = sections.index(source);
-    var targetIndex = sections.index(target);
+    var items = $(".item");
+    var sourceIndex = items.index(source);
+    var targetIndex = items.index(target);
     var isBefore = sourceIndex > targetIndex;
     
     //exchange
@@ -350,13 +350,13 @@ var projectController = {
   
   append2dom: function(text, isEditable) {
     //elements
-    var section = $(document.createElement("li"));
-    section.addClass("section");
-    section.attr("id", projectController.current_id++);
+    var item = $(document.createElement("li"));
+    item.addClass("item");
+    item.attr("id", projectController.current_id++);
 
     var content = $(document.createElement("a"));
     content.addClass("content");
-    projectController.updatesection(text, content);
+    projectController.updateitem(text, content);
 
     if (isEditable == true) {
       content.attr("draggable", "true");
@@ -381,13 +381,13 @@ var projectController = {
       func.append(edit);
       func.append(upload);
       func.append(remove);
-      section.append(func);
+      item.append(func);
     }
-    section.append(content);
+    item.append(content);
 
     
-    $("#section-list-ul").append(section);
-    return section;
+    $("#item-list-ul").append(item);
+    return item;
   },
   
   commit: function(e) {
@@ -580,7 +580,7 @@ var projectController = {
         };
         projectController.oldrepository = "";
         projectController.updateMetadata(function() {
-          var url = CommonController.getItemPageURL(projectController.user, projectController.repository);
+          var url = CommonController.getProjectPageURL(projectController.user, projectController.repository);
           Logger.log("reload: "+url);
           setTimeout(function() {
             window.location.href = url;
