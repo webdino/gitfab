@@ -43,7 +43,7 @@ module.exports = function(grunt) {
     };
 
     dirs.temp = {
-		gitfab: DIR_SRC + "/gitfab"
+		gitfab: "temp"
     };
 
     var files = {
@@ -94,20 +94,20 @@ module.exports = function(grunt) {
 	    node_modules: ["<%= dirs.node_modules %>"]
 	},
 	requirejs:{
-	    itemlist:{
+	    projectList:{
 		options:requirejs.extend({
-		    name: "grunt-itemlist",
+		    name: "grunt-projectList",
 		    skipModuleInsertion: false,
 		    optimize: "none",
-		    out: "<%= dirs.temp.gitfab%>/main-itemlist.js"
+		    out: "<%= dirs.temp.gitfab%>/main-projectList.js"
 		})
 	    },
-	   	item:{
+	   	project:{
 			options:requirejs.extend({
-			    name: "grunt-item",
+			    name: "grunt-project",
 			    skipModuleInsertion: false,
 			    optimize: "none",
-			    out: "<%= dirs.temp.gitfab%>/main-item.js"
+			    out: "<%= dirs.temp.gitfab%>/main-project.js"
 			})
 	    }
 	},
@@ -117,32 +117,32 @@ module.exports = function(grunt) {
 		    '<%= dirs.dest.js%>/require.min.js':'<%= dirs.components.requirejs %>/require.js'
 		}
 	    },
-		itemlist: {
+		projectList: {
 			files: {
-		    	'<%= dirs.dest.js%>/main-itemlist.min.js':'<%= dirs.temp.gitfab%>/main-itemlist.js'
+		    	'<%= dirs.dest.js%>/main-projectList.min.js':'<%= dirs.temp.gitfab%>/main-projectList.js'
 			}
 	    },
-	    item: {
+	    project: {
 			files: {
-		    	'<%= dirs.dest.js%>/main-item.min.js':'<%= dirs.temp.gitfab%>/main-item.js'
+		    	'<%= dirs.dest.js%>/main-project.min.js':'<%= dirs.temp.gitfab%>/main-project.js'
 			}
 	    }
 
 	},
 	concat: {
-		itemlist:{
+		projectList:{
 			src:['<%= dirs.src.css%>/common.css',
 				 '<%= dirs.src.css%>/gridlayout.css',
-				 '<%= dirs.src.css%>/itemlist.css',
+				 '<%= dirs.src.css%>/projectList.css',
 				 '<%= dirs.src.css%>/logger.css'],
-			dest:'<%= dirs.dest.css%>/itemlist.min.css'
+			dest:'<%= dirs.dest.css%>/projectList.min.css'
 		},		
-		item:{
+		project:{
 			src:['<%= dirs.src.css%>/common.css',
 				 '<%= dirs.src.css%>/logger.css',
 				 '<%= dirs.src.css%>/slide.css',
-				 '<%= dirs.src.css%>/item.css'],
-			dest:'<%= dirs.dest.css%>/item.min.css'
+				 '<%= dirs.src.css%>/project.css'],
+			dest:'<%= dirs.dest.css%>/project.min.css'
 		}
 	},
 	

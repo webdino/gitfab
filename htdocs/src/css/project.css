@@ -18,7 +18,7 @@
   padding: 4px 0 2px 0;
 }
 
-#item {
+#project {
   background-color: white;
   border: 1px solid #333;
   padding: 12px;
@@ -233,13 +233,13 @@
 #index a:hover { text-decoration: underline; }
 
 
-#section-list-ul {
+#item-list-ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-.section {
+.item {
   border-top: 1px dotted black;
   clear: both;
 }
@@ -316,7 +316,7 @@
 }
 
 /** -------- editable -------------- **/
-.editable #item {
+.editable #project {
 }
 
 .editable #tools {
@@ -354,7 +354,7 @@
   pointer-events: auto;
 }
 
-.editable .section:last-child {
+.editable .item:last-child {
   border-bottom: 1px dotted black;
   margin-bottom: 24px;
 }
@@ -394,11 +394,11 @@ h1 {
 /** --------- in sub -----------------**/
 /** temp **/
 
-#parent-item-label {
+#parent-project-label {
   font-size: 10px;
 }
 
-#child-item-list-label {
+#child-project-list-label {
   font-size: 10px;
 }
 

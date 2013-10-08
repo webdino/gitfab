@@ -8,12 +8,12 @@
   <head>
     <meta charset="utf-8">
     <title data-l10n-id="title">gitFAB</title>
-    <link rel="stylesheet" href="css/itemlist.min.css" type="text/css">
+    <link rel="stylesheet" href="css/projectList.min.css" type="text/css">
     <!-- <link rel="stylesheet" href="css/common.css" type="text/css"> -->
-    <!-- <link rel="stylesheet" href="css/itemlist.css" type="text/css"> -->
+    <!-- <link rel="stylesheet" href="css/projectList.css" type="text/css"> -->
     <!-- <link rel="stylesheet" href="css/gridlayout.css" type="text/css"> -->
     <script type="text/javascript" src="js/require.min.js"></script>
-    <script type="text/javascript" src="js/main-itemlist.min.js"></script>
+    <script type="text/javascript" src="js/main-projectList.min.js"></script>
 
     <script>
       <?php include('script-variables.php.inc'); ?>
@@ -25,7 +25,7 @@
     <?php include('toolbar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
-        <ul id="item-list">
+        <ul id="project-list">
         </ul>
       </div>
       <div id="sub">

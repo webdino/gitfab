@@ -1,57 +1,57 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
-var ItemListController = {
+var projectListController = {
   init: function() {
     Logger.on();
     var parameters = CommonController.getParametersFromQuery();
     document.title = "gitFAB"+(OWNER?"/"+OWNER+"/":"")+ (parameters.QueryString ? "/?"+parameters.QueryString : "");
-    ItemListController.parameters = parameters;
+    projectListController.parameters = parameters;
     if (parameters.tag != null && parameters.tag.length == 0) {
-      CommonController.getTagList(null, ItemListController.loadedTagList);
+      CommonController.getTagList(null, projectListController.loadedTagList);
     } else {
-      CommonController.getItemListFromDatabase(parameters.tag, OWNER, ItemListController.loadedItemList);
+      CommonController.getProjectListFromDatabase(parameters.tag, OWNER, projectListController.loadedProjectList);
     }
   },
   
-  loadedItemList: function(result, error) {
+  loadedProjectList: function(result, error) {
     if (CommonController.showError(error) != true) {
-      if (result.itemlist.length == 0) {
-        if (ItemListController.parameters.tag) {
-          CommonController.getTagList(null, ItemListController.loadedTagList);
+      if (result.projectList.length == 0) {
+        if (projectListController.parameters.tag) {
+          CommonController.getTagList(null, projectListController.loadedTagList);
           return;
         }
       } else {
-        ItemListController.parseItemList(result);
+        projectListController.parseProjectList(result);
       }
     }
-    ItemListController.postLoadItemList();      
+    projectListController.postLoadProjectList();      
   },
 
-  parseItemList: function(result) {
-    var ul = $("#item-list");
+  parseProjectList: function(result) {
+    var ul = $("#project-list");
     ul.hide();
-    var itemlist = result.itemlist;
-    var length = itemlist.length;
+    var projectList = result.projectList;
+    var length = projectList.length;
     var elements = [];
     for (var i = 0; i < length; i++) {
-      var item = itemlist[i];
+      var project = projectList[i];
       var li = $(document.createElement("li"));
-      li.addClass("item");
-      var ui = CommonController.createRepositoryUI(item.owner, item.name, item.avatar, item.thumbnail, item.tags);
+      li.addClass("project");
+      var ui = CommonController.createRepositoryUI(project.owner, project.name, project.avatar, project.thumbnail, project.tags);
       li.append(ui);
       elements.push(li);
     }
-    GridLayout.doLayout($("#main").width(), ul, elements, itemlist);
+    GridLayout.doLayout($("#main").width(), ul, elements, projectList);
     ul.show();
   },
   
   loadedTagList: function(result, error) {
     if (CommonController.showError(error) != true) {
       var taglist = result.taglist;
-      var container = $("#item-list");
+      var container = $("#project-list");
       var title = $(document.createElement("div"));
-      title.text("item not found. please select from following tags.");
+      title.text("project not found. please select from following tags.");
       title.attr("id", "tag-title");
       container.append(title);
       var defaultFontSize = 30;
@@ -66,17 +66,17 @@ var ItemListController = {
         container.append(element);
       }
     }
-    ItemListController.postLoadItemList();      
+    projectListController.postLoadProjectList();      
   },
 
-  postLoadItemList: function() {
-    var parameters = ItemListController.parameters;
+  postLoadProjectList: function() {
+    var parameters = projectListController.parameters;
     if (parameters.code) {
-      CommonController.authorize(parameters.code, ItemListController.authorized);
+      CommonController.authorize(parameters.code, projectListController.authorized);
     } else {
-      CommonController.setParameters(ItemListController);
-      if (ItemListController.user) {
-        CommonController.updateUI(ItemListController.user, ItemListController.avatar_url);
+      CommonController.setParameters(projectListController);
+      if (projectListController.user) {
+        CommonController.updateUI(projectListController.user, projectListController.avatar_url);
       }
       Logger.off();
     }
@@ -90,5 +90,5 @@ var ItemListController = {
 };
 
 $(document).ready(function() {
-  ItemListController.init();
+  projectListController.init();
 });

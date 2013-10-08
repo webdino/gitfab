@@ -9,14 +9,14 @@
     <meta charset="utf-8">
     <title data-l10n-id="title">gitFAB</title>
 
-    <link rel="stylesheet" href="/css/item.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/project.min.css" type="text/css">
     <!-- <link rel="stylesheet" href="/css/common.css" type="text/css"> -->
-    <!-- <link rel="stylesheet" href="/css/item.css" type="text/css"> -->
+    <!-- <link rel="stylesheet" href="/css/project.css" type="text/css"> -->
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
     <script type="text/javascript" src="/js/require.min.js"></script>
-    <script type="text/javascript" src="/js/main-item.min.js"></script>
+    <script type="text/javascript" src="/js/main-project.min.js"></script>
 
     <script>
 <?php include('script-variables.php.inc'); ?>
@@ -34,7 +34,7 @@
           <button id="delete-button">delete</button>
           <button id="commit-button">commit</button>
         </section>
-        <div id="item">
+        <div id="project">
           <div id="customize-css"><div class="text-button">customize css</div></div>
           <section id="meta">
             <img id="avatar" class="avatar">
@@ -51,8 +51,8 @@
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
           <section id="gitfab-document"><?php include('./api/gitfab-document.php'); ?></section>
 <?php } ?>
-          <section id="section-list">
-            <ul id="section-list-ul"></ul>
+          <section id="item-list">
+            <ul id="item-list-ul"></ul>
           </section>
           <section id="form">
             <div id="textarea-container">
@@ -69,12 +69,12 @@
           <?php include('facebook.php.inc'); ?>
         </div>
         <div id="sub">
-          <div id="parent-item-label"></div>
-          <div id="parent-item" class="item">
+          <div id="parent-project-label"></div>
+          <div id="parent-project" class="project">
           </div>
           <hr/>
-          <div id="child-item-list-label"></div>
-          <div id="child-item-list">
+          <div id="child-project-list-label"></div>
+          <div id="child-project-list">
           </div>
         </div>
       </div>

@@ -164,7 +164,7 @@ function getMetaData($owner, $name) {
   }
 }
 
-function getItemList($owner, $tag) {
+function getProjectList($owner, $tag) {
   try {
     $connection = openConnection();
 
@@ -182,7 +182,7 @@ function getItemList($owner, $tag) {
     $query .= " ORDER BY updated DESC";
     $statement = $connection->prepare($query);
     $statement->execute($parameter);
-    $itemlist = array();
+    $projectList = array();
     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
       $param4tags = array($row["id"]);
       $statement4tags = $connection->prepare($query4tags);
@@ -193,13 +193,13 @@ function getItemList($owner, $tag) {
       }
       $statement4tags->closeCursor();
 
-      $itemlist[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"aspect"=>$row["aspect"],"created"=>$row["created"],"updated"=>$row["updated"], "tags"=>$tags);
+      $projectList[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"aspect"=>$row["aspect"],"created"=>$row["created"],"updated"=>$row["updated"], "tags"=>$tags);
     }
     $statement->closeCursor();
 
     closeConnection($connection);
 
-    return $itemlist;
+    return $projectList;
   } catch (PDOException $e) {
     $connection->rollBack();
     throw $e;

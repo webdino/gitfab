@@ -1,10 +1,10 @@
 Options -Indexes
-DirectoryIndex itemlist.php
+DirectoryIndex projectList.php
 <ifModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^([^/]+)/([^/]+)/$ item.php?owner=$1&repository=$2 [L]
-  RewriteRule ^([^/]+)/$ itemlist.php?owner=$1 [L]
+  RewriteRule ^([^/]+)/([^/]+)/$ project.php?owner=$1&repository=$2 [L]
+  RewriteRule ^([^/]+)/$ projectList.php?owner=$1 [L]
 </ifModule>

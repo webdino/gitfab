@@ -2,48 +2,48 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var ItemController = {
+var projectController = {
   init: function() {
-    ItemController.markdownParser = new Showdown.converter();
-    ItemController.base64 = new Base64();
-    ItemController.current_id = 0;
+    projectController.markdownParser = new Showdown.converter();
+    projectController.base64 = new Base64();
+    projectController.current_id = 0;
 
-    CommonController.setParameters(ItemController);
-    document.title = "gitFAB/"+ItemController.owner+"/"+ItemController.repository;
+    CommonController.setParameters(projectController);
+    document.title = "gitFAB/"+projectController.owner+"/"+projectController.repository;
 
-    if (ItemController.user) {
-      CommonController.updateUI(ItemController.user, ItemController.avatar_url);
+    if (projectController.user) {
+      CommonController.updateUI(projectController.user, projectController.avatar_url);
     }
 
-    if (ItemController.user == ItemController.owner) {
-      if (ItemController.repository == ":create") {
+    if (projectController.user == projectController.owner) {
+      if (projectController.repository == ":create") {
         //new repository
-        ItemController.repository = null;
-        $("#avatar").attr("src", ItemController.avatar_url);
-        $("#owner").text(ItemController.user);
+        projectController.repository = null;
+        $("#avatar").attr("src", projectController.avatar_url);
+        $("#owner").text(projectController.user);
         $("#repository").text("input-your-repository-name");
-        ItemController.setEditable();
+        projectController.setEditable();
       } else {
         //update repository
-        ItemController.loadGitfabDocument(true);
+        projectController.loadGitfabDocument(true);
       }
-    } else if (ItemController.repository) {
-      ItemController.loadGitfabDocument(false);
-      if (!ItemController.user) {
+    } else if (projectController.repository) {
+      projectController.loadGitfabDocument(false);
+      if (!projectController.user) {
         $("#fork-button").click(function() {
           alert("please login");
         });
       } else {
         $("#fork-button").click(function () {
-          ItemController.fork();
+          projectController.fork();
         });
       }
     } else {
       //not found
-      $("#item").text("item not found");
+      $("#project").text("project not found");
     }
 
-    $("#slide-button").click(ItemController.slideshow);
+    $("#slide-button").click(projectController.slideshow);
 
   },
   
@@ -52,18 +52,18 @@ var ItemController = {
     if (gitfabDocument.length == 0) {
       //not found
       $("#tools").hide();
-      $("#item").text(ItemController.owner+"/"+ItemController.repository+" is not found");
+      $("#project").text(projectController.owner+"/"+projectController.repository+" is not found");
     } else {
-      ItemController.parseGitFabDocument(gitfabDocument, isEditable);
+      projectController.parseGitFabDocument(gitfabDocument, isEditable);
       if (isEditable == true) {
-        ItemController.setEditable();
+        projectController.setEditable();
       }
-      ItemController.loadRepositoryInformation();
+      projectController.loadRepositoryInformation();
     }
   },
   
   loadRepositoryInformation: function() {
-    CommonController.getRepositoryInformation(ItemController.owner, ItemController.repository, function(result, error) {
+    CommonController.getRepositoryInformation(projectController.owner, projectController.repository, function(result, error) {
       //user's icon
       $("#avatar").attr("src", result.owner.avatar_url);
 
@@ -71,26 +71,26 @@ var ItemController = {
       if (result.parent) {
         var owner = result.parent.owner.login;
         var repository = result.parent.name;
-        ItemController.appendRepositoryUITo($("#parent-item"), owner, repository);
-        $("#parent-item-label").text("parent item");
+        projectController.appendRepositoryUITo($("#parent-project"), owner, repository);
+        $("#parent-project-label").text("parent project");
       } else {
-        $("#parent-item").hide();
-        $("#parent-item-label").text("this is a root item");
+        $("#parent-project").hide();
+        $("#parent-project-label").text("this is a root project");
       }
       if (result.forks_count == 0) {
         return;
       }
-      $("#child-item-list-label").text("child item list");
-      CommonController.getForksInformation(ItemController.owner, ItemController.repository, function(forks, error) {
+      $("#child-project-list-label").text("child project list");
+      CommonController.getForksInformation(projectController.owner, projectController.repository, function(forks, error) {
         for (var i = 0, n = forks.length; i < n; i++) {
           var fork = forks[i];
           var owner = fork.owner.login;
           var repository = fork.name;
           var container = $(document.createElement("div"));
-          container.addClass("child-item");
-          container.addClass("item");
-          $("#child-item-list").append(container);
-          ItemController.appendRepositoryUITo(container, owner, repository);
+          container.addClass("child-project");
+          container.addClass("project");
+          $("#child-project-list").append(container);
+          projectController.appendRepositoryUITo(container, owner, repository);
         }
       });
     });
@@ -113,39 +113,39 @@ var ItemController = {
 
   setEditable: function() {
     //reusable elements
-    ItemController.reusable_input = $(document.createElement("input"));
-    ItemController.reusable_input.attr("id", "reusable_input");
-    ItemController.reusable_textarea = $(document.createElement("textarea"));
-    ItemController.reusable_textarea.attr("id", "reusable_textarea");
+    projectController.reusable_input = $(document.createElement("input"));
+    projectController.reusable_input.attr("id", "reusable_input");
+    projectController.reusable_textarea = $(document.createElement("textarea"));
+    projectController.reusable_textarea.attr("id", "reusable_textarea");
     //
     var buttoncontainer = $(document.createElement("div"));
     var button = $(document.createElement("button"));
     button.text("apply");
     buttoncontainer.attr("id", "reusable_applybutton");
     buttoncontainer.append(button);
-    ItemController.reusable_applybutton = buttoncontainer;
+    projectController.reusable_applybutton = buttoncontainer;
 
-    $("#append-button").click(ItemController.append);
-    $("#upload-button").click(ItemController.appendViaUpload);
-    $("#commit-button").click(ItemController.commit);
-    $("#delete-button").click(ItemController.deleteRepository);
+    $("#append-button").click(projectController.append);
+    $("#upload-button").click(projectController.appendViaUpload);
+    $("#commit-button").click(projectController.commit);
+    $("#delete-button").click(projectController.deleteRepository);
 
-    $("#upload").change(ItemController.upload);
-    $("#repository").click(ItemController.editTitle);
-    $("#tags").click(ItemController.editTags);
-    $("#customize-css .text-button").click(ItemController.customizeCSS);
+    $("#upload").change(projectController.upload);
+    $("#repository").click(projectController.editTitle);
+    $("#tags").click(projectController.editTags);
+    $("#customize-css .text-button").click(projectController.customizeCSS);
     $("#main").addClass("editable");
   },
   
   parseGitFabDocument: function(result, isEditable) {
     var content = result;
     //from github api
-//    var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+//    var content = projectController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
-    var title = ItemController.repository;
+    var title = projectController.repository;
     var tags = lines[1].substring("## ".length);
-    var owner = ItemController.owner ? ItemController.owner : ItemController.user;
+    var owner = projectController.owner ? projectController.owner : projectController.user;
     $("#owner").text(owner);
     $("#repository").text(title);
     $("#tags").text(tags);
@@ -153,7 +153,7 @@ var ItemController = {
     for (var i = 4, n = lines.length; i < n; i++) {
       var line = lines[i];
       if (line == "---") {
-        ItemController.append2dom(text, isEditable);
+        projectController.append2dom(text, isEditable);
         text = null;
         continue;
       }
@@ -163,7 +163,7 @@ var ItemController = {
         text = line;
       }
     }
-    ItemController.updateIndex();
+    projectController.updateIndex();
   },
   
   editTextContent: function(e) {
@@ -171,82 +171,82 @@ var ItemController = {
 
     var target = $(e.currentTarget.parentNode.parentNode).find(".content");
     var text = target.get(0).markdown;
-    ItemController.reusable_textarea.val(text);
+    projectController.reusable_textarea.val(text);
     target.empty();
-    target.append(ItemController.reusable_textarea);    
-    ItemController.reusable_textarea.focus();
-    ItemController.reusable_textarea.blur(ItemController.commitTextContent);
+    target.append(projectController.reusable_textarea);    
+    projectController.reusable_textarea.focus();
+    projectController.reusable_textarea.blur(projectController.commitTextContent);
     //この属性があると、textarea をクリックした場合でも blur イベントが発生してしまう。
     target.removeAttr("draggable");
 
-    target.append(ItemController.reusable_applybutton);
+    target.append(projectController.reusable_applybutton);
   },
   
   commitTextContent: function(e) {
-    var text = ItemController.reusable_textarea.val();
-    var target = ItemController.reusable_textarea.parent();
-    ItemController.updatesection(text, target);
-    ItemController.reusable_textarea.unbind("blur", ItemController.commitTextContent);
+    var text = projectController.reusable_textarea.val();
+    var target = projectController.reusable_textarea.parent();
+    projectController.updateitem(text, target);
+    projectController.reusable_textarea.unbind("blur", projectController.commitTextContent);
     target.attr("draggable", "true");
   },
   
   editTitle: function(e) {
     var title = $("#repository");
-    title.unbind("click", ItemController.editTitle);
+    title.unbind("click", projectController.editTitle);
     var text = title.text();
     title.empty();
     title.addClass("editing");
-    ItemController.reusable_input.val(text);
-    ItemController.reusable_input.change(ItemController.commitTitle);
-    ItemController.reusable_input.blur(ItemController.commitTitle);
-    title.append(ItemController.reusable_input);
-    ItemController.reusable_input.focus();
+    projectController.reusable_input.val(text);
+    projectController.reusable_input.change(projectController.commitTitle);
+    projectController.reusable_input.blur(projectController.commitTitle);
+    title.append(projectController.reusable_input);
+    projectController.reusable_input.focus();
   },
   
   commitTitle: function(e) {
-    var text = ItemController.reusable_input.val();
+    var text = projectController.reusable_input.val();
     var title = $("#repository");
     title.text(text);
     title.removeClass("editing");
-    title.click(ItemController.editTitle);
-    ItemController.reusable_input.unbind("change", ItemController.commitTitle);
-    ItemController.reusable_input.unbind("blur", ItemController.commitTitle);
+    title.click(projectController.editTitle);
+    projectController.reusable_input.unbind("change", projectController.commitTitle);
+    projectController.reusable_input.unbind("blur", projectController.commitTitle);
   },
   
   editTags: function(e) {
     var tags = $("#tags");
-    tags.unbind("click", ItemController.editTags);
+    tags.unbind("click", projectController.editTags);
     var text = tags.text();
     tags.empty();
     tags.addClass("editing");
-    ItemController.reusable_input.val(text);
-    ItemController.reusable_input.change(ItemController.commitTags);
-    ItemController.reusable_input.blur(ItemController.commitTags);
-    tags.append(ItemController.reusable_input);
-    ItemController.reusable_input.focus();
+    projectController.reusable_input.val(text);
+    projectController.reusable_input.change(projectController.commitTags);
+    projectController.reusable_input.blur(projectController.commitTags);
+    tags.append(projectController.reusable_input);
+    projectController.reusable_input.focus();
   },
 
   commitTags: function(e) {
-    var text = ItemController.reusable_input.val();
+    var text = projectController.reusable_input.val();
     var tags = $("#tags");
     tags.text(text);
     tags.removeClass("editing");
-    tags.click(ItemController.editTags);
-    ItemController.reusable_input.unbind("change", ItemController.commitTags);
-    ItemController.reusable_input.unbind("blur", ItemController.commitTags);
+    tags.click(projectController.editTags);
+    projectController.reusable_input.unbind("change", projectController.commitTags);
+    projectController.reusable_input.unbind("blur", projectController.commitTags);
   },
   
   upload: function(e) {
     var target = null;
     var text = "";
-    if (ItemController.upload_target) {
-      target = ItemController.upload_target.get(0);
+    if (projectController.upload_target) {
+      target = projectController.upload_target.get(0);
       text += target.markdown+"\n\n";
     } else {
-      //append a section via upload
-      var section = ItemController.append2dom("");
-      target = section.find(".content").get(0);
-      ItemController.upload_target = $(target);
+      //append a item via upload
+      var item = projectController.append2dom("");
+      target = item.find(".content").get(0);
+      projectController.upload_target = $(target);
     }
     var file = this.files[0];
 
@@ -257,37 +257,37 @@ var ItemController = {
     } else {
       text += "["+file.name+"]("+url+")";
     }
-    ItemController.updatesection(text, ItemController.upload_target);
+    projectController.updateitem(text, projectController.upload_target);
     if (!target.files) {
       target.files = {};
     }
     target.files[url] = file;
   },
   
-  updatesection: function(text, target) {
+  updateitem: function(text, target) {
     target.get(0).markdown = text;
-    var html = ItemController.encode4html(text);
+    var html = projectController.encode4html(text);
     target.html(html);
     target.find("a").attr("target", "_blank");
-    ItemController.updateIndex();
+    projectController.updateIndex();
   },
   
   kickUpload: function(e) {
     var target = e.target;
     var parent = $(target.parentNode.parentNode);
     var content = $(parent.find(".content"));
-    ItemController.upload_target = content;
+    projectController.upload_target = content;
     $("#upload").click();
   },
   
   kickUploadFromImage: function(e) {
     var target = e.currentTarget;
-    ItemController.upload_target = $(target.parentNode.parentNode);
+    projectController.upload_target = $(target.parentNode.parentNode);
     $("#upload").click();
   },
   
   remove: function(e) {
-    if (!window.confirm("are you sure to remove this section?")) {
+    if (!window.confirm("are you sure to remove this item?")) {
       return;
     }
     var target = $(e.currentTarget.parentNode.parentNode);
@@ -307,7 +307,7 @@ var ItemController = {
   },
   
   dropEnd: function(e) {
-    var target = $(e.currentTarget).parent(".section");
+    var target = $(e.currentTarget).parent(".item");
     var targetid = target.attr("id");
     var dataTransfer = e.originalEvent.dataTransfer;
     var sourceid = dataTransfer.getData('text/plain');
@@ -318,9 +318,9 @@ var ItemController = {
     e.stopPropagation();
     
     var source = $("#"+sourceid);
-    var sections = $(".section");
-    var sourceIndex = sections.index(source);
-    var targetIndex = sections.index(target);
+    var items = $(".item");
+    var sourceIndex = items.index(source);
+    var targetIndex = items.index(target);
     var isBefore = sourceIndex > targetIndex;
     
     //exchange
@@ -330,7 +330,7 @@ var ItemController = {
       target.after(source);
     }
 
-    ItemController.updateIndex();
+    projectController.updateIndex();
 
     return false;
   },
@@ -338,31 +338,31 @@ var ItemController = {
   append: function(e) {
     var textarea = $("#textarea");
     var text = textarea.val();
-    ItemController.append2dom(text, true);
+    projectController.append2dom(text, true);
     textarea.val("");
-    ItemController.updateIndex();
+    projectController.updateIndex();
   },
 
   appendViaUpload: function(e) {
-    ItemController.upload_target = null;
+    projectController.upload_target = null;
     $("#upload").click();
   },
   
   append2dom: function(text, isEditable) {
     //elements
-    var section = $(document.createElement("li"));
-    section.addClass("section");
-    section.attr("id", ItemController.current_id++);
+    var item = $(document.createElement("li"));
+    item.addClass("item");
+    item.attr("id", projectController.current_id++);
 
     var content = $(document.createElement("a"));
     content.addClass("content");
-    ItemController.updatesection(text, content);
+    projectController.updateitem(text, content);
 
     if (isEditable == true) {
       content.attr("draggable", "true");
-      content.bind('dragstart', ItemController.dragStart);
-      content.bind('dragover', ItemController.dragOver);
-      content.bind('drop', ItemController.dropEnd);
+      content.bind('dragstart', projectController.dragStart);
+      content.bind('dragover', projectController.dragOver);
+      content.bind('drop', projectController.dropEnd);
 
       var func = $(document.createElement("div"));
       func.addClass("function");
@@ -375,35 +375,35 @@ var ItemController = {
       var remove = $(document.createElement("div"));
       remove.text("remove");
       remove.addClass("text-button");
-      edit.click(ItemController.editTextContent);
-      upload.click(ItemController.kickUpload);
-      remove.click(ItemController.remove);
+      edit.click(projectController.editTextContent);
+      upload.click(projectController.kickUpload);
+      remove.click(projectController.remove);
       func.append(edit);
       func.append(upload);
       func.append(remove);
-      section.append(func);
+      item.append(func);
     }
-    section.append(content);
+    item.append(content);
 
     
-    $("#section-list-ul").append(section);
-    return section;
+    $("#item-list-ul").append(item);
+    return item;
   },
   
   commit: function(e) {
     //このタイトルのリポジトリを作成あるいはアップデート
     Logger.on();
     var repository = $("#repository").text();
-    ItemController.oldrepository = "";
-    if (!ItemController.repository) {
+    projectController.oldrepository = "";
+    if (!projectController.repository) {
       //new
-      ItemController.newRepository(repository);
-    } else if (ItemController.repository != repository) {
+      projectController.newRepository(repository);
+    } else if (projectController.repository != repository) {
       //rename
-      ItemController.renameRepository(repository);
+      projectController.renameRepository(repository);
     } else {
       //update
-      ItemController.updateRepository();
+      projectController.updateRepository();
     }
   },
 
@@ -412,7 +412,7 @@ var ItemController = {
   },
   
   updateRepository: function() {
-    CommonController.getSHATree(ItemController.user, ItemController.repository, ItemController.commitDocument);
+    CommonController.getSHATree(projectController.user, projectController.repository, projectController.commitDocument);
   },
   
   findThumbnail: function() {
@@ -439,8 +439,8 @@ var ItemController = {
   updateMetadata: function(callback) {
     var tags = $("#tags").text();
     var avatar = $("#login img").attr("src");
-    var thumbnail = ItemController.findThumbnail();
-    CommonController.updateMetadata(ItemController.user, ItemController.repository, ItemController.oldrepository, tags, avatar, thumbnail, callback);
+    var thumbnail = projectController.findThumbnail();
+    CommonController.updateMetadata(projectController.user, projectController.repository, projectController.oldrepository, tags, avatar, thumbnail, callback);
   },
 
   commitDocument: function(result, error) {
@@ -449,7 +449,7 @@ var ItemController = {
     var tree = result.tree;
 
     var userDocument = "";
-    userDocument += "# "+ItemController.repository;
+    userDocument += "# "+projectController.repository;
     userDocument += "\n";
     userDocument += "## "+$("#tags").text();
     userDocument += "\n";
@@ -468,7 +468,7 @@ var ItemController = {
         var file = files[key];
         filemap[key] = file;
         //replace url
-        var fileURL = CommonController.getFileURL(ItemController.user, ItemController.repository, MATERIALS+"/"+file.name);
+        var fileURL = CommonController.getFileURL(projectController.user, projectController.repository, MATERIALS+"/"+file.name);
         text = text.replace(key, fileURL);
         $("img[src='"+key+"']").attr("fileurl", fileURL);
       }
@@ -478,11 +478,11 @@ var ItemController = {
       userDocument += "---\n";
     }
     //ここで userDocument を README.md の内容としてコミット
-    ItemController.commitChain(MAIN_DOCUMENT, ItemController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
+    projectController.commitChain(MAIN_DOCUMENT, projectController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
   },
 
   commitChain: function(path, content, message, tree, filemap) {
-    CommonController.commit(ItemController.token, ItemController.user, ItemController.repository, path, content, message, tree, function(result, error) {
+    CommonController.commit(projectController.token, projectController.user, projectController.repository, path, content, message, tree, function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
@@ -494,9 +494,9 @@ var ItemController = {
         break;
       }
       if (!file) {
-        ItemController.updateMetadata(function() {
-          if (ItemController.css) {
-            CommonController.commit(ItemController.token, ItemController.user, ItemController.repository, CUSTOM_CSS, ItemController.base64.encodeStringAsUTF8(ItemController.css), "", tree, function(result, error) {
+        projectController.updateMetadata(function() {
+          if (projectController.css) {
+            CommonController.commit(projectController.token, projectController.user, projectController.repository, CUSTOM_CSS, projectController.base64.encodeStringAsUTF8(projectController.css), "", tree, function(result, error) {
               CommonController.showError(error);
               Logger.off();
             });
@@ -512,48 +512,48 @@ var ItemController = {
         var index = content.indexOf(",");
         content = content.substring(index+1);
         var path = MATERIALS+"/"+file.name;
-        ItemController.commitChain(path, content, "", tree, filemap);
+        projectController.commitChain(path, content, "", tree, filemap);
       };
       reader.readAsDataURL(file);
     });
   },
   
   newRepository: function(name) {
-    CommonController.newRepository(ItemController.token, name, function(result, error) {
+    CommonController.newRepository(projectController.token, name, function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
       }
 
-      ItemController.repository = name;
-      ItemController.watch(ItemController.user, ItemController.repository, function(result, error) {
+      projectController.repository = name;
+      projectController.watch(projectController.user, projectController.repository, function(result, error) {
         if (CommonController.showError(error) == true) {
           Logger.off();
           return;
         }
-        ItemController.updateRepository();
+        projectController.updateRepository();
       });
     });
   },
   
   renameRepository: function(name) {
-    CommonController.renameRepository(ItemController.token, ItemController.user, name, ItemController.repository, function(result, error) {
+    CommonController.renameRepository(projectController.token, projectController.user, name, projectController.repository, function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
       }
-      ItemController.oldrepository = ItemController.repository;
-      ItemController.repository = name;
-      ItemController.updateRepository();
+      projectController.oldrepository = projectController.repository;
+      projectController.repository = name;
+      projectController.updateRepository();
     });
   },
   
   deleteRepository: function() {
-    if (!window.confirm("are you sure to remove this item?")) {
+    if (!window.confirm("are you sure to remove this project?")) {
       return;
     }
     Logger.on();
-    CommonController.deleteRepository(ItemController.token, ItemController.owner, ItemController.repository, function(result, error) {
+    CommonController.deleteRepository(projectController.token, projectController.owner, projectController.repository, function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
@@ -568,19 +568,19 @@ var ItemController = {
 
   fork: function() {
     Logger.on();
-    CommonController.fork(ItemController.token, ItemController.owner, ItemController.repository, function(result, error) {
+    CommonController.fork(projectController.token, projectController.owner, projectController.repository, function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
       }
-      ItemController.watch(ItemController.user, ItemController.repository, function(result, error) {
+      projectController.watch(projectController.user, projectController.repository, function(result, error) {
         if (CommonController.showError(error) == true) {
           Logger.off();
           return;
         };
-        ItemController.oldrepository = "";
-        ItemController.updateMetadata(function() {
-          var url = CommonController.getItemPageURL(ItemController.user, ItemController.repository);
+        projectController.oldrepository = "";
+        projectController.updateMetadata(function() {
+          var url = CommonController.getProjectPageURL(projectController.user, projectController.repository);
           Logger.log("reload: "+url);
           setTimeout(function() {
             window.location.href = url;
@@ -592,32 +592,32 @@ var ItemController = {
   },
   
   encode4html: function(text) {
-    return ItemController.markdownParser.makeHtml(text);
+    return projectController.markdownParser.makeHtml(text);
   },
 
   customizeCSS: function(e) {
     var target = $("#customize-css .text-button");
     var parent = target.parent();
-    parent.append(ItemController.reusable_textarea);
-    ItemController.reusable_textarea.focus();
-    ItemController.reusable_textarea.blur(ItemController.applyCSS);
-    parent.append(ItemController.reusable_applybutton);
+    parent.append(projectController.reusable_textarea);
+    projectController.reusable_textarea.focus();
+    projectController.reusable_textarea.blur(projectController.applyCSS);
+    parent.append(projectController.reusable_applybutton);
 
-    if (ItemController.css) {
-      ItemController.reusable_textarea.val(ItemController.css);
+    if (projectController.css) {
+      projectController.reusable_textarea.val(projectController.css);
     } else {
       Logger.on();
-      CommonController.getCustomCSS(ItemController.owner, ItemController.repository, function(result, error) {
+      CommonController.getCustomCSS(projectController.owner, projectController.repository, function(result, error) {
         if (error) {
           Logger.log(error);
           CommonController.getCSSTemplate(function(result, error) {
             if (CommonController.showError(error) == true) return;
-            ItemController.reusable_textarea.val(result);
+            projectController.reusable_textarea.val(result);
             Logger.off();
           });
         } else {
-          var content = ItemController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
-          ItemController.reusable_textarea.val(content);
+          var content = projectController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+          projectController.reusable_textarea.val(content);
           Logger.off();
         }
       });
@@ -625,11 +625,11 @@ var ItemController = {
   },
 
   applyCSS: function(e) {
-    ItemController.reusable_textarea.unbind("blur", ItemController.applyCSS);
-    ItemController.reusable_textarea.remove();
-    ItemController.reusable_applybutton.remove();
+    projectController.reusable_textarea.unbind("blur", projectController.applyCSS);
+    projectController.reusable_textarea.remove();
+    projectController.reusable_applybutton.remove();
 
-    var cssContent = ItemController.reusable_textarea.val();
+    var cssContent = projectController.reusable_textarea.val();
     var ID = "customecss";
     var stylesheet = $("#"+ID);
     if (stylesheet.length == 0) {
@@ -639,7 +639,7 @@ var ItemController = {
       document.body.appendChild(stylesheet.get(0));
     }
     stylesheet.text(cssContent);
-    ItemController.css = cssContent;
+    projectController.css = cssContent;
   },
 
   updateIndex: function() {
@@ -662,7 +662,7 @@ var ItemController = {
     var contentlist = [];
 
     var meta = $(document.getElementById("meta").cloneNode(true));
-    var thumbnail = ItemController.findThumbnail();
+    var thumbnail = projectController.findThumbnail();
     meta.css("background-image", "url("+thumbnail+")");
     var index = $(document.getElementById("index").cloneNode(true));
     contentlist.push(meta.get(0));
@@ -683,5 +683,5 @@ var ItemController = {
 };
 
 $(document).ready(function() {
-  ItemController.init();
+  projectController.init();
 });

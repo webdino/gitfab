@@ -16,14 +16,14 @@ var GridLayout = {
     if (columns == 0) {
       columns = 1;
     }
-    var wOfItem = (containerwidth-(margin*columns+1))/columns;
+    var wOfProject = (containerwidth-(margin*columns+1))/columns;
 
     for (var i = 0, n = elements.length, x = margin; i < n; i++) {
       var information = informations[i];
       var element = elements[i];
       element.addClass("grid");
-      var height = wOfItem;
-      var width = wOfItem;
+      var height = wOfProject;
+      var width = wOfProject;
       element.css({width:width+"px", height:height+"px", "margin-left": margin+"px"});
       container.append(element);
     }
@@ -34,7 +34,7 @@ var GridLayout = {
     if (columns == 0) {
       columns = 1;
     }
-    var wOfItem = containerwidth/columns;
+    var wOfProject = containerwidth/columns;
 
     var columnHs = [];
     for (var i = 0; i < columns; i++) {
@@ -45,8 +45,8 @@ var GridLayout = {
       var information = informations[i];
       var element = elements[i];
       container.append(element);
-      var width = wOfItem;
-      var height = wOfItem/information.aspect;
+      var width = wOfProject;
+      var height = wOfProject/information.aspect;
       var minH = Number.MAX_VALUE;
       var minIndex = 0;
       for (var j = 0; j < columns; j++) {
