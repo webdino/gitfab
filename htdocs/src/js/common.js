@@ -51,7 +51,7 @@ var CommonController = {
     $("#login").html("");
     $("#login").append(userImg);
     $("#login").append(userName);
-    var createurl = CommonController.getItemPageURL(username, ":create");
+    var createurl = CommonController.getProjectPageURL(username, ":create");
     $("#create").attr("href", createurl);
     $("#create").show();
     var dashboardurl = CommonController.getDashboardURL(username);
@@ -88,12 +88,12 @@ var CommonController = {
     });
   },
   
-  getItemList: function(callback) {
+  getProjectList: function(callback) {
     var url = "https://api.github.com/users/gitfab/subscriptions?callback=?";
     CommonController.getGithubJSON(url, callback);
   },
   
-  getItemPageURL: function(owner, repository) {
+  getProjectPageURL: function(owner, repository) {
     return "/"+owner+"/"+repository+"/";
   },
 
@@ -232,8 +232,8 @@ var CommonController = {
   },
   
   //local -----
-  getItemListFromDatabase: function(tag, owner, callback) {
-    var url = "/api/itemlist.php";
+  getProjectListFromDatabase: function(tag, owner, callback) {
+    var url = "/api/Projectlist.php";
     if (tag) {
       url += "?tag="+tag;
     } else if (owner) {
@@ -311,7 +311,7 @@ var CommonController = {
 
   createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS, tagsA) {
     var link = $(document.createElement("a"));
-    var url = CommonController.getItemPageURL(ownerS, repositoryS);
+    var url = CommonController.getProjectPageURL(ownerS, repositoryS);
     link.attr("href", url);
 
     if (thumbnailS == "") {

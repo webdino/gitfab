@@ -172,19 +172,19 @@ footer a {
   text-align: center;
 }
 
-.item {
+.project {
 /*  clear: both; */
   list-style-type: none;
 /*  font-family: Helvetica,sans-serif; */
 /*  text-shadow: 1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray; */
 }
 
-.item a {
+.project a {
   text-decoration: none;
   color: white;
 }
 
-.item > a {
+.project > a {
   display: block;
   width: 100%;
   height: 100%;

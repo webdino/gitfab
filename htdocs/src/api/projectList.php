@@ -5,7 +5,7 @@
   include('local-database-functions.php.inc');
   $result = array();
   try {
-    $result["itemlist"] = getItemList($owner, $tag);
+    $result["projectList"] = getProjectList($owner, $tag);
   } catch (Exception $e) {
     $result["error"] = $e->getMessage();
   }
