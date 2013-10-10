@@ -9,6 +9,5 @@
   } catch (Exception $e) {
     $result["error"] = $e->getMessage();
   }
-
   echo json_encode($result);
 ?>

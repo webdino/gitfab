@@ -93,10 +93,13 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
+
+  //branchをもたせる
   getProjectPageURL: function(owner, repository) {
     return "/"+owner+"/"+repository+"/";
   },
 
+  //branchをもたせる
   getDashboardURL: function(owner) {
     return "/"+owner+"/";
   },
@@ -120,6 +123,7 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
+  //branchをいれてRepository => Projectにリネームする
   getRepositoryInformation: function(owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"?callback=?";
     CommonController.getGithubJSON(url, callback);
@@ -152,6 +156,7 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
 
+  //どこにbranchをいれておくか
   fork: function(token, owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/forks";
     CommonController.ajaxGithub(url, "POST", token, {}, callback);
@@ -182,6 +187,23 @@ var CommonController = {
       }
       CommonController.updateMetadata(user, "", name, "", "", "", callback);
     });
+  },
+
+  getAllReferences: function(token,user,name,callback){
+      var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs";
+      console.log(url);
+      CommonController.ajaxGithub(url, "GET", token, {}, function(result, error) {
+      if (error) {
+        callback(null, error);
+        return;
+      }else{
+        console.log(result);
+      }
+    });
+  },
+
+  createBranch: function(token,user,name,callback){
+
   },
 
   ajaxGithub: function(url, method, token, parameters, callback) {
@@ -230,6 +252,21 @@ var CommonController = {
       }
     });
   },
+    getGithubJSONwithParam: function(url,data, callback) {
+    Logger.request(url);
+    CommonController.getJSONwithParam(url,data, function(result, error) {
+      if (error) {
+        callback(null, error);
+        return;
+      }
+      if (result.data.message) {
+        callback(null, result.data.message);
+      } else {
+        callback(result.data);
+      }
+    });
+  },
+  
   
   //local -----
   getProjectListFromDatabase: function(tag, owner, callback) {
@@ -367,6 +404,14 @@ var CommonController = {
     })
     .error(function(xhr, textStatus, errorThrown) {
       callback(null, textStatus+":"+xhr.responseText);
+    })
+  },
+  getJSONwithParam: function(url,data, callback) {
+    $.getJSON(url,data, function(result) {
+      console.log(result);
+    })
+    .error(function(xhr, textStatus, errorThrown) {
+      //callback(null, textStatus+":"+xhr.responseText);
     })
   }
 }

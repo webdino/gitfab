@@ -565,6 +565,15 @@ var projectController = {
       }, 500);
     });
   },
+  
+  getAllReferences: function(){
+    CommonController.getAllReferences(projectController.token, projectController.user, projectController.repository, function(result, error) {
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
+    });
+  },
 
   fork: function() {
     Logger.on();

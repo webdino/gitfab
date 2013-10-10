@@ -1,5 +1,6 @@
 <?php
 function openConnection() { 
+  date_default_timezone_set("Asia/Tokyo");
   $url = parse_url(getenv("CLEARDB_DATABASE_URL"));
   $server = $url["host"];
   $username = $url["user"];
@@ -10,6 +11,9 @@ function openConnection() {
   return $connection;
 }
 
+function dbg($data){
+  error_log(date("[Y/m/d H:i:s]").rtrim(print_r($data,true))."\n", 3, '/var/tmp/app.log');
+}
 function closeConnection($connection) { 
 }
 
@@ -23,6 +27,13 @@ function findRepository($owner, $name, $connection) {
   }
   $statement->closeCursor();
   return $id;
+}
+
+function addBranchColumn($connection) {
+  $query = "ALTER TABLE repositories ADD branch varchar(255) DEFAULT 'master' NOT NULL";
+  $statement = $connection->prepare($query);
+  $statement->execute();
+
 }
 
 function newRepository($owner, $name, $connection) {
@@ -165,12 +176,12 @@ function getMetaData($owner, $name) {
 }
 
 function getProjectList($owner, $tag) {
+
   try {
     $connection = openConnection();
 
     $query = "SELECT R.id,R.owner,R.name,R.avatar,R.thumbnail,R.aspect,R.created,R.updated FROM repositories AS R";
     $query4tags = "SELECT name FROM tags WHERE repository_id=?";
-
     $parameter = array();
     if ($owner) {
       $query .= " WHERE R.owner=?";
@@ -180,6 +191,7 @@ function getProjectList($owner, $tag) {
       $parameter[] = $tag;
     }
     $query .= " ORDER BY updated DESC";
+
     $statement = $connection->prepare($query);
     $statement->execute($parameter);
     $projectList = array();
@@ -196,7 +208,8 @@ function getProjectList($owner, $tag) {
       $projectList[] = array("owner"=>$row["owner"],"name"=>$row["name"],"avatar"=>$row["avatar"],"thumbnail"=>$row["thumbnail"],"aspect"=>$row["aspect"],"created"=>$row["created"],"updated"=>$row["updated"], "tags"=>$tags);
     }
     $statement->closeCursor();
-
+  dbg($statement);
+    test($connection);
     closeConnection($connection);
 
     return $projectList;
