@@ -10,4 +10,7 @@
     $result["error"] = $e->getMessage();
   }
   echo json_encode($result);
+  dbg($result);
+  dbg($owner);
+  dbg($tag);
 ?>

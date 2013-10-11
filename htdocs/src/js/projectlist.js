@@ -5,12 +5,15 @@ var projectListController = {
   init: function() {
     Logger.on();
     var parameters = CommonController.getParametersFromQuery();
-    document.title = "gitFAB"+(OWNER?"/"+OWNER+"/":"")+ (parameters.QueryString ? "/?"+parameters.QueryString : "");
+    document.title = "gitFAB"+(OWNER?"/"+OWNER+"/":"") + 
+    (parameters.QueryString ? "/?"+parameters.QueryString : "");
     projectListController.parameters = parameters;
     if (parameters.tag != null && parameters.tag.length == 0) {
       CommonController.getTagList(null, projectListController.loadedTagList);
     } else {
-      CommonController.getProjectListFromDatabase(parameters.tag, OWNER, projectListController.loadedProjectList);
+      CommonController.getProjectListFromDatabase(parameters.tag, 
+                                                  OWNER, 
+                                                  projectListController.loadedProjectList);
     }
   },
   
@@ -38,7 +41,12 @@ var projectListController = {
       var project = projectList[i];
       var li = $(document.createElement("li"));
       li.addClass("project");
-      var ui = CommonController.createRepositoryUI(project.owner, project.name, project.avatar, project.thumbnail, project.tags);
+      var ui = CommonController.createRepositoryUI(project.owner,
+                                                   project.name,
+                                                   project.avatar, 
+                                                   project.thumbnail, 
+                                                   project.branch,
+                                                   project.tags);
       li.append(ui);
       elements.push(li);
     }

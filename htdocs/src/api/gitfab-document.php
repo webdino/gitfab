@@ -1,8 +1,9 @@
 <?php
   $owner = $_GET["owner"];
   $repository = $_GET["repository"];
+  $branch = $_GET["branch"];
 
-  $url = "https://raw.github.com/".$owner."/".$repository."/master/README.md?".time();
+  $url = "https://raw.github.com/".$owner."/".$repository."/".$branch."/README.md?".time();
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_HTTPGET, 1);

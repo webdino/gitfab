@@ -7,7 +7,7 @@ var projectController = {
     projectController.markdownParser = new Showdown.converter();
     projectController.base64 = new Base64();
     projectController.current_id = 0;
-
+    projectController.branch = "master";
     CommonController.setParameters(projectController);
     document.title = "gitFAB/"+projectController.owner+"/"+projectController.repository;
 
@@ -412,7 +412,10 @@ var projectController = {
   },
   
   updateRepository: function() {
-    CommonController.getSHATree(projectController.user, projectController.repository, projectController.commitDocument);
+    CommonController.getSHATree(projectController.user, 
+                                projectController.repository,
+                                projectController.branch, 
+                                projectController.commitDocument);
   },
   
   findThumbnail: function() {
@@ -440,7 +443,15 @@ var projectController = {
     var tags = $("#tags").text();
     var avatar = $("#login img").attr("src");
     var thumbnail = projectController.findThumbnail();
-    CommonController.updateMetadata(projectController.user, projectController.repository, projectController.oldrepository, tags, avatar, thumbnail, callback);
+    console.log(projectController.branch);
+    CommonController.updateMetadata(projectController.user, 
+                                    projectController.repository, 
+                                    projectController.oldrepository, 
+                                    projectController.branch, 
+                                    tags, 
+                                    avatar, 
+                                    thumbnail, 
+                                    callback);
   },
 
   commitDocument: function(result, error) {
@@ -468,7 +479,10 @@ var projectController = {
         var file = files[key];
         filemap[key] = file;
         //replace url
-        var fileURL = CommonController.getFileURL(projectController.user, projectController.repository, MATERIALS+"/"+file.name);
+        var fileURL = CommonController.getFileURL(projectController.user, 
+                                                  projectController.repository,
+                                                  projectController.branch,
+                                                  MATERIALS+"/"+file.name);
         text = text.replace(key, fileURL);
         $("img[src='"+key+"']").attr("fileurl", fileURL);
       }
@@ -482,7 +496,14 @@ var projectController = {
   },
 
   commitChain: function(path, content, message, tree, filemap) {
-    CommonController.commit(projectController.token, projectController.user, projectController.repository, path, content, message, tree, function(result, error) {
+    CommonController.commit(projectController.token, projectController.user, 
+                                                     projectController.repository, 
+                                                     projectController.branch, 
+                                                     path, 
+                                                     content, 
+                                                     message, 
+                                                     tree, 
+                                                     function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
@@ -496,7 +517,15 @@ var projectController = {
       if (!file) {
         projectController.updateMetadata(function() {
           if (projectController.css) {
-            CommonController.commit(projectController.token, projectController.user, projectController.repository, CUSTOM_CSS, projectController.base64.encodeStringAsUTF8(projectController.css), "", tree, function(result, error) {
+            CommonController.commit(projectController.token, 
+                                    projectController.user, 
+                                    projectController.repository, 
+                                    projectController.branch ,
+                                    CUSTOM_CSS, 
+                                    projectController.base64.encodeStringAsUTF8(projectController.css), 
+                                    "", 
+                                    tree, 
+                                    function(result, error) {
               CommonController.showError(error);
               Logger.off();
             });
@@ -565,7 +594,7 @@ var projectController = {
       }, 500);
     });
   },
-  
+
   getAllReferences: function(){
     CommonController.getAllReferences(projectController.token, projectController.user, projectController.repository, function(result, error) {
       if (CommonController.showError(error) == true) {
@@ -574,22 +603,25 @@ var projectController = {
       }
     });
   },
-
-  fork: function() {
-    Logger.on();
-    CommonController.fork(projectController.token, projectController.owner, projectController.repository, function(result, error) {
-      if (CommonController.showError(error) == true) {
-        Logger.off();
-        return;
-      }
-      projectController.watch(projectController.user, projectController.repository, function(result, error) {
+  newBranch: function(branch){//token,user,name,branch,sha,callback
+    CommonController.getSHA(projectController.user,
+                                      projectController.repository,
+                                      "master",//old branch name
+                                      function(result,error){
+      CommonController.newBranch(projectController.token,
+                                 projectController.owner, 
+                                 projectController.repository,
+                                 branch, 
+                                 result.object.sha,
+                                 function(result, error) {
         if (CommonController.showError(error) == true) {
           Logger.off();
           return;
-        };
-        projectController.oldrepository = "";
+        }
         projectController.updateMetadata(function() {
-          var url = CommonController.getProjectPageURL(projectController.user, projectController.repository);
+          var url = CommonController.getProjectPageURL(projectController.user, 
+                                                       projectController.repository,
+                                                       projectController.branch);
           Logger.log("reload: "+url);
           setTimeout(function() {
             window.location.href = url;
@@ -598,6 +630,45 @@ var projectController = {
         });
       });
     });
+  },
+  fork: function() {
+    Logger.on();
+    if(projectController.user == projectController.owner){
+      console.log("fork itself!!!");
+      if(projectController.branch == "master"){
+        projectController.branch = "test-branch1";
+        projectController.newBranch(projectController.branch);
+      }
+    }else{
+    CommonController.fork(projectController.token, 
+                          projectController.owner, 
+                          projectController.repository,
+                          function(result, error) {
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
+      projectController.watch(projectController.user, 
+                              projectController.repository,
+                              function(result, error) {
+        if (CommonController.showError(error) == true) {
+          Logger.off();
+          return;
+        };
+        projectController.oldrepository = "";
+        projectController.updateMetadata(function() {
+          var url = CommonController.getProjectPageURL(projectController.user, 
+                                                       projectController.repository,
+                                                       projectController.branch);
+          Logger.log("reload: "+url);
+          setTimeout(function() {
+            window.location.href = url;
+            Logger.off();
+          }, 500);
+        });
+      });
+    });
+}
   },
   
   encode4html: function(text) {

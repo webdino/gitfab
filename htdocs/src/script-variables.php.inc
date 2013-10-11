@@ -10,7 +10,11 @@
   } else {
     echo "    var REPOSITORY = null;\n";
   }
-  
+  if (isset($_GET["branch"])) {
+    echo "    var BRANCH = \"".$_GET["BRANCH"]."\";\n";
+  } else {
+    echo "    var BRANCH = \"master\";\n";
+  }
 //  session_start();
   if (isset($_SESSION["user"])) {
     echo "    var USER = \"".$_SESSION["user"]."\";\n";

@@ -32,9 +32,6 @@ var CommonController = {
     if (REPOSITORY) {
       object.repository = REPOSITORY;
     }
-    if (BRANCH) {
-      object.branch = BRANCH;
-    }
     if (USER) {
       object.user = USER;
     }
@@ -96,17 +93,16 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
-
-  getProjectPageURL: function(owner, repository, branch) {
-    return "/"+owner+"/"+repository+"/"+branch+"/";
+  getProjectPageURL: function(owner, repository) {
+    return "/"+owner+"/"+repository+"/";
   },
 
   getDashboardURL: function(owner) {
     return "/"+owner+"/";
   },
 
-  getFileURL: function(user, repository, branch, path) {
-    return "https://raw.github.com/"+user+"/"+repository+"/"+branch+"/"+path;
+  getFileURL: function(user, repository, path) {
+    return "https://raw.github.com/"+user+"/"+repository+"/master/"+path;
   },
   
   getGitfabDocument: function(owner, repository, callback) {
@@ -124,7 +120,6 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
-  //branchをいれてRepository => Projectにリネームする
   getRepositoryInformation: function(owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"?callback=?";
     CommonController.getGithubJSON(url, callback);
@@ -135,20 +130,16 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
-  getSHATree: function(user, repository, branch, callback) {//branch not impl yet
+  getSHATree: function(user, repository, callback) {
     var url = "https://api.github.com/repos/"+user+"/"+repository+"/git/trees/master?recursive=2&callback=?";
     CommonController.getGithubJSON(url, callback);
   },
-  getSHA: function(user, repository, branch,callback){
-    var url= "https://api.github.com/repos/"+user+"/"+repository+"/git/refs/heads/"+branch;
-    CommonController.getJSON(url,callback);
-  },
-  commit: function(token, user, repository, branch, path, content, message, tree, callback) {
+  
+  commit: function(token, user, repository, path, content, message, tree, callback) {
     var parameters = {
       path: path,
       message: message,
-      content: content,
-      branch: branch,
+      content: content
     };
     for (var i = 0, n = tree.length; i < n; i++) {
       var node = tree[i];
@@ -161,19 +152,9 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
 
-  //どこにbranchをいれておくか
   fork: function(token, owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/forks";
-
     CommonController.ajaxGithub(url, "POST", token, {}, callback);
-  },
-  newBranch: function(token,user,name,branch,sha,callback){
-    var parameters = {
-      ref: "refs/heads/"+branch,
-      sha: sha
-    };
-    CommonController.ajaxGithub("https://api.github.com/repos/"+user+"/"+name+"/git/refs", "POST", token, parameters, callback);
- 
   },
   
   newRepository: function(token, name, callback) {
@@ -199,59 +180,9 @@ var CommonController = {
         callback(null, error);
         return;
       }
-      CommonController.updateMetadata(user, "", name, "master","", "", "", callback); //branch not impl yet
-    });
-  },
-//---------------------
-
-  newProject: function(token, name, callback) {
-    var parameters = {
-      name: name,
-      auto_init: true
-    };
-    CommonController.ajaxGithub("https://api.github.com/user/repos", "POST", token, parameters, callback);
-  },
-  //branch どーすんの　新たに fork　するのか
-  renameProject: function(token, user, name, old, callback) {
-    var url = "https://api.github.com/repos/"+user+"/"+old;
-    var parameters = {
-      name: name,
-    };
-    CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
-  },
-
-  deleteProject: function(token, user, name, branch, callback) {
-    var url = "https://api.github.com/repos/"+user+"/"+name;
-    var parameters = {
-      branch: branch
-    };
-    CommonController.ajaxGithub(url, "DELETE", token, parameters, function(result, error) {
-      if (error) {
-        callback(null, error);
-        return;
-      }
       CommonController.updateMetadata(user, "", name, "", "", "", callback);
     });
   },
-
-//----------------------------
-
-
-
-  getAllReferences: function(token,user,name,callback){
-      var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs";
-      console.log(url);
-      CommonController.ajaxGithub(url, "GET", token, {}, function(result, error) {
-      if (error) {
-        callback(null, error);
-        return;
-      }else{
-        console.log(result);
-      }
-    });
-  },
-
-
 
   ajaxGithub: function(url, method, token, parameters, callback) {
     Logger.request(url);
@@ -299,21 +230,6 @@ var CommonController = {
       }
     });
   },
-    getGithubJSONwithParam: function(url,data, callback) {
-    Logger.request(url);
-    CommonController.getJSONwithParam(url,data, function(result, error) {
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.data.message) {
-        callback(null, result.data.message);
-      } else {
-        callback(result.data);
-      }
-    });
-  },
-  
   
   //local -----
   getProjectListFromDatabase: function(tag, owner, callback) {
@@ -336,8 +252,8 @@ var CommonController = {
     CommonController.getLocalJSON(url, callback);
   },
 
-  updateMetadata: function(owner, repository, oldrepository, branch, tags, avatar, thumbnail, callback) {
-    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&branch="+ branch+"&tags="+tags+"&avatar="+avatar+"&thumbnail="+thumbnail;
+  updateMetadata: function(owner, repository, oldrepository, tags, avatar, thumbnail, callback) {
+    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&tags="+tags+"&avatar="+avatar+"&thumbnail="+thumbnail;
     CommonController.getLocalJSON(url, callback);
   },
 
@@ -393,9 +309,9 @@ var CommonController = {
     });
   },
 
-  createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS, branchS, tagsA) {
+  createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS, tagsA) {
     var link = $(document.createElement("a"));
-    var url = CommonController.getProjectPageURL(ownerS, repositoryS,branchS);
+    var url = CommonController.getProjectPageURL(ownerS, repositoryS);
     link.attr("href", url);
 
     if (thumbnailS == "") {
@@ -419,7 +335,7 @@ var CommonController = {
 
     var repository = $(document.createElement("div"));
     repository.addClass("repository");
-    repository.text(repositoryS+"/"+branchS);    
+    repository.text(repositoryS);
 
     headline.append(repository);
     headline.append(owner);
@@ -451,14 +367,6 @@ var CommonController = {
     })
     .error(function(xhr, textStatus, errorThrown) {
       callback(null, textStatus+":"+xhr.responseText);
-    })
-  },
-  getJSONwithParam: function(url,data, callback) {
-    $.getJSON(url,data, function(result) {
-      console.log(result);
-    })
-    .error(function(xhr, textStatus, errorThrown) {
-      //callback(null, textStatus+":"+xhr.responseText);
     })
   }
 }
