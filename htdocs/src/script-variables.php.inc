@@ -11,7 +11,7 @@
     echo "    var REPOSITORY = null;\n";
   }
   if (isset($_GET["branch"])) {
-    echo "    var BRANCH = \"".$_GET["BRANCH"]."\";\n";
+    echo "    var BRANCH = \"".$_GET["branch"]."\";\n";
   } else {
     echo "    var BRANCH = \"master\";\n";
   }

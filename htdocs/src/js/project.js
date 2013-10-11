@@ -7,7 +7,6 @@ var projectController = {
     projectController.markdownParser = new Showdown.converter();
     projectController.base64 = new Base64();
     projectController.current_id = 0;
-    projectController.branch = "master";
     CommonController.setParameters(projectController);
     document.title = "gitFAB/"+projectController.owner+"/"+projectController.repository;
 
@@ -582,7 +581,11 @@ var projectController = {
       return;
     }
     Logger.on();
-    CommonController.deleteRepository(projectController.token, projectController.owner, projectController.repository, function(result, error) {
+    CommonController.deleteRepository(projectController.token, 
+                                      projectController.owner, 
+                                      projectController.repository, 
+                                      projectController.branch,
+                                      function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;

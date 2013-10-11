@@ -161,7 +161,6 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
 
-  //どこにbranchをいれておくか
   fork: function(token, owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"/forks";
 
@@ -192,17 +191,34 @@ var CommonController = {
     CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
   },
 
-  deleteRepository: function(token, user, name, callback) {
-    var url = "https://api.github.com/repos/"+user+"/"+name;
-    CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      CommonController.updateMetadata(user, "", name, "master","", "", "", callback); //branch not impl yet
-    });
+  deleteRepository: function(token, user, name, branch, callback) {
+    console.log("deleteProject");
+    if(branch == "master"){//branch の存在確認しよう
+      console.log("delete master");
+      var url = "https://api.github.com/repos/"+user+"/"+name;
+      
+      /*CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
+        if (error) {
+          callback(null, error);
+          return;
+        }
+        CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
+      });*/
+      CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
+
+    }else{
+      console.log("-------------delete Branch");
+      var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
+      CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
+        if (error) {
+          callback(null, error);
+          return;
+        }
+        CommonController.updateMetadata(user, "", name, branch,"", "", "", callback);
+      });
+    }
   },
-//---------------------
+/*---------------------
 
   newProject: function(token, name, callback) {
     var parameters = {
@@ -211,7 +227,6 @@ var CommonController = {
     };
     CommonController.ajaxGithub("https://api.github.com/user/repos", "POST", token, parameters, callback);
   },
-  //branch どーすんの　新たに fork　するのか
   renameProject: function(token, user, name, old, callback) {
     var url = "https://api.github.com/repos/"+user+"/"+old;
     var parameters = {
@@ -224,17 +239,27 @@ var CommonController = {
     var url = "https://api.github.com/repos/"+user+"/"+name;
     var parameters = {
       branch: branch
-    };
-    CommonController.ajaxGithub(url, "DELETE", token, parameters, function(result, error) {
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      CommonController.updateMetadata(user, "", name, "", "", "", callback);
-    });
+    };//現状では DB 内のデータのみを消して行く。あとでbranchをチェックして 
+      //branch があるときに master を消そうとしたら、 repository は残す
+      //その他のときは Github と DB を両方消す 
+  
+    if(branch != "master"){
+      CommonController.ajaxGithub(url, "DELETE", token, parameters, function(result, error) {
+        if (error) {
+          callback(null, error);
+          return;
+        }
+        CommonController.updateMetadata(user, "", name, branch, "", "", callback);
+      });
+    }else{
+      CommonController.updateMetadata(user, "", name, branch, "", "", callback);
+    }
+    
+    CommonController.updateMetadata(user, "", name, branch, "", "", callback);
+
   },
 
-//----------------------------
+----------------------------*/
 
 
 

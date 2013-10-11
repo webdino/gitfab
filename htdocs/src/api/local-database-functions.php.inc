@@ -8,7 +8,7 @@ function openConnection() {
   $db = substr($url["path"],1);
   $dsn = "mysql:dbname=".$db.";host=".$server;
   $connection = new PDO($dsn, $username, $password);
-  
+  //deleteRepository(findRepository("hrl7","gf-tsutenkaku-ja","test-branch1",$connection),$connection);
   return $connection;
 }
 
@@ -132,13 +132,20 @@ function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thu
     $oldname = $oldname != NULL ? trim($oldname) : "";
     $name = $name != NULL ? trim($name) : "";
     $branch = $branch != NULL ? trim($branch) : "master";
-
+      dbg($owner);
+      dbg($name);
+      dbg($oldname);
+      dbg($branch);
+      dbg($connection);
     if (strlen($oldname) != 0) {
       $id = findRepository($owner, $oldname, $branch, $connection);
       if (strlen($name) != 0) {
         renameRepository($id, $name, $connection);
+        dbg("rename Repository!!");  //name と oldname があるとき
       } else {
-        deleteRepository($id, $connection);
+        dbg("delete Repository!!");
+        dbg($id);
+        deleteRepository($id, $connection); //name がなくて oldname があるとき
       }
     } else {
       $id = findRepository($owner, $name, $branch, $connection);
@@ -149,7 +156,7 @@ function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thu
       dbg($name);
       dbg($branch);
       dbg($connection);
-      newRepository($owner, $name, $branch, $connection);
+      newRepository($owner, $name, $branch, $connection); //oldname がなくて name が見当たらない
       $id = findRepository($owner, $name, $branch, $connection);
       dbg($id);
     } else {
