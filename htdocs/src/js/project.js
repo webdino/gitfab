@@ -495,14 +495,15 @@ var projectController = {
   },
 
   commitChain: function(path, content, message, tree, filemap) {
-    CommonController.commit(projectController.token, projectController.user, 
-                                                     projectController.repository, 
-                                                     projectController.branch, 
-                                                     path, 
-                                                     content, 
-                                                     message, 
-                                                     tree, 
-                                                     function(result, error) {
+    CommonController.commit(projectController.token, 
+                            projectController.user, 
+                            projectController.repository, 
+                            projectController.branch, 
+                            path, 
+                            content, 
+                            message, 
+                            tree, 
+                            function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;

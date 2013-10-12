@@ -33,7 +33,10 @@ var CommonController = {
       object.repository = REPOSITORY;
     }
     if (BRANCH) {
-      object.branch = BRANCH;
+      console.log(BRANCH);
+      if(BRANCH == "undefined")object.branch = "master";   
+      else object.branch = BRANCH;
+
     }
     if (USER) {
       object.user = USER;
@@ -157,6 +160,8 @@ var CommonController = {
         break;
       }
     }
+    console.log("commit:");
+    console.log(branch);
     var url = "https://api.github.com/repos/"+user+"/"+repository+"/contents/"+path;
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
