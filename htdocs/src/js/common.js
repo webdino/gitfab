@@ -33,10 +33,8 @@ var CommonController = {
       object.repository = REPOSITORY;
     }
     if (BRANCH) {
-      console.log(BRANCH);
       if(BRANCH == "undefined")object.branch = "master";   
       else object.branch = BRANCH;
-
     }
     if (USER) {
       object.user = USER;
@@ -186,6 +184,24 @@ var CommonController = {
       auto_init: true
     };
     CommonController.ajaxGithub("https://api.github.com/user/repos", "POST", token, parameters, callback);
+  },
+
+  renameBranches: function(owner,name,oldname,branch){
+    var url = "/api/check.php?owner="+owner+"&repository="+oldname;
+    CommonController.getJSON(url,function(result){
+      for(var i = 0; i < result.branches.length; i++){
+        var proj = result.branches[i];
+        console.log("--------------renameBranches");
+        console.log(proj);
+        CommonController.updateMetadata(proj.owner, 
+                                        name, 
+                                        proj.name, 
+                                        proj.branch, 
+                                        "", "", "", 
+                                        function(result){console.log(result)});
+      }
+
+    });
   },
 
   renameRepository: function(token, user, name, old, callback) {
@@ -367,7 +383,7 @@ var CommonController = {
   },
 
   updateMetadata: function(owner, repository, oldrepository, branch, tags, avatar, thumbnail, callback) {
-    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&branch="+ branch+"&tags="+tags+"&avatar="+avatar+"&thumbnail="+thumbnail;
+    var url = "/api/update-metadata.php?owner="+owner+"&repository="+repository+"&oldrepository="+oldrepository+"&branch="+branch+"&tags="+tags+"&avatar="+avatar+"&thumbnail="+thumbnail;
     CommonController.getLocalJSON(url, callback);
   },
 

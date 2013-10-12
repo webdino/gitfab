@@ -8,11 +8,12 @@ function openConnection() {
   $db = substr($url["path"],1);
   $dsn = "mysql:dbname=".$db.";host=".$server;
   $connection = new PDO($dsn, $username, $password);
-  //deleteRepository(findRepository("hrl7","gf-tsutenkaku-ja","test-branch1",$connection),$connection);
+  //deleteRepository(findRepository("hrl7","piyo","test-branch1",$connection),$connection);
   return $connection;
 }
 
 function dbg($data){
+  date_default_timezone_set("Asia/Tokyo");
   error_log(date("[Y/m/d H:i:s]").rtrim(print_r($data,true))."\n", 3, '/var/tmp/app.log');
 }
 
@@ -72,6 +73,7 @@ function renameRepository($id, $name, $connection) {
 }
 
 function deleteRepository($id, $connection) {
+  dbg("delete------------------------------");
   $query = "DELETE FROM tags WHERE repository_id=?";
   $statement = $connection->prepare($query);
   $statement->execute(array($id));
@@ -132,19 +134,25 @@ function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thu
     $oldname = $oldname != NULL ? trim($oldname) : "";
     $name = $name != NULL ? trim($name) : "";
     $branch = $branch != NULL ? trim($branch) : "master";
-      dbg($owner);
-      dbg($name);
-      dbg($oldname);
-      dbg($branch);
-      dbg($connection);
+
     if (strlen($oldname) != 0) {
       $id = findRepository($owner, $oldname, $branch, $connection);
       if (strlen($name) != 0) {
-        renameRepository($id, $name, $connection);
         dbg("rename Repository!!");  //name と oldname があるとき
+        renameRepository($id, $name, $connection);
+             dbg($id);
+              dbg($owner);
+      dbg($name);
+      dbg($oldname);
+      dbg($branch);
+
+              dbg("---------------end----");
       } else {
         dbg("delete Repository!!");
-        dbg($id);
+
+      dbg($name);
+
+
         deleteRepository($id, $connection); //name がなくて oldname があるとき
       }
     } else {
@@ -152,10 +160,13 @@ function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thu
     }
     if ($id == -1) {
     //new
+        dbg("---------------newRepos----");
       dbg($owner);
       dbg($name);
       dbg($branch);
       dbg($connection);
+        dbg("---------------end----");
+
       newRepository($owner, $name, $branch, $connection); //oldname がなくて name が見当たらない
       $id = findRepository($owner, $name, $branch, $connection);
       dbg($id);
@@ -211,8 +222,38 @@ function getMetaData($owner, $name) {
   }
 }
 
-function getProjectList($owner, $tag) {
+function getBranches($owner,$name){
+  try {
+    $connection = openConnection();
 
+    $query = "SELECT R.id,R.owner,R.name,R.branch FROM repositories AS R";
+    $parameter = array();
+    if ($owner) {
+      $query .= " WHERE R.owner=? AND R.name=?";
+      $parameter[] = $owner;
+      $parameter[] .= $name;
+    }
+    $query .= " ORDER BY updated DESC";
+    $statement = $connection->prepare($query);
+    $statement->execute($parameter);
+    $projectList = array();
+
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+      $projectList[] = array("id"=>$row["id"],
+                             "owner"=>$row["owner"],
+                             "name"=>$row["name"],
+                             "branch"=>$row["branch"]);
+    }
+    $statement->closeCursor();
+    closeConnection($connection);
+    return $projectList;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  }  
+}
+
+function getProjectList($owner, $tag) {
   try {
     $connection = openConnection();
 
@@ -251,6 +292,7 @@ function getProjectList($owner, $tag) {
     $connection->rollBack();
     throw $e;
   }
+
 }
 
 function getTagList($owner) {

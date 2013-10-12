@@ -142,7 +142,11 @@ var projectController = {
 //    var content = projectController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
-    var title = projectController.repository;
+    if(projectController.branch == "master"){
+      var title = projectController.repository;
+    } else {
+      var title = projectController.branch;
+    }
     var tags = lines[1].substring("## ".length);
     var owner = projectController.owner ? projectController.owner : projectController.user;
     $("#owner").text(owner);
@@ -400,6 +404,8 @@ var projectController = {
     } else if (projectController.repository != repository) {
       //rename
       projectController.renameRepository(repository);
+    } else if (projectController.branch != "master" && projectController.branch != repository){
+      projectController.renameBranch();
     } else {
       //update
       projectController.updateRepository();
@@ -565,8 +571,27 @@ var projectController = {
     });
   },
   
+  renameProject: function(name){//project の branch が master かどうか
+    CommonController.renameBranches(projectController.owner,
+                                    name,
+                                    projectController.repository,
+                                    projectController.branch);
+    CommonController.renameRepository(projectController.token, 
+                                      projectController.user, 
+                                      name,
+                                      projectController.repository,
+                                      function(result,error){
+                                        console.log("renameRepository on github---------------")
+                                        console.log(result);
+                                      });
+  },
+
   renameRepository: function(name) {
-    CommonController.renameRepository(projectController.token, projectController.user, name, projectController.repository, function(result, error) {
+    CommonController.renameRepository(projectController.token, 
+                                      projectController.user, 
+                                      name, 
+                                      projectController.repository, 
+                                      function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
@@ -576,6 +601,7 @@ var projectController = {
       projectController.updateRepository();
     });
   },
+
   
   deleteRepository: function() {
     if (!window.confirm("are you sure to remove this project?")) {
