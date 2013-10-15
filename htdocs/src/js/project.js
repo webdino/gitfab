@@ -572,18 +572,35 @@ var projectController = {
   },
   
   renameProject: function(name){//project の branch が master かどうか
-    CommonController.renameBranches(projectController.owner,
-                                    name,
-                                    projectController.repository,
-                                    projectController.branch);
-    CommonController.renameRepository(projectController.token, 
-                                      projectController.user, 
+    if(projectController.branch == "master")
+
+    /*{
+      CommonController.renameBranches(projectController.owner,
                                       name,
                                       projectController.repository,
-                                      function(result,error){
-                                        console.log("renameRepository on github---------------")
-                                        console.log(result);
-                                      });
+                                      projectController.branch);
+      CommonController.renameRepository(projectController.token, 
+                                        projectController.user, 
+                                        name,
+                                        projectController.repository,
+                                        function(result,error){
+                                          console.log("renameRepository on github---------------")
+                                          console.log(result);
+                                        });
+    } else {
+      CommonController.updateMetadata(proj.owner, 
+                                      name, 
+                                      proj.name, 
+                                      proj.branch, 
+                                      "", "", "", 
+                                      function(result){console.log(result)}); //github 上の ref の変更
+      // get sha
+      //
+      CommonController.renameBranch(projectController.token,
+                                    projectController.owner,
+                                    projectController.repository,
+                                    projectController.branch);
+    }*/
   },
 
   renameRepository: function(name) {
@@ -635,9 +652,9 @@ var projectController = {
   },
   newBranch: function(branch){//token,user,name,branch,sha,callback
     CommonController.getSHA(projectController.user,
-                                      projectController.repository,
-                                      "master",//old branch name
-                                      function(result,error){
+                            projectController.repository,
+                            "master",//old branch name
+                            function(result,error){
       CommonController.newBranch(projectController.token,
                                  projectController.owner, 
                                  projectController.repository,

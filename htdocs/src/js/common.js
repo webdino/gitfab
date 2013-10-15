@@ -125,7 +125,6 @@ var CommonController = {
     CommonController.getGithubJSON(url, callback);
   },
   
-  //branchをいれてRepository => Projectにリネームする
   getRepositoryInformation: function(owner, repository, callback) {
     var url = "https://api.github.com/repos/"+owner+"/"+repository+"?callback=?";
     CommonController.getGithubJSON(url, callback);
@@ -186,6 +185,7 @@ var CommonController = {
     CommonController.ajaxGithub("https://api.github.com/user/repos", "POST", token, parameters, callback);
   },
 
+
   renameBranches: function(owner,name,oldname,branch){
     var url = "/api/check.php?owner="+owner+"&repository="+oldname;
     CommonController.getJSON(url,function(result){
@@ -202,6 +202,29 @@ var CommonController = {
       }
 
     });
+  },
+  newDBProject(){
+
+  },
+  renameDBBranch(){
+
+  },
+  renameDBRepository(){
+
+  },
+  deleteDBProject(){
+
+  },
+
+
+  renameBranch: function(token, user, name, oldBranch) {
+    var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
+    var sha = CommonController.getSHA(user,name,oldBranch,function(res){console.log(res)});
+    var parameters = {
+      sha:sha,
+      force:"true"
+    };
+    CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res){console.log(res)});
   },
 
   renameRepository: function(token, user, name, old, callback) {

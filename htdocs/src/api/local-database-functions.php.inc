@@ -8,7 +8,9 @@ function openConnection() {
   $db = substr($url["path"],1);
   $dsn = "mysql:dbname=".$db.";host=".$server;
   $connection = new PDO($dsn, $username, $password);
-  //deleteRepository(findRepository("hrl7","piyo","test-branch1",$connection),$connection);
+  //deleteRepository(findRepository("hrl7","test","test-branch1",$connection),$connection);
+  //newProject("hrl7", "hoge", "master");
+
   return $connection;
 }
 
@@ -82,6 +84,137 @@ function deleteRepository($id, $connection) {
   $statement->execute(array($id));
 }
 
+//---------------------------------------------------------
+function newProject($owner, $repository, $branch) {  
+  try {
+    $connection = openConnection();
+    $connection->beginTransaction();
+  
+  dbg("newProject------------------------------");
+  $query = "INSERT INTO repositories(owner,name,branch,created,updated) VALUES (?,?,?,CAST(now() AS DATETIME),CAST(now() AS DATETIME))";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($owner, $repository, $branch));
+  dbg($owner);
+  dbg($repository);
+  dbg($branch);
+  dbg($connection);
+  dbg($statement);
+  dbg("------------------------------newProject");
+    $connection->commit();
+    closeConnection($connection);
+    return $projectList;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  }  
+}
+
+function deleteProject($owner,$repository,$branch){
+  try {
+    $connection = openConnection();
+    $connection->beginTransaction();
+  
+  dbg("deleteProject------------------------------");
+  $id = -1;
+  $id = findProject($owner,$repository,$branch,$connection);
+  dbg($id);
+  
+  $query = "DELETE FROM tags WHERE repository_id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($id));
+  $query = "DELETE FROM repositories WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($id));
+  
+  dbg("------------deleteProject");
+
+      $connection->commit();
+  closeConnection($connection);
+    return $statement;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  }  
+}
+
+function renameBranch($owner,$repository,$newBranch,$oldBranch){
+  try {
+    $connection = openConnection();
+    $connection->beginTransaction();
+  dbg("renameBranch------------------------------");
+  $id = findProject($owner,$repository,$oldBranch,$connection);
+  $query = "UPDATE repositories SET branch=?,updated=CAST(now() AS DATETIME) WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($newBranch, $id));
+   dbg("------------renameBranch");
+
+    $connection->commit();
+    closeConnection($connection);
+    return $projectList;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  }  
+}
+
+function renameRepos($owner,$newRepository,$oldRepository,$branch){
+  try {
+    $connection = openConnection();
+    $connection->beginTransaction();
+    dbg("renameRepository------------------------------");
+
+  $id = findProject($owner,$oldRepository,$branch,$connection);
+  $query = "UPDATE repositories SET name=?,updated=CAST(now() AS DATETIME) WHERE id=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($newRepository, $id));
+     dbg("------------renameRepository");
+
+    $connection->commit();
+    closeConnection($connection);
+    return $projectList;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  }  
+}
+
+//project thrown connection --------------------
+function findProject($owner, $repository, $branch, $connection) {
+  dbg($owner);
+  dbg($repository);
+  dbg($branch);
+  $query = "SELECT id FROM repositories WHERE owner=? AND name=? AND branch=?";
+  $statement = $connection->prepare($query);
+  $statement->execute(array($owner, $repository, $branch));
+  $id = -1;
+  if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+    $id = $row["id"];
+  }
+  $statement->closeCursor();
+  return $id;
+}
+
+function updateMetaData($owner,$repository,$branch, $avatar, $thumbnail) {
+  try {//avatar ,thumbnail updated
+    $connection = openConnection();
+    $connection->beginTransaction();
+
+    $id = findProject($owner,$repository,$branch,$connection)
+    $query = "UPDATE repositories SET avatar=?,thumbnail=?,updated=CAST(now() AS DATETIME) WHERE id=?";
+    $statement = $connection->prepare($query);
+    $statement->execute(array($avatar, $thumbnail, $id));
+
+    $connection->commit();
+    closeConnection($connection);
+    return $projectList;
+  } catch (PDOException $e) {
+    $connection->rollBack();
+    throw $e;
+  } 
+}
+
+//---------------------------------------------------------
+
 function updateRepositoryMeta($id, $avatar, $thumbnail, $connection) {
   $query = "UPDATE repositories SET avatar=?,thumbnail=?,updated=CAST(now() AS DATETIME) WHERE id=?";
   $statement = $connection->prepare($query);
@@ -133,15 +266,15 @@ function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thu
     $id = -1;
     $oldname = $oldname != NULL ? trim($oldname) : "";
     $name = $name != NULL ? trim($name) : "";
-    $branch = $branch != NULL ? trim($branch) : "master";
+    $branch = $branch != NULL ? trim($branch) : "";
 
     if (strlen($oldname) != 0) {
       $id = findRepository($owner, $oldname, $branch, $connection);
       if (strlen($name) != 0) {
         dbg("rename Repository!!");  //name と oldname があるとき
         renameRepository($id, $name, $connection);
-             dbg($id);
-              dbg($owner);
+          dbg($id);
+          dbg($owner);
       dbg($name);
       dbg($oldname);
       dbg($branch);
