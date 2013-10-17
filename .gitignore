@@ -5,3 +5,5 @@ htdocs/public/
 htdocs/Gemfile*
 htdocs/config.ru
 htdocs/temp/
+htdocs/node_modules/
+htdocs/components/
