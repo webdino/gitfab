@@ -2,12 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var GITFAB_DIR = "gitfab";
-var MATERIALS = GITFAB_DIR+"/resources";
-var MAIN_DOCUMENT = "README.md";
-var CUSTOM_CSS = GITFAB_DIR+"/custom.css";
+ var GITFAB_DIR = "gitfab";
+ var MATERIALS = GITFAB_DIR+"/resources";
+ var MAIN_DOCUMENT = "README.md";
+ var CUSTOM_CSS = GITFAB_DIR+"/custom.css";
 
-var CommonController = {
+ var CommonController = {
   getParametersFromQuery: function() {
     var parameters = {};
     var url = window.location.href;
@@ -174,7 +174,7 @@ var CommonController = {
       sha: sha
     };
     CommonController.ajaxGithub("https://api.github.com/repos/"+user+"/"+name+"/git/refs", "POST", token, parameters, callback);
- 
+
   },
   
   newRepository: function(token, name, callback) {
@@ -191,86 +191,188 @@ var CommonController = {
     CommonController.getJSON(url,function(result){
       for(var i = 0; i < result.branches.length; i++){
         var proj = result.branches[i];
-        console.log("--------------renameBranches");
+        console.log("--------------renameBranchesRepositoryName");
         console.log(proj);
-        CommonController.updateMetadata(proj.owner, 
-                                        name, 
-                                        proj.name, 
-                                        proj.branch, 
-                                        "", "", "", 
-                                        function(result){console.log(result)});
+       /* CommonController.updateMetadata(proj.owner, 
+          name, 
+          proj.name, 
+          proj.branch, 
+          "", "", "", 
+          function(result){console.log(result)});
+    */
+    CommonController.renameDBRepository(proj.owner,name,proj.name,proj.branch);
       }
 
     });
   },
-  newDBProject(){
 
-  },
-  renameDBBranch(){
+  //----------------------------------
 
-  },
-  renameDBRepository(){
-
-  },
-  deleteDBProject(){
-
+  newDBProject: function(owner,repository,branch){
+    var url = "/api/newProject.php?owner="+owner+"&repository="+repository+"&branch="+branch;
+    CommonController.getJSON(url,function(res,err){
+      console.log(res);
+      if(err)throw(err);
+    });
   },
 
+  renameDBBranch: function(owner,repository,newBranch,oldBranch){
+    var url = "/api/renameBranch.php?owner="+owner+"&repository="+repository+"&newBranch="+newBranch+"&oldBranch="+oldBranch;
+    CommonController.getJSON(url,function(res,err){
+      console.log(res);
+      if(err)throw(err);
+    });
+  },
+  renameDBRepository: function(owner,newRepository,oldRepository,branch){
+    var url = "/api/renameRepository.php?owner="+owner+"&newRepository="+newRepository+"&oldRepository="+oldRepository+"&branch="+branch;
+    CommonController.getJSON(url,function(res,err){
+      console.log(res);
+      if(err)throw(err);
+    });
+  },
+  deleteDBProject: function(owner,repository,branch){
+    var url = "/api/deleteProject.php?owner="+owner+"&repository="+repository+"&branch="+branch;
+    CommonController.getJSON(url,function(res,err){
+      console.log(res);
+      if(err)throw(err);
+    });
+  },
 
-  renameBranch: function(token, user, name, oldBranch) {
-    var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
-    var sha = CommonController.getSHA(user,name,oldBranch,function(res){console.log(res)});
+  newGHBranch: function(token,user,repository,branch,sha){
     var parameters = {
-      sha:sha,
-      force:"true"
+      ref: "refs/heads/"+branch,
+      sha: sha
     };
-    CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res){console.log(res)});
-  },
+    CommonController.ajaxGithub("https://api.github.com/repos/"+user+"/"+repository+"/git/refs", 
+      "POST", 
+      token, 
+      parameters, 
+      function(res,err){
+        console.log(res);
+        if(err)throw(err);
+      });
 
-  renameRepository: function(token, user, name, old, callback) {
-    var url = "https://api.github.com/repos/"+user+"/"+old;
+  },
+  
+  newGHRepository: function(token, repository) {
     var parameters = {
-      name: name,
+      name: repository,
+      auto_init: true
     };
-    CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
+    CommonController.ajaxGithub("https://api.github.com/user/repos", 
+      "POST", 
+      token, 
+      parameters, 
+      function(res,err){
+        console.log(res);
+        if(err){
+          throw(err);
+        }
+      });
+  },
+  //fork するときは unique な名前で、 rename の時は被ったらアラートを出す。
+  generateRepositoryName: function(owner,repository){//generating unique name
+    var name = repository;
+    if(CommonController.isDupGHRepositories(owner,name)){
+      var i=2;
+      while(CommonController.isDupGHRepositories(owner,name+"-"+i)){
+        i++;
+      }
+      return name+"-"+i;
+    } else return name;  
+  },
+  generateBranchName: function(owner,repository,branch){//generating unique name
+    if(CommonController.isDupGHBranches(owner,repository,branch)){
+      var i=2;
+      while(CommonController.isDupGHBranches(owner,repository,branch+"-"+i)){
+        i++;
+      }
+      return branch+"-"+i;
+    } else return branch;  
+  },
+  isDupGHRepositories: function(owner,repository){//TODO: DB の方のチェックもする
+    $.ajaxSetup({ async: false });
+    var t=false;
+    CommonController.getGHRepositories(owner,function(res){
+      for(var i=0; i<res.length;i++){
+        if(res[i].name == repository){
+          console.log("hit!!");
+          t=true;
+        }
+      }
+    });
+    $.ajaxSetup({ async: true });
+    return t;
   },
 
-  deleteRepository: function(token, user, name, branch, callback) {
-    console.log("deleteProject");
+  getGHRepositories: function(owner,callback){
+    CommonController.t = "";
+    CommonController.getJSON("https://api.github.com/users/"+owner+"/repos", 
+      function(res,err){
+      //console.log(res);      
+      if(err){
+        throw(err);
+      }
+      callback(res);
+    });
+  },
+
+//----------------------------------
+
+renameBranch: function(token, user, name, oldBranch) {
+  var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
+  var sha = CommonController.getSHA(user,name,oldBranch,function(res){console.log(res)});
+  var parameters = {
+    sha:sha,
+    force:"true"
+  };
+  CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res){console.log(res)});
+},
+
+renameRepository: function(token, user, name, old, callback) {
+  var url = "https://api.github.com/repos/"+user+"/"+old;
+  var parameters = {
+    name: name,
+  };
+  CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res,err){
+    if(err){throw(err)}
+      callback(res);
+  });
+},
+
+deleteRepository: function(token, user, name, branch, callback) {
+  console.log("deleteProject");
+  CommonController.deleteDBProject(user,name,branch);
+  callback(null,null);
+/*
     if(branch == "master"){//branch の存在確認しよう
       console.log("delete master");
       var url = "https://api.github.com/repos/"+user+"/"+name;
       
-      /*CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
-        if (error) {
-          callback(null, error);
-          return;
-        }
-        CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
-      });*/
-      CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
-
-    }else{
-      console.log("-------------delete Branch");
-      var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
       CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
         if (error) {
           callback(null, error);
           return;
         }
-        CommonController.updateMetadata(user, "", name, branch,"", "", "", callback);
+        CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
       });
+CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
+
+}else{
+  console.log("-------------delete Branch");
+  var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
+  CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
+    if (error) {
+      callback(null, error);
+      return;
     }
+    CommonController.updateMetadata(user, "", name, branch,"", "", "", callback);
+  });
+}*/
   },
 /*---------------------
 
-  newProject: function(token, name, callback) {
-    var parameters = {
-      name: name,
-      auto_init: true
-    };
-    CommonController.ajaxGithub("https://api.github.com/user/repos", "POST", token, parameters, callback);
-  },
+
   renameProject: function(token, user, name, old, callback) {
     var url = "https://api.github.com/repos/"+user+"/"+old;
     var parameters = {
@@ -303,19 +405,31 @@ var CommonController = {
 
   },
 
-----------------------------*/
+  ----------------------------*/
+  isDupGHBranches: function(owner,repository,branch){
+    $.ajaxSetup({ async: false });
+    var t=false;
+    CommonController.getAllReferences(owner,repository,function(res){
+      for(var i=0; i<res.length;i++){
+        if(res[i].ref == "refs/heads/"+branch){
+          t=true;
+        }
+      }
+    });
+    $.ajaxSetup({ async: true });
+    return t;
+  },
 
-
-
-  getAllReferences: function(token,user,name,callback){
-      var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs";
-      console.log(url);
-      CommonController.ajaxGithub(url, "GET", token, {}, function(result, error) {
+  getAllReferences: function(owner,repository,callback){
+    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/git/refs";
+    console.log(url);
+    CommonController.getJSON(url, function(result, error) {
       if (error) {
         callback(null, error);
         return;
       }else{
         console.log(result);
+        callback(result);
       }
     });
   },
@@ -368,20 +482,7 @@ var CommonController = {
       }
     });
   },
-    getGithubJSONwithParam: function(url,data, callback) {
-    Logger.request(url);
-    CommonController.getJSONwithParam(url,data, function(result, error) {
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.data.message) {
-        callback(null, result.data.message);
-      } else {
-        callback(result.data);
-      }
-    });
-  },
+
   
   
   //local -----
@@ -488,7 +589,9 @@ var CommonController = {
 
     var repository = $(document.createElement("div"));
     repository.addClass("repository");
-    repository.text(repositoryS+"/"+branchS);    
+    if(branchS == "master")repository.text(repositoryS);
+    else repository.text(branchS);
+    //repository.text(repositoryS+"/"+branchS);    
 
     headline.append(repository);
     headline.append(owner);
@@ -508,26 +611,26 @@ var CommonController = {
         tags.append(a);
       }
 //      headline.append(tags);
-      link.append(tags);
-    }
+link.append(tags);
+}
 
-    return link;
-  },
+return link;
+},
 
-  getJSON: function(url, callback) {
-    $.getJSON(url, function(result) {
-      callback(result);
-    })
-    .error(function(xhr, textStatus, errorThrown) {
-      callback(null, textStatus+":"+xhr.responseText);
-    })
-  },
-  getJSONwithParam: function(url,data, callback) {
-    $.getJSON(url,data, function(result) {
-      console.log(result);
-    })
-    .error(function(xhr, textStatus, errorThrown) {
+getJSON: function(url, callback) {
+  $.getJSON(url, function(result) {
+    callback(result);
+  })
+  .error(function(xhr, textStatus, errorThrown) {
+    callback(null, textStatus+":"+xhr.responseText);
+  })
+},
+getJSONwithParam: function(url,data, callback) {
+  $.getJSON(url,data, function(result) {
+    console.log(result);
+  })
+  .error(function(xhr, textStatus, errorThrown) {
       //callback(null, textStatus+":"+xhr.responseText);
     })
-  }
+}
 }
