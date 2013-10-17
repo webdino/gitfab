@@ -199,7 +199,7 @@ function updateMetaData($owner,$repository,$branch, $avatar, $thumbnail) {
     $connection = openConnection();
     $connection->beginTransaction();
 
-    $id = findProject($owner,$repository,$branch,$connection)
+    $id = findProject($owner,$repository,$branch,$connection);
     $query = "UPDATE repositories SET avatar=?,thumbnail=?,updated=CAST(now() AS DATETIME) WHERE id=?";
     $statement = $connection->prepare($query);
     $statement->execute(array($avatar, $thumbnail, $id));

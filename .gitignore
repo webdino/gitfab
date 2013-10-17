@@ -1,8 +1,7 @@
-htdocs/public
-htdocs/node_modules
-components/
+htdocs/public/
 *~
 \#*
 .#*
 htdocs/Gemfile*
 htdocs/config.ru
+htdocs/temp/
