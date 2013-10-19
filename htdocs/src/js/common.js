@@ -176,7 +176,13 @@
     CommonController.ajaxGithub("https://api.github.com/repos/"+user+"/"+name+"/git/refs", "POST", token, parameters, callback);
 
   },
-  
+  getThumbnail: function(token,owner,repository,branch,callback){
+    var url = "https://api.github.com/repos/"+owner+"/"+repository+"/contents/gitfab/thumbnail.jpg";
+    var parameters = {
+      ref:"heads/"+branch
+    }
+    CommonController.ajaxGithub(url,"GET",token,parameters,callback);
+  },
   newRepository: function(token, name, callback) {
     var parameters = {
       name: name,
