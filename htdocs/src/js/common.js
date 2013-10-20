@@ -206,15 +206,28 @@
           "", "", "", 
           function(result){console.log(result)});
     */
-    CommonController.renameDBRepository(proj.owner,name,proj.name,proj.branch);
+      CommonController.renameDBRepository(proj.owner,name,proj.name,proj.branch);
       }
 
     });
+  },
+  checkBranch: function(owner,repository){
+    var url = "/api/check.php?owner="+owner+"&repository="+repository;
+    $.ajaxSetup({ async: false });
+    var t = 0;
+    CommonController.getJSON(url,function(result){
+      t = result.branches.length;
+    //alert("chk Branch : " +t+" :"+owner+":"+repository);
+
+    });
+    $.ajaxSetup({ async: true });
+    return t;
   },
 
   //----------------------------------
 
   newDBProject: function(owner,repository,branch){
+    console.log("owner:"+owner+"repository: "+repository+"branch:"+branch);
     var url = "/api/newProject.php?owner="+owner+"&repository="+repository+"&branch="+branch;
     CommonController.getJSON(url,function(res,err){
       console.log(res);
@@ -302,7 +315,6 @@
     CommonController.getGHRepositories(owner,function(res){
       for(var i=0; i<res.length;i++){
         if(res[i].name == repository){
-          console.log("hit!!");
           t=true;
         }
       }
@@ -346,10 +358,27 @@ renameRepository: function(token, user, name, old, callback) {
   });
 },
 
-deleteRepository: function(token, user, name, branch, callback) {
+deleteRepository: function(token, user,repository, branch, callback) {
   console.log("deleteProject");
-  CommonController.deleteDBProject(user,name,branch);
+  CommonController.deleteDBProject(user,repository,branch);
+  CommonController.getForksInformation(user,repository,function(res){
+    //alert("forks "+res.length);
+    if(res.length == 0 && CommonController.checkBranch(user,repository) < 2){
+      //alert("delete on Github");
+      var url = "https://api.github.com/repos/"+user+"/"+repository;
+      CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
+        console.log(result);
+        //alert(result);
+        if (error) {
+          callback(null, error);
+          return;
+        }
+      });
+    }//else alert("delete only DB");
   callback(null,null);
+  });
+},
+
 /*
     if(branch == "master"){//branch の存在確認しよう
       console.log("delete master");
@@ -375,7 +404,6 @@ CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
     CommonController.updateMetadata(user, "", name, branch,"", "", "", callback);
   });
 }*/
-  },
 /*---------------------
 
 
@@ -521,7 +549,7 @@ CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
     var url = "/api/taglist.php";
     if (owner) {
       url += "?owner="+owner;
-    }
+    }else console.log("owner not defined");
     CommonController.getLocalJSON(url, callback);
   },
 

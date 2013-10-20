@@ -4,8 +4,10 @@
 
  var projectController = {   init: function() {
   projectController.markdownParser = new Showdown.converter();
-  projectController.base64 = new Base64();     projectController.current_id = 0;
-  CommonController.setParameters(projectController);     document.title =
+  projectController.base64 = new Base64();     
+  projectController.current_id = 0;
+  CommonController.setParameters(projectController);     
+  document.title =
   "gitFAB/"+projectController.owner+"/"+projectController.repository;
 
   if (projectController.user) {
@@ -401,6 +403,7 @@ setEditable: function() {
     projectController.oldrepository = "";
     if (!projectController.repository) {
       //new
+      console.log("new Project");
       projectController.newRepository(repository);
     } else if ((projectController.branch == "master" && //TODO: 汚いので後でなおしたい
       projectController.repository != repository) ||
@@ -569,7 +572,6 @@ newRepository: function(name) {
           Logger.off();
           return;
         }
-
         projectController.repository = name;
         projectController.watch(projectController.user, projectController.repository, function(result, error) {
           if (CommonController.showError(error) == true) {
@@ -577,6 +579,10 @@ newRepository: function(name) {
             return;
           }
           projectController.updateRepository();
+          CommonController.newDBProject(
+            projectController.user,
+            name,
+            "master");
           var url = CommonController.getProjectPageURL(projectController.user, 
              projectController.repository,
              "master");
@@ -675,7 +681,7 @@ newRepository: function(name) {
         setTimeout(function() {
           window.location.href = "/";
           Logger.off();
-        }, 500);
+        },2000);
       });
   },
 

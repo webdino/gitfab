@@ -429,6 +429,8 @@ function getProjectList($owner, $tag) {
 }
 
 function getTagList($owner) {
+  dbg("getTaglist");
+  dbg($owner);
   try {
     $connection = openConnection();
 
