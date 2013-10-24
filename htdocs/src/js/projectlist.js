@@ -9,11 +9,11 @@ var projectListController = {
       //console.log(window.scrollY);
       var rows = projectListController.showingProjects/3;
       if(projectListController.allProjects != projectListController.showingProjects&&
-            scrollY>60+218*(rows-3)){
+            scrollY>60+218*(rows-3)){//スクロール量の判定
         if(3*(rows+1)<projectListController.allProjects){
           projectListController.loadAndAppendProject(
             projectListController.showingProjects,
-            3*(rows+1));  
+            3*(rows+1));  //追加表示するプロジェクト数
         }else{
           projectListController.loadAndAppendProject(
             projectListController.showingProjects,
