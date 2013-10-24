@@ -2,21 +2,20 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var projectController = {
-  init: function() {
-    projectController.markdownParser = new Showdown.converter();
-    projectController.base64 = new Base64();
-    projectController.current_id = 0;
+ var projectController = {   init: function() {
+  projectController.markdownParser = new Showdown.converter();
+  projectController.base64 = new Base64();     
+  projectController.current_id = 0;
+  CommonController.setParameters(projectController);     
+  document.title =
+  "gitFAB/"+projectController.owner+"/"+projectController.repository;
 
-    CommonController.setParameters(projectController);
-    document.title = "gitFAB/"+projectController.owner+"/"+projectController.repository;
+  if (projectController.user) {
+    CommonController.updateUI(projectController.user, projectController.avatar_url);
+  }
 
-    if (projectController.user) {
-      CommonController.updateUI(projectController.user, projectController.avatar_url);
-    }
-
-    if (projectController.user == projectController.owner) {
-      if (projectController.repository == ":create") {
+  if (projectController.user == projectController.owner) {
+    if (projectController.repository == ":create") {
         //new repository
         projectController.repository = null;
         $("#avatar").attr("src", projectController.avatar_url);
@@ -26,6 +25,9 @@ var projectController = {
       } else {
         //update repository
         projectController.loadGitfabDocument(true);
+        $("#fork-button").click(function () {
+          projectController.fork();
+        });
       }
     } else if (projectController.repository) {
       projectController.loadGitfabDocument(false);
@@ -94,24 +96,24 @@ var projectController = {
         }
       });
     });
-  },
-  
-  appendRepositoryUITo: function(container, owner, name) {
-    CommonController.getMataData(owner, name, function(result, error) {
-      if (error) {
-        CommonController.showError(error);
-        return;
-      }
-      var metadata = result.metadata;
-      var avatar = metadata.avatar;
-      var thumbnail = metadata.thumbnail;
-      var tags = metadata.tags;
-      var ui = CommonController.createRepositoryUI(owner, name, avatar, thumbnail, tags);
-      container.append(ui);
-    });
-  },
+},
 
-  setEditable: function() {
+appendRepositoryUITo: function(container, owner, name) {
+  CommonController.getMataData(owner, name, function(result, error) {
+    if (error) {
+      CommonController.showError(error);
+      return;
+    }
+    var metadata = result.metadata;
+    var avatar = metadata.avatar;
+    var thumbnail = metadata.thumbnail;
+    var tags = metadata.tags;
+    var ui = CommonController.createRepositoryUI(owner, name, avatar, thumbnail, tags);
+    container.append(ui);
+  });
+},
+
+setEditable: function() {
     //reusable elements
     projectController.reusable_input = $(document.createElement("input"));
     projectController.reusable_input.attr("id", "reusable_input");
@@ -143,7 +145,11 @@ var projectController = {
 //    var content = projectController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
     //parse
     var lines = content.split("\n");
-    var title = projectController.repository;
+    if(projectController.branch == "master"){
+      var title = projectController.repository;
+    } else {
+      var title = projectController.branch;
+    }
     var tags = lines[1].substring("## ".length);
     var owner = projectController.owner ? projectController.owner : projectController.user;
     $("#owner").text(owner);
@@ -397,10 +403,14 @@ var projectController = {
     projectController.oldrepository = "";
     if (!projectController.repository) {
       //new
+      console.log("new Project");
       projectController.newRepository(repository);
-    } else if (projectController.repository != repository) {
+    } else if ((projectController.branch == "master" && //TODO: 汚いので後でなおしたい
+      projectController.repository != repository) ||
+    (projectController.branch != "master" &&
+      projectController.branch != repository)) {
       //rename
-      projectController.renameRepository(repository);
+      projectController.renameProject(repository);
     } else {
       //update
       projectController.updateRepository();
@@ -412,7 +422,10 @@ var projectController = {
   },
   
   updateRepository: function() {
-    CommonController.getSHATree(projectController.user, projectController.repository, projectController.commitDocument);
+    CommonController.getSHATree(projectController.user, 
+      projectController.repository,
+      projectController.branch, 
+      projectController.commitDocument);
   },
   
   findThumbnail: function() {
@@ -440,7 +453,15 @@ var projectController = {
     var tags = $("#tags").text();
     var avatar = $("#login img").attr("src");
     var thumbnail = projectController.findThumbnail();
-    CommonController.updateMetadata(projectController.user, projectController.repository, projectController.oldrepository, tags, avatar, thumbnail, callback);
+    console.log(projectController.branch);
+    CommonController.updateMetadata(projectController.user, 
+      projectController.repository, 
+      projectController.oldrepository, 
+      projectController.branch, 
+      tags, 
+      avatar, 
+      thumbnail, 
+      callback);
   },
 
   commitDocument: function(result, error) {
@@ -468,7 +489,10 @@ var projectController = {
         var file = files[key];
         filemap[key] = file;
         //replace url
-        var fileURL = CommonController.getFileURL(projectController.user, projectController.repository, MATERIALS+"/"+file.name);
+        var fileURL = CommonController.getFileURL(projectController.user, 
+          projectController.repository,
+          projectController.branch,
+          MATERIALS+"/"+file.name);
         text = text.replace(key, fileURL);
         $("img[src='"+key+"']").attr("fileurl", fileURL);
       }
@@ -482,49 +506,107 @@ var projectController = {
   },
 
   commitChain: function(path, content, message, tree, filemap) {
-    CommonController.commit(projectController.token, projectController.user, projectController.repository, path, content, message, tree, function(result, error) {
-      if (CommonController.showError(error) == true) {
-        Logger.off();
-        return;
-      }
-      var file = null;
-      for (var key in filemap) {
-        file = filemap[key];
-        delete filemap[key];
-        break;
-      }
-      if (!file) {
-        projectController.updateMetadata(function() {
-          if (projectController.css) {
-            CommonController.commit(projectController.token, projectController.user, projectController.repository, CUSTOM_CSS, projectController.base64.encodeStringAsUTF8(projectController.css), "", tree, function(result, error) {
-              CommonController.showError(error);
+    CommonController.commit(projectController.token, 
+      projectController.user, 
+      projectController.repository, 
+      projectController.branch, 
+      path, 
+      content, 
+      message, 
+      tree, 
+      function(result, error) {
+        if (CommonController.showError(error) == true) {
+          Logger.off();
+          return;
+        }
+        var file = null;
+        for (var key in filemap) {
+          file = filemap[key];
+          delete filemap[key];
+          break;
+        }
+        if (!file) {
+          projectController.updateMetadata(function() {
+            if (projectController.css) {
+              CommonController.commit(projectController.token, 
+                projectController.user, 
+                projectController.repository, 
+                projectController.branch ,
+                CUSTOM_CSS, 
+                projectController.base64.encodeStringAsUTF8(projectController.css), 
+                "", 
+                tree, 
+                function(result, error) {
+                  CommonController.showError(error);
+                  Logger.off();
+                });
+            } else {
               Logger.off();
-            });
-          } else {
+            }
+          });
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var content = reader.result;
+          var index = content.indexOf(",");
+          content = content.substring(index+1);
+          var path = MATERIALS+"/"+file.name;
+          projectController.commitChain(path, content, "", tree, filemap);
+        };
+        reader.readAsDataURL(file);
+      });
+},
+
+newRepository: function(name) {
+  console.log(projectController.owner);
+    //name = CommonController.generateRepositoryName(projectController.owner,name);
+    if(CommonController.isDupGHRepositories(projectController.owner,name)){
+      alert("already exist name. type other name.");
+      Logger.off();
+    }else{
+      CommonController.newRepository(projectController.token, 
+       name, 
+       function(result, error) {
+        if (CommonController.showError(error) == true) {
+          Logger.off();
+          return;
+        }
+        projectController.repository = name;
+        projectController.watch(projectController.user, projectController.repository, function(result, error) {
+          if (CommonController.showError(error) == true) {
             Logger.off();
+            return;
           }
+          projectController.updateRepository();
+          CommonController.newDBProject(
+            projectController.user,
+            name,
+            "master");
+          var url = CommonController.getProjectPageURL(projectController.user, 
+             projectController.repository,
+             "master");
+          Logger.log("reload: "+url);
+          console.log("jump to "+url);
+          setTimeout(function() {
+            window.location.href = url;
+            Logger.off();
+          }, 500);
         });
-        return;
-      }
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var content = reader.result;
-        var index = content.indexOf(",");
-        content = content.substring(index+1);
-        var path = MATERIALS+"/"+file.name;
-        projectController.commitChain(path, content, "", tree, filemap);
-      };
-      reader.readAsDataURL(file);
-    });
+      });
+    }
   },
   
-  newRepository: function(name) {
-    CommonController.newRepository(projectController.token, name, function(result, error) {
+  newUniqueNameRepository: function(name) { // if given name is already exist, generate unique name.
+    console.log(projectController.owner);
+    name = CommonController.generateRepositoryName(projectController.owner,name);
+    CommonController.newRepository(projectController.token, 
+     name, 
+     function(result, error) {
       if (CommonController.showError(error) == true) {
         Logger.off();
         return;
       }
-
       projectController.repository = name;
       projectController.watch(projectController.user, projectController.repository, function(result, error) {
         if (CommonController.showError(error) == true) {
@@ -535,116 +617,246 @@ var projectController = {
       });
     });
   },
-  
-  renameRepository: function(name) {
-    CommonController.renameRepository(projectController.token, projectController.user, name, projectController.repository, function(result, error) {
-      if (CommonController.showError(error) == true) {
-        Logger.off();
-        return;
+  renameProject: function(name){//project の branch が master かどうか
+    if(projectController.branch == "master"){
+      if(name != projectController.repository){
+        if(CommonController.isDupGHRepositories(projectController.owner,name)){
+          alert("already exist name. type other name.");
+        }else{
+          console.log("rename Repositoy!!!");
+          CommonController.renameRepository(projectController.token,
+            projectController.owner,
+            name,
+            projectController.repository,
+            CommonController.renameBranches(projectController.owner,
+              name,
+              projectController.repository,
+              projectController.branch));
+        }
       }
-      projectController.oldrepository = projectController.repository;
-      projectController.repository = name;
-      projectController.updateRepository();
-    });
+    } else {
+      console.log("rename Branch!!!");
+      if(!CommonController.isDupGHBranches(projectController.owner,
+        projectController.repository,
+        name))
+        projectController.createAndRenameBranch(name,projectController.branch);
+      else alert("this name is already used.type other name"); 
+    }
+
   },
+
+  renameRepository: function(name) {
+    CommonController.renameRepository(projectController.token, 
+      projectController.user, 
+      name, 
+      projectController.repository, 
+      function(result, error) {
+        if (CommonController.showError(error) == true) {
+          Logger.off();
+          return;
+        }
+        projectController.oldrepository = projectController.repository;
+        projectController.repository = name;
+        projectController.updateRepository();
+      });
+  },
+
   
   deleteRepository: function() {
     if (!window.confirm("are you sure to remove this project?")) {
       return;
     }
     Logger.on();
-    CommonController.deleteRepository(projectController.token, projectController.owner, projectController.repository, function(result, error) {
-      if (CommonController.showError(error) == true) {
-        Logger.off();
-        return;
-      }
-      Logger.log("reload:/");
-      setTimeout(function() {
-        window.location.href = "/";
-        Logger.off();
-      }, 500);
-    });
-  },
-
-  fork: function() {
-    Logger.on();
-    CommonController.fork(projectController.token, projectController.owner, projectController.repository, function(result, error) {
-      if (CommonController.showError(error) == true) {
-        Logger.off();
-        return;
-      }
-      projectController.watch(projectController.user, projectController.repository, function(result, error) {
+    CommonController.deleteRepository(
+      projectController.token, 
+      projectController.owner, 
+      projectController.repository, 
+      projectController.branch,
+      function(result, error) {
         if (CommonController.showError(error) == true) {
           Logger.off();
           return;
-        };
-        projectController.oldrepository = "";
-        projectController.updateMetadata(function() {
-          var url = CommonController.getProjectPageURL(projectController.user, projectController.repository);
-          Logger.log("reload: "+url);
-          setTimeout(function() {
-            window.location.href = url;
-            Logger.off();
-          }, 500);
-        });
+        }
+        Logger.log("reload:/");
+        setTimeout(function() {
+          window.location.href = "/";
+          Logger.off();
+        },2000);
       });
+  },
+
+  getAllReferences: function(){
+    CommonController.getAllReferences(projectController.user, projectController.repository, function(result, error) {
+      if (CommonController.showError(error) == true) {
+        Logger.off();
+        return;
+      }
     });
   },
-  
-  encode4html: function(text) {
-    return projectController.markdownParser.makeHtml(text);
+  newBranch: function(branch){
+    CommonController.getSHA(projectController.user,
+      projectController.repository,
+                            "master",//old branch name
+                            function(result,error){
+                              CommonController.newBranch(projectController.token,
+                               projectController.owner, 
+                               projectController.repository,
+                               branch, 
+                               result.object.sha,
+                               function(result, error) {
+                                if (CommonController.showError(error) == true) {
+                                  Logger.off();
+                                  return;
+                                }
+                                projectController.updateMetadata(function() {
+                                  var url = CommonController.getProjectPageURL(projectController.user, 
+                                   projectController.repository,
+                                   projectController.branch);
+                                  Logger.log("reload: "+url);
+                                  setTimeout(function() {
+                                    window.location.href = url;
+                                    Logger.off();
+                                  }, 500);
+                                });
+                              });
+    });
   },
 
-  customizeCSS: function(e) {
-    var target = $("#customize-css .text-button");
-    var parent = target.parent();
-    parent.append(projectController.reusable_textarea);
-    projectController.reusable_textarea.focus();
-    projectController.reusable_textarea.blur(projectController.applyCSS);
-    parent.append(projectController.reusable_applybutton);
-
-    if (projectController.css) {
-      projectController.reusable_textarea.val(projectController.css);
-    } else {
-      Logger.on();
-      CommonController.getCustomCSS(projectController.owner, projectController.repository, function(result, error) {
-        if (error) {
-          Logger.log(error);
-          CommonController.getCSSTemplate(function(result, error) {
-            if (CommonController.showError(error) == true) return;
-            projectController.reusable_textarea.val(result);
-            Logger.off();
-          });
-        } else {
-          var content = projectController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
-          projectController.reusable_textarea.val(content);
+createAndRenameBranch: function(newBranch,oldBranch){
+  CommonController.getSHA(projectController.user,
+    projectController.repository,
+    oldBranch,
+    function(result,error){
+      CommonController.newBranch(projectController.token, //on Github
+       projectController.owner, 
+       projectController.repository,
+       newBranch, 
+       result.object.sha,
+       function(result, error) {
+        if (CommonController.showError(error) == true) {
           Logger.off();
+          return;
         }
+        CommonController.renameDBBranch(projectController.owner,
+          projectController.repository,
+          newBranch,
+          oldBranch);
+        Logger.log("reload: "+url);
+        setTimeout(function() {
+          window.location.href = url;
+          Logger.off();
+        }, 500);
       });
-    }
-  },
+    });
+},
+fork: function() {
+  Logger.on();
+  if(projectController.user == projectController.owner){ 
+    console.log("fork itself!!!");
+    projectController.branch = 
+      CommonController.generateBranchName(projectController.owner,
+        projectController.repository,
+        projectController.repository);
+    
+    projectController.newBranch(projectController.branch);
+   /* projectController.updateMetadata(function() {
+      var url = CommonController.getProjectPageURL(projectController.user, 
+        projectController.repository,
+        projectController.branch);
+      
+      Logger.log("reload: "+url);
+      setTimeout(function() {
+        window.location.href = url;
+        Logger.off();
+        }, 500);
+      });*/
+  }else{//fork from others
+    CommonController.fork(projectController.token, 
+      projectController.owner, 
+      projectController.repository,
+      function(result, error) {
+        if (CommonController.showError(error) == true) {
+                  Logger.off();
+                  return;
+                }
+                projectController.repository = result.name;
+                projectController.watch(projectController.user, 
+                  projectController.repository,
+                  function(result, error) {
+                    if (CommonController.showError(error) == true) {
+                      Logger.off();
+                      return;
+                    };
+                    projectController.oldrepository = "";
+                    projectController.updateMetadata(function() {
+                      var url = CommonController.getProjectPageURL(projectController.user, 
+                       projectController.repository,
+                       projectController.branch);
+                      Logger.log("reload: "+url);
+                      setTimeout(function() {
+                        window.location.href = url;
+                        Logger.off();
+                      }, 500);
+                    });
+                  });
+              });
+}
+},
 
-  applyCSS: function(e) {
-    projectController.reusable_textarea.unbind("blur", projectController.applyCSS);
-    projectController.reusable_textarea.remove();
-    projectController.reusable_applybutton.remove();
+encode4html: function(text) {
+  return projectController.markdownParser.makeHtml(text);
+},
 
-    var cssContent = projectController.reusable_textarea.val();
-    var ID = "customecss";
-    var stylesheet = $("#"+ID);
-    if (stylesheet.length == 0) {
-      stylesheet = $(document.createElement("style"));
-      stylesheet.attr("type", "text/css");
-      stylesheet.attr("id", ID);
-      document.body.appendChild(stylesheet.get(0));
-    }
-    stylesheet.text(cssContent);
-    projectController.css = cssContent;
-  },
+customizeCSS: function(e) {
+  var target = $("#customize-css .text-button");
+  var parent = target.parent();
+  parent.append(projectController.reusable_textarea);
+  projectController.reusable_textarea.focus();
+  projectController.reusable_textarea.blur(projectController.applyCSS);
+  parent.append(projectController.reusable_applybutton);
 
-  updateIndex: function() {
-    var container = $("#index ul");
-    container.empty();
+  if (projectController.css) {
+    projectController.reusable_textarea.val(projectController.css);
+  } else {
+    Logger.on();
+    CommonController.getCustomCSS(projectController.owner, projectController.repository, function(result, error) {
+      if (error) {
+        Logger.log(error);
+        CommonController.getCSSTemplate(function(result, error) {
+          if (CommonController.showError(error) == true) return;
+          projectController.reusable_textarea.val(result);
+          Logger.off();
+        });
+      } else {
+        var content = projectController.base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+        projectController.reusable_textarea.val(content);
+        Logger.off();
+      }
+    });
+  }
+},
+
+applyCSS: function(e) {
+  projectController.reusable_textarea.unbind("blur", projectController.applyCSS);
+  projectController.reusable_textarea.remove();
+  projectController.reusable_applybutton.remove();
+
+  var cssContent = projectController.reusable_textarea.val();
+  var ID = "customecss";
+  var stylesheet = $("#"+ID);
+  if (stylesheet.length == 0) {
+    stylesheet = $(document.createElement("style"));
+    stylesheet.attr("type", "text/css");
+    stylesheet.attr("id", ID);
+    document.body.appendChild(stylesheet.get(0));
+  }
+  stylesheet.text(cssContent);
+  projectController.css = cssContent;
+},
+
+updateIndex: function() {
+  var container = $("#index ul");
+  container.empty();
     //find heading
     var headings = $(".content h1");
     for (var i = 0, n = headings.length; i < n; i++) {

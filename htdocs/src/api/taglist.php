@@ -1,6 +1,8 @@
 <?php
-  $owner = $_GET["owner"];
 
+  if(isset($_GET["owner"])){
+    $owner = $_GET["owner"];
+  }
   include('local-database-functions.php.inc');
   $result = array();
   try {

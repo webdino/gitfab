@@ -323,7 +323,7 @@
 }
 
 .editable #fork-button {
-  display: none;
+  display: inline-block;
 }
 
 .editable #delete-button {

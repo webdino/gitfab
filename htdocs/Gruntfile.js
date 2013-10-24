@@ -214,6 +214,7 @@ module.exports = function(grunt) {
     //grunt.registerTask('build:deps', ['uglify:requirejs', 'copy:deps']);
     //grunt.registerTask('build', ['build:deps', 'requirejs', 'uglify']);
     grunt.registerTask('default', ['requirejs', 'uglify','concat','less:dist','copy']);
+    grunt.registerTask('debug', ['requirejs','concat','copy']);
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
