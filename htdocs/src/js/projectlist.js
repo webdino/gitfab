@@ -14,6 +14,7 @@ var projectListController = {
           projectListController.loadAndAppendProject(
             projectListController.showingProjects,
             3*(rows+1));  //追加表示するプロジェクト数
+
         }else{
           projectListController.loadAndAppendProject(
             projectListController.showingProjects,
