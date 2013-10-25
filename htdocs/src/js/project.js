@@ -299,7 +299,17 @@ setEditable: function() {
     var target = $(e.currentTarget.parentNode.parentNode);
     target.remove();
   },
-  
+  up: function(e) {
+    var target = $(e.currentTarget).parent().parent();
+    console.log(target.prev().attr("id"));
+    projectController.exchangeItems(target.attr("id"),target.prev().attr("id"));
+  },
+  down: function(e) {
+    var target = $(e.currentTarget).parent().parent();
+    console.log(target.next().attr("id"));
+    projectController.exchangeItems(target.attr("id"),target.next().attr("id"));
+  },
+
   dragStart: function(e) {
     var source = $(e.currentTarget);
     var dataTransfer = e.originalEvent.dataTransfer;
@@ -340,6 +350,24 @@ setEditable: function() {
 
     return false;
   },
+  exchangeItems: function(sourceId,targetId){
+    if(sourceId>=0&&targetId>=0){
+      var source = $("#"+sourceId);
+      var target = $("#"+targetId);
+      var items = $(".item");
+      var sourceIndex = items.index(source);
+      var targetIndex = items.index(target);
+      var isBefore = sourceIndex > targetIndex;
+      
+      //exchange
+      if (isBefore == true) {
+        target.before(source);
+      } else {
+      target.after(source);
+      }
+      projectController.updateIndex();
+    }else console.log("can't exchangeitems :"+sourceid+" : "+targetId);
+  },
   
   append: function(e) {
     var textarea = $("#textarea");
@@ -375,6 +403,12 @@ setEditable: function() {
       var edit = $(document.createElement("div"));
       edit.text("edit");
       edit.addClass("text-button");
+      var upButton = $(document.createElement("div"));
+      upButton.text("up");
+      upButton.addClass("text-button");
+      var downButton = $(document.createElement("div"));
+      downButton.text("down");
+      downButton.addClass("text-button");
       var upload = $(document.createElement("div"));
       upload.text("upload");
       upload.addClass("text-button");
@@ -384,9 +418,13 @@ setEditable: function() {
       edit.click(projectController.editTextContent);
       upload.click(projectController.kickUpload);
       remove.click(projectController.remove);
+      upButton.click(projectController.up);
+      downButton.click(projectController.down);
       func.append(edit);
       func.append(upload);
       func.append(remove);
+      func.append(upButton);
+      func.append(downButton);
       item.append(func);
     }
     item.append(content);

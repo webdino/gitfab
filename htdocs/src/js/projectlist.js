@@ -4,6 +4,24 @@
 var projectListController = {
   init: function() {
     Logger.on();
+    projectListController.showingProjects = 0;
+    window.onscroll = function(){
+      //console.log(window.scrollY);
+      var rows = projectListController.showingProjects/3;
+      if(projectListController.allProjects != projectListController.showingProjects&&
+            scrollY>60+218*(rows-3)){//スクロール量の判定
+        if(3*(rows+1)<projectListController.allProjects){
+          projectListController.loadAndAppendProject(
+            projectListController.showingProjects,
+            3*(rows+1));  //追加表示するプロジェクト数
+
+        }else{
+          projectListController.loadAndAppendProject(
+            projectListController.showingProjects,
+            projectListController.allProjects);
+        }
+      }
+    };
     var parameters = CommonController.getParametersFromQuery();
     document.title = "gitFAB"+(OWNER?"/"+OWNER+"/":"") + 
     (parameters.QueryString ? "/?"+parameters.QueryString : "");
@@ -32,10 +50,20 @@ var projectListController = {
   },
 
   parseProjectList: function(result) {
-    var ul = $("#project-list");
-    ul.hide();
-    var projectList = result.projectList;
-    var length = projectList.length;
+    projectListController.ul = $("#project-list");
+    projectListController.ul.hide();
+    projectListController.projectList = result.projectList;
+    projectListController.allProjects = result.projectList.length;
+    if(projectListController.projectList.length>12){
+      projectListController.showingProjects = 12;
+      projectListController.loadAndAppendProject(0,12);
+    }else{
+      projectListController.showingProjects = projectListController.projectList.length;
+      projectListController.loadAndAppendProject(
+       0,
+       projectListController.showingProjects);
+    }
+   /* var length = projectList.length;
     var elements = [];
     for (var i = 0; i < length; i++) {
       var project = projectList[i];
@@ -52,8 +80,32 @@ var projectListController = {
     }
     GridLayout.doLayout($("#main").width(), ul, elements, projectList);
     ul.show();
+    */
   },
   
+  loadAndAppendProject: function(start,end){
+    if(start<end&&end<=projectListController.allProjects){
+     // ul.hide();
+      //projectListController.projectList = result.projectList;
+      var elements = [];
+      for (var i = start; i < end; i++) {
+        var project = projectListController.projectList[i];
+        var li = $(document.createElement("li"));
+        li.addClass("project");
+        var ui = CommonController.createRepositoryUI(project.owner,
+                                                   project.name,
+                                                   project.avatar, 
+                                                   project.thumbnail, 
+                                                   project.branch,
+                                                   project.tags);
+        li.append(ui);
+        elements.push(li);
+      }
+      GridLayout.doLayout($("#main").width(), projectListController.ul, elements, projectListController.projectList);
+      projectListController.ul.show();
+      projectListController.showingProjects = end;
+    }//else console.log("bounding error :" +start+" : "+end );
+  },
   loadedTagList: function(result, error) {
     if (CommonController.showError(error) != true) {
       var taglist = result.taglist;
