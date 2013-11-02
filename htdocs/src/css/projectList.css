@@ -1,7 +1,10 @@
 #project-list {
   padding: 0;
   margin: 0;
+  position: relative;
 }
+
+/*
 
 #tag-title {
   text-align: center;
@@ -20,3 +23,5 @@
 .owner {
   text-shadow: black 1px 1px;
 }
+
+*/

@@ -8,6 +8,7 @@
  var CUSTOM_CSS = GITFAB_DIR+"/custom.css";
 
  var CommonController = {
+
   getParametersFromQuery: function() {
     var parameters = {};
     var url = window.location.href;
@@ -337,109 +338,48 @@
 
 //----------------------------------
 
-renameBranch: function(token, user, name, oldBranch) {
-  var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
-  var sha = CommonController.getSHA(user,name,oldBranch,function(res){console.log(res)});
-  var parameters = {
-    sha:sha,
-    force:"true"
-  };
-  CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res){console.log(res)});
-},
+  renameBranch: function(token, user, name, oldBranch) {
+    var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
+    var sha = CommonController.getSHA(user,name,oldBranch,function(res){console.log(res)});
+    var parameters = {
+      sha:sha,
+      force:"true"
+    };
+    CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res){console.log(res)});
+  },
 
-renameRepository: function(token, user, name, old, callback) {
-  var url = "https://api.github.com/repos/"+user+"/"+old;
-  var parameters = {
-    name: name,
-  };
-  CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res,err){
-    if(err){throw(err)}
-      callback(res);
-  });
-},
-
-deleteRepository: function(token, user,repository, branch, callback) {
-  console.log("deleteProject");
-  CommonController.deleteDBProject(user,repository,branch);
-  CommonController.getForksInformation(user,repository,function(res){
-    //alert("forks "+res.length);
-    if(res.length == 0 && CommonController.checkBranch(user,repository) < 2){
-      //alert("delete on Github");
-      var url = "https://api.github.com/repos/"+user+"/"+repository;
-      CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
-        console.log(result);
-        //alert(result);
-        if (error) {
-          callback(null, error);
-          return;
-        }
-      });
-    }//else alert("delete only DB");
-  callback(null,null);
-  });
-},
-
-/*
-    if(branch == "master"){//branch の存在確認しよう
-      console.log("delete master");
-      var url = "https://api.github.com/repos/"+user+"/"+name;
-      
-      CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
-        if (error) {
-          callback(null, error);
-          return;
-        }
-        CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
-      });
-CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
-
-}else{
-  console.log("-------------delete Branch");
-  var url = "https://api.github.com/repos/"+user+"/"+name+"/git/refs/heads/"+branch;
-  CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
-    if (error) {
-      callback(null, error);
-      return;
-    }
-    CommonController.updateMetadata(user, "", name, branch,"", "", "", callback);
-  });
-}*/
-/*---------------------
-
-
-  renameProject: function(token, user, name, old, callback) {
+  renameRepository: function(token, user, name, old, callback) {
     var url = "https://api.github.com/repos/"+user+"/"+old;
     var parameters = {
       name: name,
     };
-    CommonController.ajaxGithub(url, "PATCH", token, parameters, callback);
+    CommonController.ajaxGithub(url, "PATCH", token, parameters, function(res,err){
+      if(err){throw(err)}
+        callback(res);
+    });
   },
 
-  deleteProject: function(token, user, name, branch, callback) {
-    var url = "https://api.github.com/repos/"+user+"/"+name;
-    var parameters = {
-      branch: branch
-    };//現状では DB 内のデータのみを消して行く。あとでbranchをチェックして 
-      //branch があるときに master を消そうとしたら、 repository は残す
-      //その他のときは Github と DB を両方消す 
-  
-    if(branch != "master"){
-      CommonController.ajaxGithub(url, "DELETE", token, parameters, function(result, error) {
-        if (error) {
-          callback(null, error);
-          return;
-        }
-        CommonController.updateMetadata(user, "", name, branch, "", "", callback);
-      });
-    }else{
-      CommonController.updateMetadata(user, "", name, branch, "", "", callback);
-    }
-    
-    CommonController.updateMetadata(user, "", name, branch, "", "", callback);
-
+  deleteRepository: function(token, user,repository, branch, callback) {
+    console.log("deleteProject");
+    CommonController.deleteDBProject(user,repository,branch);
+    CommonController.getForksInformation(user,repository,function(res) {
+      //alert("forks "+res.length);
+      if(res.length == 0 && CommonController.checkBranch(user,repository) < 2) {
+        //alert("delete on Github");
+        var url = "https://api.github.com/repos/"+user+"/"+repository;
+        CommonController.ajaxGithub(url, "DELETE", token, {}, function(result, error) {
+          console.log(result);
+          //alert(result);
+          if (error) {
+            callback(null, error);
+            return;
+          }
+        });
+      }//else alert("delete only DB");
+      callback(null,null);
+    });
   },
 
-  ----------------------------*/
   isDupGHBranches: function(owner,repository,branch){
     $.ajaxSetup({ async: false });
     var t=false;
@@ -467,8 +407,6 @@ CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
       }
     });
   },
-
-
 
   ajaxGithub: function(url, method, token, parameters, callback) {
     Logger.request(url);
@@ -597,43 +535,44 @@ CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
     });
   },
 
-  createRepositoryUI: function(ownerS, repositoryS, avatarS, thumbnailS, branchS, tagsA) {
-    var link = $(document.createElement("a"));
-    var url = CommonController.getProjectPageURL(ownerS, repositoryS,branchS);
-    link.attr("href", url);
+  createProjectUI: function(ownerS, repositoryS, avatarS, thumbnailS, branchS, tagsA) {
+    var project = $(document.createElement("div"));
+    project.addClass("project");
 
-    if (thumbnailS == "") {
-    } else {
-      link.css("background-image", "url("+thumbnailS+")")
+    var projectLink = $(document.createElement("a"));
+    projectLink.attr("href", CommonController.getProjectPageURL(ownerS, repositoryS,branchS));
+    projectLink.addClass("projectLink");
+
+    if (thumbnailS != "") {
+      var thumbnail = $(document.createElement("img"));
+      thumbnail.attr("src", thumbnailS);
+      thumbnail.addClass("thumbnail");
+      projectLink.append(thumbnail);
     }
 
-    var avatar = $(document.createElement("img"));
-    avatar.attr("src", avatarS);
-    avatar.addClass("avatar");
+    var projectName = $(document.createElement("div"));
+    projectName.addClass("projectName");
+    if(branchS == "master") {
+      projectName.text(repositoryS);
+    } else {
+      projectName.text(branchS);
+    }
+    projectLink.append(projectName);
 
-    var headline = $(document.createElement("div"));
-    headline.addClass("headline");
+    var ownerLink = $(document.createElement("a"));
+    ownerLink.attr("href", CommonController.getDashboardURL(ownerS));
+    ownerLink.addClass("ownerLink");
 
     var owner = $(document.createElement("div"));
     owner.addClass("owner");
-    var ownera = $(document.createElement("a"));
-    ownera.text(ownerS);
-    ownera.attr("href", CommonController.getDashboardURL(ownerS));
-    owner.append(ownera);
+    owner.css("background-image", "url("+avatarS+")");
+    owner.text(ownerS);
+    ownerLink.append(owner);
 
-    var repository = $(document.createElement("div"));
-    repository.addClass("repository");
-    if(branchS == "master")repository.text(repositoryS);
-    else repository.text(branchS);
-    //repository.text(repositoryS+"/"+branchS);    
+    project.append(projectLink);
+    project.append(ownerLink);
 
-    headline.append(repository);
-    headline.append(owner);
-
-    link.append(avatar);
-    link.append(headline);
-
-    if (tagsA) {
+    if (tagsA && tagsA.length != 0) {
       var tags = $(document.createElement("div"));
       tags.addClass("tags");
       for (var i = 0, n = tagsA.length; i < n; i++) {
@@ -644,27 +583,26 @@ CommonController.updateMetadata(user, "", name, "master","", "", "", callback);
         a.attr("href", url);
         tags.append(a);
       }
-//      headline.append(tags);
-link.append(tags);
-}
+      project.append(tags);
+    }
 
-return link;
-},
+    return project;
+  },
 
-getJSON: function(url, callback) {
-  $.getJSON(url, function(result) {
-    callback(result);
-  })
-  .error(function(xhr, textStatus, errorThrown) {
-    callback(null, textStatus+":"+xhr.responseText);
-  })
-},
-getJSONwithParam: function(url,data, callback) {
-  $.getJSON(url,data, function(result) {
-    console.log(result);
-  })
-  .error(function(xhr, textStatus, errorThrown) {
+  getJSON: function(url, callback) {
+    $.getJSON(url, function(result) {
+      callback(result);
+    })
+    .error(function(xhr, textStatus, errorThrown) {
+      callback(null, textStatus+":"+xhr.responseText);
+    })
+  },
+  getJSONwithParam: function(url,data, callback) {
+    $.getJSON(url,data, function(result) {
+      console.log(result);
+    })
+    .error(function(xhr, textStatus, errorThrown) {
       //callback(null, textStatus+":"+xhr.responseText);
     })
-}
+  }
 }

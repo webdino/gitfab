@@ -4,11 +4,65 @@
 
 var GridLayout = {
   doLayout: function(containerwidth, container, elements, informations) {
-    var DEFAULT_REPOSITORY_UI_SIZE = 200;
+    var DEFAULT_REPOSITORY_UI_SIZE = 180;
     var GRID_MARGIN = 10;
 //    GridLayout.doVerticalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
 //    GridLayout.doHorizontalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
-    GridLayout.doSquareLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
+//    GridLayout.doSquareLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
+    GridLayout.doCardLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
+
+/*
+    for (var i = 0, n = elements.length; i < n; i++) {
+      var element = elements[i];
+      container.append(element);
+    }
+*/
+  },
+
+  doCardLayout: function(gridsize, containerwidth, margin, container, elements, informations) {
+    var columns = Math.floor(containerwidth/(gridsize+margin));
+    if (columns == 0) {
+      columns = 1;
+    }
+    var wOfProject = (containerwidth-(margin*columns+1))/columns;
+    var wOfMargin = (containerwidth - (wOfProject*columns)) / columns;
+
+    if (!GridLayout.current_height_list) {
+      GridLayout.current_height_list = [];
+      for (var i = 0; i < columns; i++) {
+        GridLayout.current_height_list[i] = 0;
+      }
+    }
+    var hOfCurrents = GridLayout.current_height_list;
+
+    for (var i = 0, n = elements.length; i < n; i++) {
+      var information = informations[i];
+      var element = elements[i];
+      element.addClass("grid");
+      var width = wOfProject;
+      var columnIndex = 0;
+      var currentHeight = hOfCurrents[0];
+      for (var j = 1; j < columns; j++) {
+        if (currentHeight > hOfCurrents[j]) {
+          columnIndex = j;
+          currentHeight = hOfCurrents[j];
+        }
+      }
+
+      var left = wOfMargin + columnIndex * (wOfProject + wOfMargin);
+      var top = hOfCurrents[columnIndex] + wOfMargin;
+      element.css({width:width+"px", "left": left+"px", "top": top+"px"});
+      container.append(element);
+
+      var height = element.height();
+      hOfCurrents[columnIndex] = height + top;
+    }
+    //find highest height
+    var maxHeight = GridLayout.current_height_list[0];
+    for (var i = 1; i < columns; i++) {
+      maxHeight = Math.max(maxHeight, GridLayout.current_height_list[i]);
+    }
+    container.height(maxHeight+wOfMargin);
   },
 
   doSquareLayout: function(gridsize, containerwidth, margin, container, elements, informations) {
@@ -105,4 +159,4 @@ var GridLayout = {
       element.css({width:width+"px", height:height+"px", "margin-left": margin+"px"});
     }
   }
-};
+  };

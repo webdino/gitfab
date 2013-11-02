@@ -157,6 +157,7 @@ footer a {
 #toolbar a:hover { text-decoration: underline; }
 
 /** repository **/
+/*
 .thumbnail {
   float: left;
   width: 100%;
@@ -173,10 +174,7 @@ footer a {
 }
 
 .project {
-/*  clear: both; */
   list-style-type: none;
-/*  font-family: Helvetica,sans-serif; */
-/*  text-shadow: 1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray,1px 1px 1px gray; */
 }
 
 .project a {
@@ -241,7 +239,6 @@ footer a {
   width: 80%;
   font-size: 12px;
   position: relative;
-/*  top: 7px; */
 }
 
 .tags:before {
@@ -259,6 +256,7 @@ footer a {
 .tags a:hover {
   color: #ff1493;
 }
+*/
 
 .text-button {
   color: blue;

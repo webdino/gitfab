@@ -63,24 +63,6 @@ var projectListController = {
        0,
        projectListController.showingProjects);
     }
-   /* var length = projectList.length;
-    var elements = [];
-    for (var i = 0; i < length; i++) {
-      var project = projectList[i];
-      var li = $(document.createElement("li"));
-      li.addClass("project");
-      var ui = CommonController.createRepositoryUI(project.owner,
-                                                   project.name,
-                                                   project.avatar, 
-                                                   project.thumbnail, 
-                                                   project.branch,
-                                                   project.tags);
-      li.append(ui);
-      elements.push(li);
-    }
-    GridLayout.doLayout($("#main").width(), ul, elements, projectList);
-    ul.show();
-    */
   },
   
   loadAndAppendProject: function(start,end){
@@ -91,8 +73,7 @@ var projectListController = {
       for (var i = start; i < end; i++) {
         var project = projectListController.projectList[i];
         var li = $(document.createElement("li"));
-        li.addClass("project");
-        var ui = CommonController.createRepositoryUI(project.owner,
+        var ui = CommonController.createProjectUI(project.owner,
                                                    project.name,
                                                    project.avatar, 
                                                    project.thumbnail, 
@@ -101,8 +82,8 @@ var projectListController = {
         li.append(ui);
         elements.push(li);
       }
-      GridLayout.doLayout($("#main").width(), projectListController.ul, elements, projectListController.projectList);
       projectListController.ul.show();
+      GridLayout.doLayout($("#main").width(), projectListController.ul, elements, projectListController.projectList);
       projectListController.showingProjects = end;
     }//else console.log("bounding error :" +start+" : "+end );
   },
