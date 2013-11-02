@@ -8,16 +8,20 @@
   <head>
     <meta charset="utf-8">
     <title data-l10n-id="title">gitFAB</title>
-
-    <link rel="stylesheet" href="/css/project.min.css" type="text/css">
-    <!-- <link rel="stylesheet" href="/css/common.css" type="text/css"> -->
-    <!-- <link rel="stylesheet" href="/css/project.css" type="text/css"> -->
+  
+    <!-- development -->
+    <link rel="stylesheet" href="/css/common.css" type="text/css">
+    <link rel="stylesheet" href="/css/project.css" type="text/css">
+    <link rel="stylesheet" href="css/logger.css" type="text/css">
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
+   <!-- release -->
+   <!--
+    <link rel="stylesheet" href="/css/project.min.css" type="text/css">
     <script type="text/javascript" src="/js/require.min.js"></script>
     <script type="text/javascript" src="/js/main-project.min.js"></script>
-
+    -->
     <script>
 <?php include('script-variables.php.inc'); ?>
     </script>
