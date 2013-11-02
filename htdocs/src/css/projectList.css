@@ -4,24 +4,17 @@
   position: relative;
 }
 
-/*
-
 #tag-title {
   text-align: center;
 }
 
-.tags {
+.tag {
   margin: 0 10px;
   float: left;
-  text-shadow: black 1px 1px;
+  color: gray;
+  text-decoration: none;
 }
 
-.repository {
-  text-shadow: black 1px 1px;
+.tag:hover {
+  color: black;
 }
-
-.owner {
-  text-shadow: black 1px 1px;
-}
-
-*/
