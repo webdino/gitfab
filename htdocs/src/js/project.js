@@ -108,7 +108,7 @@ appendRepositoryUITo: function(container, owner, name) {
     var avatar = metadata.avatar;
     var thumbnail = metadata.thumbnail;
     var tags = metadata.tags;
-    var ui = CommonController.createRepositoryUI(owner, name, avatar, thumbnail, tags);
+    var ui = CommonController.createProjectUI(owner, name, avatar, thumbnail, tags);
     container.append(ui);
   });
 },
