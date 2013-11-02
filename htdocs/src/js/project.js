@@ -18,8 +18,8 @@
     if (projectController.repository == ":create") {
         //new repository
         projectController.repository = null;
-        $("#avatar").attr("src", projectController.avatar_url);
         $("#owner").text(projectController.user);
+        $("#owner").css("background-image", "url("+projectController.avatar_url+")");
         $("#repository").text("input-your-repository-name");
         projectController.setEditable();
       } else {
@@ -67,7 +67,7 @@
   loadRepositoryInformation: function() {
     CommonController.getRepositoryInformation(projectController.owner, projectController.repository, function(result, error) {
       //user's icon
-      $("#avatar").attr("src", result.owner.avatar_url);
+      $("#owner").css("background-image", "url("+result.owner.avatar_url+")");
 
       //parent
       if (result.parent) {
@@ -135,7 +135,7 @@ setEditable: function() {
     $("#upload").change(projectController.upload);
     $("#repository").click(projectController.editTitle);
     $("#tags").click(projectController.editTags);
-    $("#customize-css .text-button").click(projectController.customizeCSS);
+    $("#customize-css").click(projectController.customizeCSS);
     $("#main").addClass("editable");
   },
   
@@ -491,7 +491,6 @@ setEditable: function() {
     var tags = $("#tags").text();
     var avatar = $("#login img").attr("src");
     var thumbnail = projectController.findThumbnail();
-    console.log(projectController.branch);
     CommonController.updateMetadata(projectController.user, 
       projectController.repository, 
       projectController.oldrepository, 
@@ -846,7 +845,7 @@ encode4html: function(text) {
 },
 
 customizeCSS: function(e) {
-  var target = $("#customize-css .text-button");
+  var target = $("#customize-css");
   var parent = target.parent();
   parent.append(projectController.reusable_textarea);
   projectController.reusable_textarea.focus();

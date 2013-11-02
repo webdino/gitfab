@@ -12,10 +12,20 @@
     <!-- development -->
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/project.css" type="text/css">
-    <link rel="stylesheet" href="css/logger.css" type="text/css">
+    <link rel="stylesheet" href="/css/gridlayout.css" type="text/css">
+    <link rel="stylesheet" href="/css/logger.css" type="text/css">
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
+    <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/js/lib/base64.js"></script>
+    <script type="text/javascript" src="/js/lib/showdown.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/project.js"></script>
+    <script type="text/javascript" src="/js/gridlayout.js"></script>
+    <script type="text/javascript" src="/js/slide.js"></script>
+    <script type="text/javascript" src="/js/logger.js"></script>
+
    <!-- release -->
    <!--
     <link rel="stylesheet" href="/css/project.min.css" type="text/css">
@@ -33,20 +43,17 @@
     <div id="contents">
       <div id="main" role="main">
         <section id="tools">
+          <button id="customize-css">customize css</button>
           <button id="slide-button">slide show</button>
-          <button id="fork-button">fork</button>
           <button id="delete-button">delete</button>
+          <button id="fork-button">fork</button>
           <button id="commit-button">commit</button>
         </section>
         <div id="project">
-          <div id="customize-css"><div class="text-button">customize css</div></div>
           <section id="meta">
-            <img id="avatar" class="avatar">
-            <div id="headline" class="headline">
-              <div id="repository" class="repository"></div>
-              <div id="owner" class="owner"></div>
-              <div id="tags" class="tags"></div>
-            </div>
+            <div id="repository"></div>
+            <div id="owner"></div>
+            <div id="tags"></div>
           </section>
           <section id="index">
             <h1>index</h1>

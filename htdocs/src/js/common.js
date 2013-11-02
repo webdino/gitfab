@@ -158,8 +158,6 @@
         break;
       }
     }
-    console.log("commit:");
-    console.log(branch);
     var url = "https://api.github.com/repos/"+user+"/"+repository+"/contents/"+path;
     CommonController.ajaxGithub(url, "PUT", token, parameters, callback);
   },
