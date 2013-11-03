@@ -6,3 +6,5 @@ htdocs/config.ru
 htdocs/temp/
 htdocs/node_modules/
 htdocs/components/
+htdocs/public/test/
+htdocs/public/css/test-gitfab.css
