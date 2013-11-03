@@ -1,0 +1,361 @@
+@font-face {
+  font-family: "FabFont";
+  src: url("/fonts/FabFont.ttf");
+}
+
+@font-face {
+  font-family: "Open Sans Light";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/OpenSans-Light-webfont.woff");
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #eee;
+  font-family: 'Open Sans Light', sans-serif;  
+  font-size : 14px;
+  font-weight: 400;
+}
+
+input {
+  font-family: Helvetica, sans-serif;
+}
+
+textarea {
+  font-family: Helvetica, sans-serif;
+}
+
+header {
+  height: 40px;
+  border-bottom: 1px solid gray;
+  background-color: black;
+}
+
+header a {
+  text-decoration: none;
+  color: white;
+}
+
+#contents {
+  width: 100%;
+}
+
+#logo {
+  float: left;
+  font-size: 30px;
+  margin-left: 10px;
+  margin-top: 5px;
+  font-family: FabFont;
+}
+
+#logo a {
+  text-decoration: none;
+}
+
+#menus {
+  float: right;
+  font-size: 12px;
+  margin-top: -3px;
+  margin-right: 3px;
+}
+
+#searchbox {
+  display: inline-block;
+  margin-right: 10px;
+  line-height: 36px;
+  float: right;
+}
+
+#dashboard {
+  display: none;
+}
+
+#create {
+  display: none;
+}
+
+#login {
+  line-height:40px;
+}
+
+#login-text {
+  position: relative;
+  top: 3px;
+}
+
+#login img {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  top: 9px;
+  right: 3px;
+}
+
+#help {
+  float: right;
+  line-height:40px;
+  font-size: 20px;
+  margin-left: 5px;
+}
+
+footer {
+  clear: both;
+  border-top: 1px solid gray;
+  background-color: white;
+  text-align: center;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+#gitfab-logo {
+  position: relative;
+  top: 18px;
+  margin-right: 20px;
+  line-height: 62px;
+}
+
+#gitfab-logo div {
+  display: inline-block;
+  width: 170px;
+  height: 62px;
+  background: url(/images/gitFAB.png) no-repeat;
+}
+
+#contributers {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#contributers a {
+  color: black;
+}
+
+#bottom {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#toolbar {
+  display: none;
+  text-align: center;
+  background-color: black;
+  color: white;
+  height: 30px;
+  line-height: 30px;
+  clear: both;
+}
+
+#toolbar a {
+  color: white;
+  text-decoration: none;
+}
+
+#toolbar a:hover { text-decoration: underline; }
+
+/** repository **/
+/*
+.thumbnail {
+  float: left;
+  width: 100%;
+  margin-top: -52px;
+  margin-bottom: 6px;
+}
+
+.dummy {
+  height: 200px;
+  background-color: #333;
+  line-height: 200px;
+  color: gray;
+  text-align: center;
+}
+
+.project {
+  list-style-type: none;
+}
+
+.project a {
+  text-decoration: none;
+  color: white;
+}
+
+.project > a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.avatar {
+  border: 1px solid white;
+  float: left;
+  padding: 0;
+  width: 65px;
+  height: 65px;
+  position: relative;
+  z-index: 2;
+  top: 22px;
+  left: 10px;
+}
+
+.headline {
+  float: left;
+  position: relative;
+  z-index: 2;
+  width: 80%;
+  top: 28px;
+  left: 22px;
+}
+
+.owner {
+  font-size: 12px;
+  position: relative;
+  top: 6px;
+}
+
+.owner:before {
+  content: "by ";
+}
+
+.owner a:hover{
+  color: #ff1493;
+}
+
+.repository {
+  font-size: 26px;
+}
+
+.repository:hover {
+  color: #ff1493;
+}
+
+.tags {
+  z-index: 2;
+  width: 80%;
+  font-size: 12px;
+  position: relative;
+}
+
+.tags:before {
+  content: "tags: ";
+}
+
+.tags a:after {
+  content: ", ";
+}
+
+.tags a:last-child:after {
+  content: "";
+}
+
+.tags a:hover {
+  color: #ff1493;
+}
+*/
+
+.text-button {
+  color: blue;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.grid {
+  position: absolute;
+  list-style: none;
+}
+
+.project a {
+  text-decoration: none;
+  color: gray;
+}
+
+.project a:hover {
+  color: black;
+}
+
+.project {
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 5px;
+  padding-bottom: 5px;
+}
+
+.thumbnail {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  border-radius: 5px 5px 0 0;
+}
+
+.projectName {
+  padding: 0px 0 5px 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.ownerLink {  
+}
+
+.owner {
+  font-size: 10px;
+  vertical-align: top;
+  padding: 0 0 5px 31px;
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position: 10px 0px;
+}
+
+.tags {
+  border-top: 1px solid #ddd;
+  font-size: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+
+.tags a {
+  padding-right: 5px;
+  display: inline-block;
+}
+
+#project-list {
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+#tag-title {
+  text-align: center;
+}
+
+.tag {
+  margin: 0 10px;
+  float: left;
+  color: gray;
+  text-decoration: none;
+}
+
+.tag:hover {
+  color: black;
+}
+
+#logger {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: none;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 1em;
+  color: #00ff00;
+}
+
+.error {
+  color: #ff0000;
+}
