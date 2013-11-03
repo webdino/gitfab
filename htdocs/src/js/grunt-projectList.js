@@ -11,7 +11,6 @@ require.config({
 
     }
 });
-require(["jQuery","common","projectList","gridlayout","project","slide","taglist","lib/showdown","lib/base64","logger"],
+require(["jQuery","common","projectList","gridlayout","logger"],
 	 function($,common,projectList,gridlayout,project,slide,taglist,showdown,base64,logger){
 });
-
