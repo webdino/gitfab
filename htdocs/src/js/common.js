@@ -457,7 +457,7 @@
   
   //local -----
   getProjectListFromDatabase: function(tag, owner, callback) {
-    var url = "/api/Projectlist.php";
+    var url = "/api/projectList.php";
     if (tag) {
       url += "?tag="+tag;
     } else if (owner) {
