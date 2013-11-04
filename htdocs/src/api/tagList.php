@@ -3,7 +3,7 @@
   if(isset($_GET["owner"])){
     $owner = $_GET["owner"];
   }
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $taglist = getTagList($owner);

@@ -13,12 +13,12 @@
     <!--
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/projectList.css" type="text/css">
-    <link rel="stylesheet" href="/css/gridlayout.css" type="text/css">
+    <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
     <link rel="stylesheet" href="/css/logger.css" type="text/css">
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/projectList.js"></script>
-    <script type="text/javascript" src="/js/gridlayout.js"></script>
+    <script type="text/javascript" src="/js/gridLayout.js"></script>
     <script type="text/javascript" src="/js/logger.js"></script>
     -->
     <!-- release -->
@@ -26,13 +26,13 @@
     <script type="text/javascript" src="/js/require.min.js"></script>
     <script type="text/javascript" src="/js/main-projectList.min.js"></script>
     <script>
-      <?php include('script-variables.php.inc'); ?>
+      <?php include('scriptVariables.php.inc'); ?>
     </script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
     <?php include('header.php.inc'); ?>
-    <?php include('toolbar.php.inc'); ?>
+    <?php include('toolBar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
         <ul id="project-list">

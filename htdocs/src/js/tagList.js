@@ -12,11 +12,11 @@ var TagListController = {
       CommonController.showError(message);
       return;
     }
-    var taglist = result.taglist;
+    var tagList = result.tagList;
     var container = $("#tag-list");
     var defaultFontSize = 12;
-    for (var i = 0, n = taglist.length; i < n; i++) {
-      var tagResult = taglist[i];
+    for (var i = 0, n = tagList.length; i < n; i++) {
+      var tagResult = tagList[i];
       var tagContainer = $(document.createElement("div"));
       var element = $(document.createElement("a"));
       element.text(tagResult.tag);
