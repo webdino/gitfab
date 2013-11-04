@@ -36,7 +36,6 @@ var GridLayout = {
     var hOfCurrents = GridLayout.current_height_list;
 
     for (var i = 0, n = elements.length; i < n; i++) {
-      var information = informations[i];
       var element = elements[i];
       element.addClass("grid");
       var width = wOfProject;
@@ -46,6 +45,14 @@ var GridLayout = {
         if (currentHeight > hOfCurrents[j]) {
           columnIndex = j;
           currentHeight = hOfCurrents[j];
+        }
+      }
+      var thumbnail = element.find(".thumbnail");
+      var thumbnailHeight = thumbnail.height();
+      if (thumbnailHeight == 0) {
+        var information = informations[i];
+        if (information.aspect && information.aspect > 0) {
+          $(thumbnail).css("height", wOfProject/information.aspect);
         }
       }
 

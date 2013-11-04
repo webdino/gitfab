@@ -465,22 +465,30 @@ var projectController = {
 
   findThumbnail: function () {
     var resources = $(".content img,.content video");
-    var thumbnail = "";
+
+    var thumbnail = {};
+    var resource;
     for (var i = 0, n = resources.length; i < n; i++) {
-      var resource = resources[i];
+      resource = resources[i];
       if (resource.tagName.toUpperCase() == "IMG") {
-        thumbnail = resource.getAttribute("fileurl");
-        if (!thumbnail) {
-          thumbnail = resource.getAttribute("src");
+        var src = resource.getAttribute("fileurl");
+        if (!src) {
+          src = resource.getAttribute("src");
         }
+        thumbnail.src = src;
         break;
       }
       var poster = resource.getAttribute("poster");
       if (poster) {
-        thumbnail = poster;
+        thumbnail.src = poster;
         break;
       }
     }
+    if (thumbnail.src) {
+      resource = $(resource);
+      thumbnail.aspect = resource.width() / resource.height();
+    }
+
     return thumbnail;
   },
 
@@ -488,13 +496,17 @@ var projectController = {
     var tags = $("#tags").text();
     var avatar = $("#login img").attr("src");
     var thumbnail = projectController.findThumbnail();
+    var thumbnailSrc = thumbnail ? thumbnail.src : "";
+    var thumbnailAspect = thumbnail ? thumbnail.aspect : 0;
+
     CommonController.updateMetadata(projectController.user,
       projectController.repository,
       projectController.oldrepository,
       projectController.branch,
       tags,
       avatar,
-      thumbnail,
+      thumbnailSrc,
+      thumbnailAspect,
       callback);
   },
 
@@ -619,7 +631,6 @@ var projectController = {
               projectController.repository,
               "master");
             Logger.log("reload: " + url);
-            console.log("jump to " + url);
             setTimeout(function () {
               window.location.href = url;
               Logger.off();
@@ -630,7 +641,6 @@ var projectController = {
   },
 
   newUniqueNameRepository: function (name) { // if given name is already exist, generate unique name.
-    console.log(projectController.owner);
     name = CommonController.generateRepositoryName(projectController.owner, name);
     CommonController.newRepository(projectController.token,
       name,
@@ -896,7 +906,9 @@ var projectController = {
 
     var meta = $(document.getElementById("meta").cloneNode(true));
     var thumbnail = projectController.findThumbnail();
-    meta.css("background-image", "url(" + thumbnail + ")");
+    if (thumbnail) {
+      meta.css("background-image", "url(" + thumbnail.src + ")");
+    }
     var index = $(document.getElementById("index").cloneNode(true));
     contentlist.push(meta.get(0));
     contentlist.push(index.get(0));

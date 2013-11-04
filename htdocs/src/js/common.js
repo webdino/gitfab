@@ -462,8 +462,8 @@ var CommonController = {
     CommonController.getLocalJSON(url, callback);
   },
 
-  updateMetadata: function (owner, repository, oldrepository, branch, tags, avatar, thumbnail, callback) {
-    var url = "/api/update-metadata.php?owner=" + owner + "&repository=" + repository + "&oldrepository=" + oldrepository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail;
+  updateMetadata: function (owner, repository, oldrepository, branch, tags, avatar, thumbnail, thumbnailAspect, callback) {
+    var url = "/api/update-metadata.php?owner=" + owner + "&repository=" + repository + "&oldrepository=" + oldrepository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
     CommonController.getLocalJSON(url, callback);
   },
 
