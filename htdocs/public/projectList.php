@@ -22,7 +22,7 @@
     <script type="text/javascript" src="/js/logger.js"></script>
     -->
     <!-- release -->
-    <link rel="stylesheet" href="/css/projectList.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/projectList.min.css" type="text/css"> 
     <script type="text/javascript" src="/js/require.min.js"></script>
     <script type="text/javascript" src="/js/main-projectList.min.js"></script>
     <script>
