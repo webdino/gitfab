@@ -215,10 +215,10 @@ function updateMetaData($owner,$repository,$branch, $avatar, $thumbnail) {
 
 //---------------------------------------------------------
 
-function updateRepositoryMeta($id, $avatar, $thumbnail, $connection) {
-  $query = "UPDATE repositories SET avatar=?,thumbnail=?,updated=CAST(now() AS DATETIME) WHERE id=?";
+function updateRepositoryMeta($id, $avatar, $thumbnail, $thumbnailAspect, $connection) {
+  $query = "UPDATE repositories SET avatar=?,thumbnail=?,aspect=?,updated=CAST(now() AS DATETIME) WHERE id=?";
   $statement = $connection->prepare($query);
-  $statement->execute(array($avatar, $thumbnail, $id));
+  $statement->execute(array($avatar, $thumbnail, $thumbnailAspect, $id));
 }
 
 function removeTags($id, $connection) {
@@ -258,7 +258,7 @@ function appendTags($id, $tagstring, $connection) {
   $statement->execute($parameter);
 }
 
-function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thumbnail) {
+function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thumbnail, $thumbnailAspect) {
 
   try {
     $connection = openConnection();
@@ -308,7 +308,7 @@ function updateRepository($owner, $name, $oldname, $branch, $tags, $avatar, $thu
       removeTags($id, $connection);
     }
 
-    updateRepositoryMeta($id, $avatar, $thumbnail, $connection);
+    updateRepositoryMeta($id, $avatar, $thumbnail, $thumbnailAspect, $connection);
     appendTags($id, $tags, $connection);
 
     $connection->commit();
