@@ -118,6 +118,7 @@ var projectListController = {
       CommonController.setParameters(projectListController);
       if (projectListController.user) {
         CommonController.updateUI(projectListController.user, projectListController.avatar_url);
+        $("#main").addClass("hasToolbar")
       }
       Logger.off();
     }
@@ -127,6 +128,7 @@ var projectListController = {
     Logger.off();
     if (CommonController.showError(error) == true) return;
     CommonController.updateUI(result.user, result.avatar_url);
+    $("#main").addClass("hasToolbar")
   },
 };
 

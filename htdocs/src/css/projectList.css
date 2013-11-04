@@ -18,3 +18,11 @@
 .tag:hover {
   color: black;
 }
+
+#main {
+  padding-top: 30px;
+}
+
+#main.hasToolbar {
+  padding-top: 0;
+}
