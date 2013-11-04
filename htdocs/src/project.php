@@ -10,7 +10,7 @@
     <title data-l10n-id="title">gitFAB</title>
   
     <!-- development -->
-    <!--
+    
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/project.css" type="text/css">
     <link rel="stylesheet" href="/css/gridlayout.css" type="text/css">
@@ -26,11 +26,12 @@
     <script type="text/javascript" src="/js/gridlayout.js"></script>
     <script type="text/javascript" src="/js/slide.js"></script>
     <script type="text/javascript" src="/js/logger.js"></script>
-    -->
+    
     <!-- release -->
-    <link rel="stylesheet" href="/css/project.min.css" type="text/css">
+    <!-- <link rel="stylesheet" href="/css/project.min.css" type="text/css"> 
     <script type="text/javascript" src="/js/require.min.js"></script>
     <script type="text/javascript" src="/js/main-project.min.js"></script>
+  -->
     <script>
 <?php include('script-variables.php.inc'); ?>
     </script>
