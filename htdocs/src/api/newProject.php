@@ -3,7 +3,7 @@
   $repository = $_GET["repository"];
   $branch = $_GET["branch"];
 
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $result = newProject($owner,$repository,$branch);

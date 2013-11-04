@@ -4,7 +4,7 @@
   $oldRepository = $_GET["oldRepository"];
   $branch = $_GET["branch"];
 
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $result = renameRepos($owner,$newRepository,$oldRepository,$branch);

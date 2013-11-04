@@ -8,12 +8,8 @@
   $branch = $_GET["branch"];
 
 
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
-  dbg("---------------updateMetaData----");
-  dbg($owner); dbg($repository); dbg($oldrepository); dbg($branch);
-    dbg("-------------------");
-
   try {
     updateRepository($owner, $repository, $oldrepository, $branch, $tags, $avatar, $thumbnail);
     $result["ok"] = "ok";
@@ -22,5 +18,4 @@
   }
 
   echo json_encode($result);
-  dbg($result);
 ?>

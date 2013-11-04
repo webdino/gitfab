@@ -96,7 +96,7 @@ module.exports = function(grunt) {
 	requirejs:{
 	    projectList:{
 		options:requirejs.extend({
-		    name: "grunt-projectList",
+		    name: "gruntProjectList",
 		    skipModuleInsertion: false,
 		    optimize: "none",
 		    out: "<%= dirs.temp.gitfab%>/main-projectList.js"
@@ -104,7 +104,7 @@ module.exports = function(grunt) {
 	    },
 	   	project:{
 			options:requirejs.extend({
-			    name: "grunt-project",
+			    name: "gruntProject",
 			    skipModuleInsertion: false,
 			    optimize: "none",
 			    out: "<%= dirs.temp.gitfab%>/main-project.js"
@@ -132,7 +132,7 @@ module.exports = function(grunt) {
 	concat: {
 		projectList:{
 			src:['<%= dirs.src.css%>/common.css',
-				 '<%= dirs.src.css%>/gridlayout.css',
+				 '<%= dirs.src.css%>/gridLayout.css',
 				 '<%= dirs.src.css%>/projectList.css',
 				 '<%= dirs.src.css%>/logger.css'],
 			dest:'<%= dirs.dest.css%>/projectList.min.css'

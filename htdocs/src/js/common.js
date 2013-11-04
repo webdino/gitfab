@@ -321,15 +321,15 @@ var CommonController = {
 
   renameBranch: function (token, user, name, oldBranch) {
     var url = "https://api.github.com/repos/" + user + "/" + name + "/git/refs/heads/" + branch;
-    var sha = CommonController.getSHA(user, name, oldBranch, function (res) {
-      console.log(res)
+    var sha = CommonController.getSHA(user, name, oldBranch, function (res,err) {
+      if(err)throw(err);
     });
     var parameters = {
       sha: sha,
       force: "true"
     };
-    CommonController.ajaxGithub(url, "PATCH", token, parameters, function (res) {
-      console.log(res)
+    CommonController.ajaxGithub(url, "PATCH", token, parameters, function (res,err) {
+      if(err)throw(err);
     });
   },
 
@@ -347,7 +347,6 @@ var CommonController = {
   },
 
   deleteRepository: function (token, user, repository, branch, callback) {
-    console.log("deleteProject");
     CommonController.deleteDBProject(user, repository, branch);
     CommonController.getForksInformation(user, repository, function (res) {
       if (res.length == 0 && CommonController.checkBranch(user, repository) < 2) {
@@ -383,13 +382,11 @@ var CommonController = {
 
   getAllReferences: function (owner, repository, callback) {
     var url = "https://api.github.com/repos/" + owner + "/" + repository + "/git/refs";
-    console.log(url);
     CommonController.getJSON(url, function (result, error) {
       if (error) {
         callback(null, error);
         return;
       } else {
-        console.log(result);
         callback(result);
       }
     });
@@ -463,12 +460,12 @@ var CommonController = {
   },
 
   updateMetadata: function (owner, repository, oldrepository, branch, tags, avatar, thumbnail, callback) {
-    var url = "/api/update-metadata.php?owner=" + owner + "&repository=" + repository + "&oldrepository=" + oldrepository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail;
+    var url = "/api/updateMetadata.php?owner=" + owner + "&repository=" + repository + "&oldrepository=" + oldrepository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail;
     CommonController.getLocalJSON(url, callback);
   },
 
   getTagList: function (owner, callback) {
-    var url = "/api/taglist.php";
+    var url = "/api/tagList.php";
     if (owner) {
       url += "?owner=" + owner;
     } else console.log("owner not defined");
@@ -480,7 +477,7 @@ var CommonController = {
   },
 
   getCSSTemplate: function (callback) {
-    var url = "/css/customize-template.css";
+    var url = "/css/customizeTemplate.css";
     Logger.request(url);
     $.get(url, function (result) {
       Logger.response(url);
@@ -492,7 +489,7 @@ var CommonController = {
   },
 
   getGitfabDocumentViaProxy: function (owner, repository, callback) {
-    var url = "/api/gitfab-document.php?owner=" + owner + "&repository=" + repository;
+    var url = "/api/gitfabDocument.php?owner=" + owner + "&repository=" + repository;
     Logger.request(url);
     $.get(url, function (result) {
       Logger.response(url);
