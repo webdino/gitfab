@@ -13,32 +13,32 @@
     <!--
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/project.css" type="text/css">
-    <link rel="stylesheet" href="/css/gridlayout.css" type="text/css">
+    <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
     <link rel="stylesheet" href="/css/logger.css" type="text/css">
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
-    <link rel="stylesheet" href="/api/user-css.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
+    <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
 <?php } ?>
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
     <script type="text/javascript" src="/js/lib/showdown.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/project.js"></script>
-    <script type="text/javascript" src="/js/gridlayout.js"></script>
+    <script type="text/javascript" src="/js/gridLayout.js"></script>
     <script type="text/javascript" src="/js/slide.js"></script>
     <script type="text/javascript" src="/js/logger.js"></script>
     -->
     <!-- release -->
-    <link rel="stylesheet" href="/css/project.min.css" type="text/css"> 
+    <link rel="stylesheet" href="/css/project.min.css" type="text/css">
     <script type="text/javascript" src="/js/require.min.js"></script>
     <script type="text/javascript" src="/js/main-project.min.js"></script>
     <script>
-<?php include('script-variables.php.inc'); ?>
+<?php include('scriptVariables.php.inc'); ?>
     </script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
     <?php include('header.php.inc'); ?>
-    <?php include('toolbar.php.inc'); ?>
+    <?php include('toolBar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
         <section id="tools">
@@ -59,7 +59,7 @@
             <ul></ul>
           </section>
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
-          <section id="gitfab-document"><?php include('./api/gitfab-document.php'); ?></section>
+          <section id="gitfab-document"><?php include('./api/gitfabDocument.php'); ?></section>
 <?php } ?>
           <section id="item-list">
             <ul id="item-list-ul"></ul>

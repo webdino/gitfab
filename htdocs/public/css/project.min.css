@@ -328,6 +328,15 @@ button:active {
   text-decoration: none;
 }
 
+#append-button {
+  display:inline-block;
+}
+
+#upload-button {
+  display:inline-block;
+  width: 80px;
+}
+
 #delete-button {
   color:#FF0000;
 }
