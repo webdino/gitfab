@@ -199,21 +199,7 @@ var CommonController = {
 
     });
   },
-  checkBranch: function (owner, repository) {
-    var url = "/api/check.php?owner=" + owner + "&repository=" + repository;
-    $.ajaxSetup({
-      async: false
-    });
-    var t = 0;
-    CommonController.getJSON(url, function (result) {
-      t = result.branches.length;
-    });
-    $.ajaxSetup({
-      async: true
-    });
-    return t;
-  },
-
+  
   newDBProject: function (owner, repository, branch) {
     var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
     CommonController.getJSON(url, function (res, err) {
@@ -271,41 +257,32 @@ var CommonController = {
       });
   },
   //fork するときは unique な名前で、 rename の時は被ったらアラートを出す。
-  generateRepositoryName: function (owner, repository) { //generating unique name
+  generateRepositoryName: function (owner, repository, callback) { //generating unique name
     var name = repository;
-    if (CommonController.isDupGHRepositories(owner, name)) {
-      var i = 2;
-      while (CommonController.isDupGHRepositories(owner, name + "-" + i)) {
-        i++;
-      }
-      return name + "-" + i;
-    } else return name;
-  },
-  generateBranchName: function (owner, repository, branch) { //generating unique name
-    if (CommonController.isDupGHBranches(owner, repository, branch)) {
-      var i = 2;
-      while (CommonController.isDupGHBranches(owner, repository, branch + "-" + i)) {
-        i++;
-      }
-      return branch + "-" + i;
-    } else return branch;
-  },
-  isDupGHRepositories: function (owner, repository) { //TODO: DB の方のチェックもする
-    $.ajaxSetup({
-      async: false
-    });
-    var t = false;
+    var j = 2;
     CommonController.getGHRepositories(owner, function (res) {
       for (var i = 0; i < res.length; i++) {
         if (res[i].name == repository) {
-          t = true;
+          name = repository + "-" + j;
+          j++;
         }
       }
+      callback(name);
     });
-    $.ajaxSetup({
-      async: true
+  },
+
+  generateBranchName: function (owner, repository, branch, callback) { //generating unique name
+    var name = branch;
+    var j = 2;
+    CommonController.getAllReferences(owner, repository, function (res) {
+      for (var i = 0; i < res.length; i++) {
+        if (res[i].ref == "refs/heads/" + name) {
+          name = branch + "-" + j;
+          j++;
+        }
+      }
+      callback(name);
     });
-    return t;
   },
 
   getGHRepositories: function (owner, callback) {
@@ -349,35 +326,22 @@ var CommonController = {
   deleteRepository: function (token, user, repository, branch, callback) {
     CommonController.deleteDBProject(user, repository, branch);
     CommonController.getForksInformation(user, repository, function (res) {
-      if (res.length == 0 && CommonController.checkBranch(user, repository) < 2) {
-        var url = "https://api.github.com/repos/" + user + "/" + repository;
-        CommonController.ajaxGithub(url, "DELETE", token, {}, function (result, error) {
-          if (error) {
-            callback(null, error);
-            return;
+      if (res.length == 0){
+        var url = "/api/check.php?owner=" + user + "&repository=" + repository;
+        CommonController.getJSON(url, function (result) {
+          if(result.branches.length < 2) {
+            var url = "https://api.github.com/repos/" + user + "/" + repository;
+            CommonController.ajaxGithub(url, "DELETE", token, {}, function (result, error) {
+              if (error) {
+                callback(null, error);
+                return;
+              }
+              callback(null, null);
+            });
           }
         });
       }
-      callback(null, null);
     });
-  },
-
-  isDupGHBranches: function (owner, repository, branch) {
-    $.ajaxSetup({
-      async: false
-    });
-    var t = false;
-    CommonController.getAllReferences(owner, repository, function (res) {
-      for (var i = 0; i < res.length; i++) {
-        if (res[i].ref == "refs/heads/" + branch) {
-          t = true;
-        }
-      }
-    });
-    $.ajaxSetup({
-      async: true
-    });
-    return t;
   },
 
   getAllReferences: function (owner, repository, callback) {

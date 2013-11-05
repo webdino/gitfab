@@ -364,7 +364,7 @@ var projectController = {
         target.after(source);
       }
       projectController.updateIndex();
-    } else console.log("can't exchangeitems :" + sourceid + " : " + targetId);
+    }
   },
 
   append: function (e) {
@@ -641,23 +641,24 @@ var projectController = {
   },
 
   newUniqueNameRepository: function (name) { // if given name is already exist, generate unique name.
-    name = CommonController.generateRepositoryName(projectController.owner, name);
-    CommonController.newRepository(projectController.token,
-      name,
-      function (result, error) {
-        if (CommonController.showError(error) == true) {
-          Logger.off();
-          return;
-        }
-        projectController.repository = name;
-        projectController.watch(projectController.user, projectController.repository, function (result, error) {
+    CommonController.generateRepositoryName(projectController.owner, name, function (name) {
+      CommonController.newRepository(projectController.token,
+        name,
+        function (result, error) {
           if (CommonController.showError(error) == true) {
             Logger.off();
             return;
           }
-          projectController.updateRepository();
+          projectController.repository = name;
+          projectController.watch(projectController.user, projectController.repository, function (result, error) {
+            if (CommonController.showError(error) == true) {
+              Logger.off();
+              return;
+            }
+            projectController.updateRepository();
+          });
         });
-      });
+    });
   },
   renameProject: function (name) {
     if (projectController.branch == "master") {
@@ -734,6 +735,7 @@ var projectController = {
     });
   },
   newBranch: function (branch) {
+    projectController.branch = branch;
     CommonController.getSHA(projectController.user,
       projectController.repository,
       "master", //old branch name
@@ -782,8 +784,8 @@ var projectController = {
               newBranch,
               oldBranch);
             var url = CommonController.getProjectPageURL(projectController.user,
-                  projectController.repository,
-                  newBranch);
+              projectController.repository,
+              newBranch);
             Logger.log("reload: " + url);
             setTimeout(function () {
               window.location.href = url;
@@ -795,12 +797,10 @@ var projectController = {
   fork: function () {
     Logger.on();
     if (projectController.user == projectController.owner) {
-      projectController.branch =
-        CommonController.generateBranchName(projectController.owner,
-          projectController.repository,
-          projectController.repository);
-
-      projectController.newBranch(projectController.branch);
+      CommonController.generateBranchName(projectController.owner,
+        projectController.repository,
+        projectController.repository,
+        projectController.newBranch);
     } else { //fork from others
       CommonController.fork(projectController.token,
         projectController.owner,
