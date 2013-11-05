@@ -605,39 +605,43 @@ var projectController = {
   },
 
   newRepository: function (name) {
-    if (CommonController.isDupGHRepositories(projectController.owner, name)) {
-      alert("already exist name. type other name.");
-      Logger.off();
-    } else {
-      CommonController.newRepository(projectController.token,
-        name,
-        function (result, error) {
-          if (CommonController.showError(error) == true) {
-            Logger.off();
-            return;
-          }
-          projectController.repository = name;
-          projectController.watch(projectController.user, projectController.repository, function (result, error) {
-            if (CommonController.showError(error) == true) {
-              Logger.off();
-              return;
-            }
-            projectController.updateRepository();
-            CommonController.newDBProject(
-              projectController.user,
-              name,
-              "master");
-            var url = CommonController.getProjectPageURL(projectController.user,
-              projectController.repository,
-              "master");
-            Logger.log("reload: " + url);
-            setTimeout(function () {
-              window.location.href = url;
-              Logger.off();
-            }, 500);
-          });
-        });
-    }
+    CommonController.getGithubRepositories(projectController.owner, function (res) {
+      for (var i = 0; i < res.length; i++) {
+        if (res[i].name == name) {
+          alert("already exist name. type other name.");
+          Logger.off();
+        } else {
+          CommonController.newRepository(projectController.token,
+            name,
+            function (result, error) {
+              if (CommonController.showError(error) == true) {
+                Logger.off();
+                return;
+              }
+              projectController.repository = name;
+              projectController.watch(projectController.user, projectController.repository, function (result, error) {
+                if (CommonController.showError(error) == true) {
+                  Logger.off();
+                  return;
+                }
+                projectController.updateRepository();
+                CommonController.newDataBaseProject(
+                  projectController.user,
+                  name,
+                  "master");
+                var url = CommonController.getProjectPageURL(projectController.user,
+                  projectController.repository,
+                  "master");
+                Logger.log("reload: " + url);
+                setTimeout(function () {
+                  window.location.href = url;
+                  Logger.off();
+                }, 500);
+              });
+            });
+        }
+      }
+    });
   },
 
   newUniqueNameRepository: function (name) { // if given name is already exist, generate unique name.
@@ -663,27 +667,42 @@ var projectController = {
   renameProject: function (name) {
     if (projectController.branch == "master") {
       if (name != projectController.repository) {
-        if (CommonController.isDupGHRepositories(projectController.owner, name)) {
-          alert("already exist name. type other name.");
-        } else {
-          CommonController.renameRepository(projectController.token,
-            projectController.owner,
-            name,
-            projectController.repository,
-            CommonController.renameBranches(projectController.owner,
+        CommonController.getGithubRepositories(projectController.owner, function (res) {
+          var isUnique = true;
+          for (var i = 0; i < res.length; i++) {
+            if (res[i].name == name) {
+              alert("already exist name. type other name.");
+              isUnique = false;
+              break;
+            }
+          }
+          if(isUnique){
+            CommonController.renameRepository(projectController.token,
+              projectController.owner,
               name,
               projectController.repository,
-              projectController.branch));
-        }
+              CommonController.renameBranches(projectController.owner,
+                name,
+                projectController.repository,
+                projectController.branch));
+          }
+        });
       }
     } else {
-      if (!CommonController.isDupGHBranches(projectController.owner,
-        projectController.repository,
-        name))
-        projectController.createAndRenameBranch(name, projectController.branch);
-      else alert("this name is already used.type other name");
+      CommonController.getAllReferences(projectController.owner, projectController.repository, function (res) {
+        var isUnique = true;
+        for (var i = 0; i < res.length; i++) {
+          if (res[i].ref == "refs/heads/" + name) {
+            isUnique = false;
+          }
+        }
+        if(isUnique) {
+          projectController.createAndRenameBranch(name, projectController.branch);
+        } else {
+            alert("this name is already used.type other name");
+        }
+      });
     }
-
   },
 
   renameRepository: function (name) {
@@ -722,7 +741,7 @@ var projectController = {
         setTimeout(function () {
           window.location.href = "/";
           Logger.off();
-        }, 2000);
+        }, 500);
       });
   },
 
@@ -779,7 +798,7 @@ var projectController = {
               Logger.off();
               return;
             }
-            CommonController.renameDBBranch(projectController.owner,
+            CommonController.renameDataBaseBranch(projectController.owner,
               projectController.repository,
               newBranch,
               oldBranch);

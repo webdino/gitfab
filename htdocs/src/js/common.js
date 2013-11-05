@@ -194,39 +194,46 @@ var CommonController = {
     CommonController.getJSON(url, function (result) {
       for (var i = 0; i < result.branches.length; i++) {
         var proj = result.branches[i];
-        CommonController.renameDBRepository(proj.owner, name, proj.name, proj.branch);
+        CommonController.renameDataBaseRepository(proj.owner, name, proj.name, proj.branch);
       }
-
+        var url = CommonController.getProjectPageURL(owner,
+          name,
+          "master");
+        Logger.log("reload: " + url);
+        setTimeout(function () {
+          window.location.href = url;
+          Logger.off();
+        }, 500);
     });
   },
-  
-  newDBProject: function (owner, repository, branch) {
+
+  newDataBaseProject: function (owner, repository, branch) {
     var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
     CommonController.getJSON(url, function (res, err) {
       if (err) throw (err);
     });
   },
 
-  renameDBBranch: function (owner, repository, newBranch, oldBranch) {
+  renameDataBaseBranch: function (owner, repository, newBranch, oldBranch) {
     var url = "/api/renameBranch.php?owner=" + owner + "&repository=" + repository + "&newBranch=" + newBranch + "&oldBranch=" + oldBranch;
     CommonController.getJSON(url, function (res, err) {
       if (err) throw (err);
     });
   },
-  renameDBRepository: function (owner, newRepository, oldRepository, branch) {
+  renameDataBaseRepository: function (owner, newRepository, oldRepository, branch) {
     var url = "/api/renameRepository.php?owner=" + owner + "&newRepository=" + newRepository + "&oldRepository=" + oldRepository + "&branch=" + branch;
     CommonController.getJSON(url, function (res, err) {
       if (err) throw (err);
     });
   },
-  deleteDBProject: function (owner, repository, branch) {
+  deleteDataBaseProject: function (owner, repository, branch) {
     var url = "/api/deleteProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
     CommonController.getJSON(url, function (res, err) {
       if (err) throw (err);
     });
   },
 
-  newGHBranch: function (token, user, repository, branch, sha) {
+  newGithubBranch: function (token, user, repository, branch, sha) {
     var parameters = {
       ref: "refs/heads/" + branch,
       sha: sha
@@ -241,7 +248,7 @@ var CommonController = {
 
   },
 
-  newGHRepository: function (token, repository) {
+  newGithubRepository: function (token, repository) {
     var parameters = {
       name: repository,
       auto_init: true
@@ -256,11 +263,10 @@ var CommonController = {
         }
       });
   },
-  //fork するときは unique な名前で、 rename の時は被ったらアラートを出す。
   generateRepositoryName: function (owner, repository, callback) { //generating unique name
     var name = repository;
     var j = 2;
-    CommonController.getGHRepositories(owner, function (res) {
+    CommonController.getGithubRepositories(owner, function (res) {
       for (var i = 0; i < res.length; i++) {
         if (res[i].name == repository) {
           name = repository + "-" + j;
@@ -285,7 +291,7 @@ var CommonController = {
     });
   },
 
-  getGHRepositories: function (owner, callback) {
+  getGithubRepositories: function (owner, callback) {
     CommonController.t = "";
     CommonController.getJSON("https://api.github.com/users/" + owner + "/repos",
       function (res, err) {
@@ -324,7 +330,7 @@ var CommonController = {
   },
 
   deleteRepository: function (token, user, repository, branch, callback) {
-    CommonController.deleteDBProject(user, repository, branch);
+    CommonController.deleteDataBaseProject(user, repository, branch);
     CommonController.getForksInformation(user, repository, function (res) {
       if (res.length == 0){
         var url = "/api/check.php?owner=" + user + "&repository=" + repository;
