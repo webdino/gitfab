@@ -4,7 +4,7 @@
   $newBranch = $_GET["newBranch"];
   $oldBranch = $_GET["oldBranch"];
 
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $result = renameBranch($owner,$repository,$newBranch,$oldBranch);

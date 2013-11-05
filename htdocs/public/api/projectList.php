@@ -2,7 +2,7 @@
   $owner = $_GET["owner"];
   $tag = $_GET["tag"];
 
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $result["projectList"] = getProjectList($owner, $tag);

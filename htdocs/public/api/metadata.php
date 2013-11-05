@@ -2,7 +2,7 @@
   $owner = $_GET["owner"];
   $name = $_GET["repository"];
 
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $result["metadata"] = getMetaData($owner, $name);

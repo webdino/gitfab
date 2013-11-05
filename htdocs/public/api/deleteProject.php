@@ -6,7 +6,7 @@
   $owner = trim($owner);
   $repository = trim($repository);
   $branch = trim($branch);
-  include('local-database-functions.php.inc');
+  include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $result = deleteProject($owner,$repository,$branch);
