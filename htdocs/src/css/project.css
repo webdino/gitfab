@@ -81,8 +81,13 @@ button:active {
   width: 80px;
 }
 
-#delete-button {
-  color:#FF0000;
+#fork-button {
+  display: inline-block;
+}
+
+#slide-button {
+  display: inline-block;
+  width: 80px;
 }
 
 #customize-css {
@@ -198,12 +203,9 @@ button:active {
 .editable #tools {
 }
 
-.editable #fork-button {
-  display: inline-block;
-}
-
 .editable #delete-button {
   display: inline-block;
+  color:#FF0000;
 }
 
 .editable #commit-button {

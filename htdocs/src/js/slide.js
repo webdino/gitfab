@@ -34,7 +34,6 @@ var Slide = {
   },
 
   setContent: function(index) {
-    console.log((index+1)+"/"+Slide.contentlist.length);
     var container = $("#slide-container");
     container.empty();
     var content = Slide.contentlist[index];

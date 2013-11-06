@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/project.css" type="text/css">
     <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
+    <link rel="stylesheet" href="/css/slide.css" type="text/css">
     <link rel="stylesheet" href="/css/logger.css" type="text/css">
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
     <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
@@ -25,7 +26,6 @@
     <script type="text/javascript" src="/js/gridLayout.js"></script>
     <script type="text/javascript" src="/js/slide.js"></script>
     <script type="text/javascript" src="/js/logger.js"></script>
-
     <!-- release -->
     <!--
     <link rel="stylesheet" href="/css/project.min.css" type="text/css">
@@ -43,8 +43,8 @@
     <div id="contents">
       <div id="main" role="main">
         <section id="tools">
-          <button id="customize-css">customize css</button>
           <button id="slide-button">slide show</button>
+          <button id="customize-css">customize css</button>
           <button id="delete-button">delete</button>
           <button id="fork-button">fork</button>
           <button id="commit-button">commit</button>
