@@ -5,21 +5,7 @@ var projectListController = {
   init: function () {
     Logger.on();
     projectListController.showingProjects = 0;
-    window.onscroll = function () {
-      var rows = projectListController.showingProjects / 3;
-      if (projectListController.allProjects != projectListController.showingProjects &&
-        scrollY > 60 + 218 * (rows - 3)) { //スクロール量の判定
-        if (3 * (rows + 1) < projectListController.allProjects) {
-          projectListController.loadAndAppendProject(
-            projectListController.showingProjects,
-            3 * (rows + 1)); //追加表示するプロジェクト数
-        } else {
-          projectListController.loadAndAppendProject(
-            projectListController.showingProjects,
-            projectListController.allProjects);
-        }
-      }
-    };
+    //window.onscroll = projectListController.autoPager();
     var parameters = CommonController.getParametersFromQuery();
     document.title = "gitFAB" + (OWNER ? "/" + OWNER + "/" : "") +
       (parameters.QueryString ? "/?" + parameters.QueryString : "");
@@ -32,7 +18,23 @@ var projectListController = {
         projectListController.loadedProjectList);
     }
   },
-
+  
+  autoPager: function () {
+    var rows = projectListController.showingProjects / 3;
+    if (projectListController.allProjects != projectListController.showingProjects &&
+      scrollY > 60 + 218 * (rows - 3)) { //スクロール量の判定
+      if (3 * (rows + 1) < projectListController.allProjects) {
+        projectListController.loadAndAppendProject(
+          projectListController.showingProjects,
+          3 * (rows + 1)); //追加表示するプロジェクト数
+      } else {
+        projectListController.loadAndAppendProject(
+          projectListController.showingProjects,
+          projectListController.allProjects);
+      }
+    }
+  },
+  
   loadedProjectList: function (result, error) {
     if (CommonController.showError(error) != true) {
       if (result.projectList.length == 0) {
@@ -52,10 +54,7 @@ var projectListController = {
     projectListController.ul.hide();
     projectListController.projectList = result.projectList;
     projectListController.allProjects = result.projectList.length;
-    if (projectListController.projectList.length > 12) {
-      projectListController.showingProjects = 12;
-      projectListController.loadAndAppendProject(0, 12);
-    } else {
+    if (projectListController.projectList.length > 0) {
       projectListController.showingProjects = projectListController.projectList.length;
       projectListController.loadAndAppendProject(
         0,
