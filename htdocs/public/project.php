@@ -42,21 +42,23 @@
     <?php include('toolBar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
-        <section id="tools">
-          <button id="slide-button">slide show</button>
-          <button id="customize-css">customize css</button>
-          <button id="delete-button">delete</button>
-          <button id="fork-button">fork</button>
-          <button id="commit-button">commit</button>
-        </section>
         <div id="project">
           <section id="meta">
-            <div id="repository"></div>
-            <div id="owner"></div>
-            <div id="tags"></div>
+            <img id="thumbnail" src="https://raw.github.com/dadaa/firefoxos-workshop-simple/master/gitfab/resources/keon.JPG"></img>
+            <div class="container">
+              <div id="repository"></div>
+              <div id="tags"></div>
+              <div id="owner"></div>
+            </div>
+          </section>
+          <section id="tools">
+            <a id="slide-button" class="button">slide show</a>
+            <a id="customize-css" class="button">customize css</a>
+            <a id="delete-button" class="button">delete</a>
+            <a id="fork-button" class="button">fork</a>
+            <a id="commit-button" class="button">commit</a>
           </section>
           <section id="index">
-            <h1>index</h1>
             <ul></ul>
           </section>
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
@@ -66,11 +68,17 @@
             <ul id="item-list-ul"></ul>
           </section>
           <section id="form">
-            <div id="textarea-container">
-              <textarea id="textarea"></textarea><div class="right"><button id="append-button">append</button></div>
+            <div id="form-tools">
+              <div id="append-heading">heading</div>
+              <div id="append-text">text</div>
+              <div id="append-markdown">markdown</div>
+              <div id="append-file">file</div>
             </div>
-            <div id="upload-container">
-              <button id="upload-button">file upload</button>
+            <div id="textform-container">
+              <div id="textform-label"></div>
+              <textarea rows="5" id="textarea"></textarea>
+              <input id="textfield"></input>
+              <div id="append-button" class="button">append</div>
             </div>
             <input id="upload" name="file" type="file" />
           </section>
