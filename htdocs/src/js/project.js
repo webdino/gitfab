@@ -12,6 +12,7 @@ var projectController = {
 
     if (projectController.user) {
       CommonController.updateUI(projectController.user, projectController.avatar_url);
+      $("#main").addClass("hasToolbar");
     }
 
     if (projectController.user == projectController.owner) {
@@ -21,6 +22,7 @@ var projectController = {
         $("#owner").text(projectController.user);
         $("#owner").css("background-image", "url(" + projectController.avatar_url + ")");
         $("#repository").text("input-your-repository-name");
+        $("#tags").text("input tags");
         projectController.setEditable();
       } else {
         //update repository
