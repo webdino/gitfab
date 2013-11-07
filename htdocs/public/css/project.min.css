@@ -255,6 +255,14 @@ footer a {
 }
 
 
+#main {
+  margin-top: 20px;
+}
+
+#main.hasToolbar {
+  margin-top: 0;
+}
+
 #gitfab-document {
   display: none;
 }
