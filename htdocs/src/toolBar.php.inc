@@ -1,4 +1,4 @@
 <div id="toolbar">
-  <a id="dashboard">dashboard</a>
-  <a id="create">create a project</a>
+  <a id="dashboard" class="button">dashboard</a>
+  <a id="create" class="button">create a project</a>
 </div>
