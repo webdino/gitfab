@@ -109,6 +109,7 @@
 
 /** form **/
 #form {
+  display: none;
   border-bottom: 1px solid black;
   margin-top: 50px;
   padding-bottom: 50px;
@@ -173,6 +174,35 @@
   text-align: right;
   padding: 0 10px;
 } 
+
+.editable #form {
+  display: block;
+}
+
+#customize-css {
+  display: none;
+}
+
+#delete-button {
+  display: none;
+}
+
+#commit-button {
+  display: none;
+}
+
+.editable #customize-css {
+  display: inline-block;
+}
+
+.editable #delete-button {
+  display: inline-block;
+}
+
+.editable #commit-button {
+  display: inline-block;
+}
+
 /** sub **/
 #facebook {
   display: none;
