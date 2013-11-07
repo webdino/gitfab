@@ -177,6 +177,9 @@ var projectController = {
       }
     }
     projectController.updateIndex();
+
+    var thumbnail = projectController.findThumbnail();
+    $("#thumbnail").attr("src", thumbnail.src);
   },
 
   editTextContent: function (e) {

@@ -44,7 +44,7 @@
       <div id="main" role="main">
         <div id="project">
           <section id="meta">
-            <img id="thumbnail" src="https://raw.github.com/dadaa/firefoxos-workshop-simple/master/gitfab/resources/keon.JPG"></img>
+            <img id="thumbnail"></img>
             <div class="container">
               <div id="repository"></div>
               <div id="tags"></div>
