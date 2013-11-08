@@ -68,7 +68,7 @@ var CommonController = {
 
   showError: function (error) {
     if (error) {
-      alert(error);
+        alert(error);
       return true;
     }
     return false;
@@ -341,14 +341,15 @@ var CommonController = {
               if (error) {
                 callback(null, error);
                 return;
-              } else {
-                callback(null, null);
-              }
+              } 
+              callback(null, null);
             });
-          } else { 
+          } else {
             callback(null, null);
           }
         });
+      } else {
+        callback(null,null);
       }
     });
   },

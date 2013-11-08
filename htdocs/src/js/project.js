@@ -14,7 +14,7 @@ var projectController = {
     if (projectController.user) {
       CommonController.updateUI(projectController.user, projectController.avatar_url);
       $("#main").addClass("hasToolbar");
-    }
+    } 
 
     if (projectController.user == projectController.owner) {
       if (projectController.repository == ":create") {
@@ -69,8 +69,14 @@ var projectController = {
   loadRepositoryInformation: function () {
     CommonController.getRepositoryInformation(projectController.owner, projectController.repository, function (result, error) {
       //user's icon
-      $("#owner").css("background-image", "url(" + result.owner.avatar_url + ")");
-
+      //$("#owner").css("background-image", "url(" + result.owner.avatar_url + ")");
+      var icon = $(document.createElement("img"));
+      icon.attr("src",result.owner.avatar_url);
+      icon.css("width","30px");
+      icon.css("height","30px");
+      icon.css("float","left");
+      $("#owner").children().append(icon);
+      
       //parent
       if (result.parent) {
         var owner = result.parent.owner.login;
@@ -160,10 +166,20 @@ var projectController = {
       var title = projectController.branch;
     }
     var tags = lines[1].substring("## ".length);
+
+    tags = tags.split(',');
     var owner = projectController.owner ? projectController.owner : projectController.user;
-    $("#owner").text(owner);
+    var a = $(document.createElement("a"));
+    a.attr("href", "/"+owner+"/");
+    a.text(owner);
+    $("#owner").append(a);
     $("#repository").text(title);
-    $("#tags").text(tags);
+    for(key in tags) {
+      var tag = $(document.createElement("a"));
+      if(projectController.owner != projectController.user)tag.attr("href","/?tag="+$.trim(tags[key]));
+      tag.text(tags[key]+" ");
+      $("#tags").append(tag); 
+    }
     var text;
     for (var i = 4, n = lines.length; i < n; i++) {
       var line = lines[i];
