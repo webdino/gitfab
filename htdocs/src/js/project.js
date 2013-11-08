@@ -13,7 +13,7 @@ var projectController = {
     if (projectController.user) {
       CommonController.updateUI(projectController.user, projectController.avatar_url);
       $("#main").addClass("hasToolbar");
-    }
+    } 
 
     if (projectController.user == projectController.owner) {
       if (projectController.repository == ":create") {
@@ -160,10 +160,19 @@ var projectController = {
       var title = projectController.branch;
     }
     var tags = lines[1].substring("## ".length);
+    tags = tags.split(',');
     var owner = projectController.owner ? projectController.owner : projectController.user;
-    $("#owner").text(owner);
+    var a = $(document.createElement("a"));
+    a.attr("href", "/"+owner+"/");
+    a.text(owner);
+    $("#owner").append(a);
     $("#repository").text(title);
-    $("#tags").text(tags);
+    for(key in tags) {
+      var tag = $(document.createElement("a"));
+      tag.attr("href","/?tag="+tags[key]);
+      tag.text(tags[key]+" ");
+      $("#tags").append(tag); 
+    }
     var text;
     for (var i = 4, n = lines.length; i < n; i++) {
       var line = lines[i];
