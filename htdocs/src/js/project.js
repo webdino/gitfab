@@ -676,12 +676,21 @@ var projectController = {
       function(res,err){
         if (CommonController.showError(err) == true) return;
         console.log(res);
-        projectController.commitChain(
-          GITFAB_DIR + "/thumbnail0.png",
+        CommonController.commit(
+          projectController.token,
+          projectController.user,
+          projectController.repository,
+          projectController.branch,
+          GITFAB_DIR + "/thumbnail.png",
           data,
           "thumbnail",
           res.tree,
-          "");
+          function(res,err){        
+            if (CommonController.showError(err) == true) {
+            Logger.off();
+            return;
+            }
+          });
       });
   },
 

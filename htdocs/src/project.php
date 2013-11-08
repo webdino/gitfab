@@ -37,7 +37,7 @@
         thumbnailData = "";
 <?php if(isset($_GET['thumbnail'])){
       echo 'var img = new Image();';
-      echo 'img.src='.'"'.'data:image/jpeg;base64,'.base64_encode(file_get_contents('https://raw.github.com/'.$_GET['owner'].'/'.$_GET['repository'].'/'.$_GET['branch'].'/gitfab/resources/1-1.jpg')).'";';
+      echo 'img.src='.'"'.'data:image/jpeg;base64,'.base64_encode(file_get_contents('https://raw.github.com/'.$_GET['owner'].'/'.$_GET['repository'].'/'.$_GET['branch'].'/gitfab/resources/'.$_GET['thumbnail'])).'";';
       echo 
       'img.onload = function(){
         var cvs = document.getElementById("canvas");
