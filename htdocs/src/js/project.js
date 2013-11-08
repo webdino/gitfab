@@ -69,8 +69,14 @@ var projectController = {
   loadRepositoryInformation: function () {
     CommonController.getRepositoryInformation(projectController.owner, projectController.repository, function (result, error) {
       //user's icon
-      $("#owner").css("background-image", "url(" + result.owner.avatar_url + ")");
-
+      //$("#owner").css("background-image", "url(" + result.owner.avatar_url + ")");
+      var icon = $(document.createElement("img"));
+      icon.attr("src",result.owner.avatar_url);
+      icon.css("width","30px");
+      icon.css("height","30px");
+      icon.css("float","left");
+      $("#owner").children().append(icon);
+      
       //parent
       if (result.parent) {
         var owner = result.parent.owner.login;
@@ -160,6 +166,7 @@ var projectController = {
       var title = projectController.branch;
     }
     var tags = lines[1].substring("## ".length);
+
     tags = tags.split(',');
     var owner = projectController.owner ? projectController.owner : projectController.user;
     var a = $(document.createElement("a"));
@@ -169,7 +176,7 @@ var projectController = {
     $("#repository").text(title);
     for(key in tags) {
       var tag = $(document.createElement("a"));
-      if(projectController.owner != projectController.user)tag.attr("href","/?tag="+tags[key]);
+      if(projectController.owner != projectController.user)tag.attr("href","/?tag="+$.trim(tags[key]));
       tag.text(tags[key]+" ");
       $("#tags").append(tag); 
     }

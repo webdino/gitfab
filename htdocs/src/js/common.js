@@ -68,7 +68,7 @@ var CommonController = {
 
   showError: function (error) {
     if (error) {
-      alert(error);
+        alert(error);
       return true;
     }
     return false;
