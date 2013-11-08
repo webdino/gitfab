@@ -341,11 +341,15 @@ var CommonController = {
               if (error) {
                 callback(null, error);
                 return;
-              }
+              } 
               callback(null, null);
             });
+          } else {
+            callback(null, null);
           }
         });
+      } else {
+        callback(null,null);
       }
     });
   },
