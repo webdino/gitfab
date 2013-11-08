@@ -7,6 +7,7 @@ var projectController = {
     projectController.base64 = new Base64();
     projectController.current_id = 0;
     CommonController.setParameters(projectController);
+    thumbnailData = "";
     document.title =
       "gitFAB/" + projectController.owner + "/" + projectController.repository;
 
@@ -46,7 +47,6 @@ var projectController = {
     }
 
     $("#slide-button").click(projectController.slideshow);
-
   },
 
   loadGitfabDocument: function (isEditable) {
@@ -549,6 +549,24 @@ var projectController = {
     }
     //ここで userDocument を README.md の内容としてコミット
     projectController.commitChain(MAIN_DOCUMENT, projectController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
+  },
+  commitThumbnail: function(data){
+    var index = data.indexOf(",");
+    data = data.substring(index + 1);
+    CommonController.getSHATree(
+      projectController.user,
+      projectController.repository,
+      projectController.branch,
+      function(res,err){
+        if (CommonController.showError(err) == true) return;
+        console.log(res);
+        projectController.commitChain(
+          GITFAB_DIR + "/thumbnail0.png",
+          data,
+          "thumbnail",
+          res.tree,
+          "");
+      });
   },
 
   commitChain: function (path, content, message, tree, filemap) {

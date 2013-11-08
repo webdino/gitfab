@@ -341,9 +341,12 @@ var CommonController = {
               if (error) {
                 callback(null, error);
                 return;
+              } else {
+                callback(null, null);
               }
-              callback(null, null);
             });
+          } else { 
+            callback(null, null);
           }
         });
       }

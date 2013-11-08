@@ -34,10 +34,29 @@
     -->
     <script>
 <?php include('scriptVariables.php.inc'); ?>
+        thumbnailData = "";
+<?php if(isset($_GET['thumbnail'])){
+      echo 'var img = new Image();';
+      echo 'img.src='.'"'.'data:image/jpeg;base64,'.base64_encode(file_get_contents('https://raw.github.com/'.$_GET['owner'].'/'.$_GET['repository'].'/'.$_GET['branch'].'/gitfab/resources/1-1.jpg')).'";';
+      echo 
+      'img.onload = function(){
+        var cvs = document.getElementById("canvas");
+        var ctx = cvs.getContext("2d");
+        var h = img.naturalHeight;
+        var w = img.naturalWidth;
+        var fw = 182.286;
+        cvs.setAttribute("width",fw);
+        cvs.setAttribute("height",fw*h/w);
+        ctx.drawImage(img,0,0,w,h,0,0,fw,fw*h/w);
+        thumbnailData = cvs.toDataURL();
+      };';
+     }
+?>
     </script>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
+    <canvas id="canvas" style="display:none;"></canvas>
     <?php include('header.php.inc'); ?>
     <?php include('toolBar.php.inc'); ?>
     <div id="contents">
