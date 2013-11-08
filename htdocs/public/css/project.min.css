@@ -13,7 +13,7 @@
 body {
   padding: 0;
   margin: 0;
-  background-color: #eee;
+  background-color: white;
   font-family: 'Open Sans Light', sans-serif;  
   font-size : 14px;
   font-weight: 400;
@@ -29,13 +29,17 @@ textarea {
 
 header {
   height: 40px;
-  border-bottom: 1px solid gray;
-  background-color: black;
+  border-bottom: 1px solid #ddd;
+  background-color: #eee;
 }
 
 header a {
   text-decoration: none;
-  color: white;
+  color: gray;
+}
+
+header a:hover {
+  color: black;
 }
 
 #contents {
@@ -102,7 +106,7 @@ header a {
 
 footer {
   clear: both;
-  border-top: 1px solid gray;
+  border-top: 1px solid #ddd;
   background-color: white;
   text-align: center;
   padding-bottom: 18px;
@@ -153,27 +157,24 @@ footer a {
 
 #toolbar {
   display: none;
-  text-align: center;
-  background-color: black;
-  color: white;
-  height: 30px;
-  line-height: 30px;
+  text-align: right;
   clear: both;
+  padding: 5px;
 }
 
-#toolbar a {
-  color: white;
+.button {
+  color: gray;
+  background-color: #eee;
   text-decoration: none;
-}
-
-#toolbar a:hover { text-decoration: underline; }
-
-.text-button {
-  color: blue;
+  padding: 2px 10px;
+  border-radius: 5px;
   cursor: pointer;
   display: inline-block;
 }
 
+.button:hover {
+  color: black;
+}
 #logger {
   width: 100%;
   height: 100%;
@@ -255,190 +256,171 @@ footer a {
 
 
 #main {
-  max-width: 630px;
-  margin: 30px auto;
+  margin-top: 20px;
 }
 
-#tools {
-  text-align: right;
-  font-size: 10px;
-  background-color: black;
-  border-width: 1px 1px 0 1px;
-  border-style: solid;
-  border-color: #333;
-  padding: 4px 0 2px 0;
-}
-
-#project {
-  background-color: white;
-  border: 1px solid #333;
-  padding: 12px;
+#main.hasToolbar {
+  margin-top: 0;
 }
 
 #gitfab-document {
   display: none;
 }
 
-#fork {
-  margin-right: 6px;
-  text-decoration: none;
+#project {
+  color: gray;  
 }
 
 #meta {
+  margin-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+  margin-right: 5px;
+  padding-bottom: 10px;
 }
 
-button {
-  font-size:10px;
-  -moz-border-radius:6px;
-  -webkit-border-radius:6px;
-  border-radius:6px;
-  border:1px solid #bbbbbb;
-  width:60px;
-  height: 19px;
-  padding-bottom: 2px;
-  text-decoration:none;
-  background: -moz-linear-gradient(top,#ffffff 0%,#dedede);
-  background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dedede));
-  background-color:#dedede;
-  display:inline-block;
-  -webkit-box-shadow:inset 1px 1px 0px 0px #ffffff;
-  -moz-box-shadow:inset 1px 1px 0px 0px #ffffff;
-  box-shadow:inset 1px 1px 0px 0px #ffffff;
-  display: none;
-  cursor: pointer;
-  margin-right: 3px;
-}
-
-button:hover {
-  background: -moz-linear-gradient(top,#f0f0f0 0%,#d0d0d0);
-  background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#d0d0d0));
-  background-color:#d0d0d0;
-  color: #404040;
-  text-decoration: none;
-}
-
-button:active {
-  background: -moz-linear-gradient(top,#f0f0f0 0%,#d0d0d0);
-  background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#d0d0d0));
-  background-color:#d0d0d0;
-  -webkit-box-shadow:inset 1px 1px 0px 0px #acacac;
-  -moz-box-shadow:inset 1px 1px 0px 0px #acacac;
-  box-shadow:inset 1px 1px 0px 0px #acacac;
-  color: #404040;
-  text-decoration: none;
-}
-
-#append-button {
-  display:inline-block;
-}
-
-#upload-button {
-  display:inline-block;
-  width: 80px;
-}
-
-#fork-button {
+#meta .container {
   display: inline-block;
+  vertical-align: top;
 }
 
-#slide-button {
-  display: inline-block;
-  width: 80px;
+#thumbnail {
+  height: 100px;
+  margin: 5px 10px 0px 10px;
+  border-radius: 5px;
 }
 
-#customize-css {
-  width: 100px;
-  display: none;
+#repository {
+  font-size: 36px;  
 }
 
-#index {
-  clear: both;
-  border-top: 1px dotted black;
-  font-family: Helvetica,sans-serif;
-  font-size: 14px;
-  color: #404040;
+#tags {
+  margin-top: -3px;
 }
 
-#index h1{
-  margin-bottom: 0px;
+#owner {
+  background-size: 30px 30px;
+  background-repeat: no-repeat;
+  padding-left: 35px;
+  line-height: 30px;
+  margin-top: 9px;
 }
 
-#index ul{
-  margin-top: 0px;
+#tools {
+  text-align: right;
+  margin-right: 5px;
+}
+
+#item-list-ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.content h1 {
+  margin-right: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.content p {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.content p img {
+  width: 100%;
+}
+
+.content p video {
+  width: 100%;
+}
+
+.content a{
+  text-decoration: none;
+  color:#3387b6;
+}
+
+.content a:visited { 
+  color:#3387b6; 
+}
+
+.content a:hover { 
+  text-decoration: underline; 
 }
 
 #index a{
   text-decoration: none;
   color:#3387b6;
 }
-#index a:visited { color:#3387b6; }
-#index a:hover { text-decoration: underline; }
 
-
-#item-list-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+#index a:visited { 
+  color:#3387b6; 
 }
 
-.item {
-  border-top: 1px dotted black;
-  clear: both;
-}
-
-.content {
-  cursor: default;
-  text-decoration: none;
-  color: black;
-  width: 100%;
-  font-family: Helvetica,sans-serif;
-}
-
-.content * {
-  pointer-events: auto;
-}
-
-.content a {
-  text-decoration: none;
-  color:#3387b6;
-}
-.content a:visited { color:#3387b6; }
-.content a:hover { text-decoration: underline; }
-
-
-.image-container {
-  text-align: center;
+#index a:hover { 
+  text-decoration: underline; 
 }
 
 .function {
-  display: none;
-  text-align: right;
+  float: right;
+  margin-top: 6px;
+  margin-right: 20px;
+}
+
+.function .button {
+  margin-left: 5px;
   font-size: 10px;
+  width: 30px;
+  text-align: center;
 }
 
-.function .text-button {
-  margin-left: 6px;
-}
-
-#repository:hover {
-  color: black;
-}
-
+/** form **/
 #form {
   display: none;
+  border-bottom: 1px solid black;
+  margin-top: 50px;
+  padding-bottom: 50px;
 }
 
-#textarea-container {
+#form-tools {
+  background-color: #eee;
+  line-height: 30px;
+  font-size: 16px;
+}
+
+#form-tools div {
+  color: black;
   display: inline-block;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+#form-tools:before {
+  content: "append a item";  
+}
+
+#textform-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 10px 10px;
+  text-align: right;
+  display: none;
+}
+
+#textform-label {
+  text-align: left;  
+}
+
+#textarea {
   width: 100%;
+  font-size: 16px;
 }
 
-#upload-container {
-  text-align: right;
+#textfield {
+  width: 100%;
+  font-size: 16px;
 }
 
-.right {
-  text-align: right;
+#append-button {
+  margin-top: 5px;
 }
 
 #upload {
@@ -446,127 +428,51 @@ button:active {
 }
 
 #reusable_textarea {
+  width: 90%;
+  max-width: 600px;
+  padding: 0 10px;
 }
 
 #reusable_applybutton {
+  max-width: 600px;
+  width 90%;
   text-align: right;
-}
-
-/** -------- editable -------------- **/
-.editable #project {
-}
-
-.editable #tools {
-}
-
-.editable #delete-button {
-  display: inline-block;
-  color:#FF0000;
-}
-
-.editable #commit-button {
-  display: inline-block;
-}
-
-.editable #repository {
-  cursor: pointer;
-}
-
-.editable #tags {
-  cursor: pointer;
-}
-
-.editable #tags:hover {
-  color: #ff1493;
-}
-
-.editable #repository:hover {
-  color: #ff1493;
-}
-
-.editable .content {
-  pointer-events: auto;
-}
-
-.editable .item:last-child {
-  border-bottom: 1px dotted black;
-  margin-bottom: 24px;
-}
-
-.editable .function {
-  display: block;
-}
-
-.button {
-  display: inline-block;
-}
+  padding: 0 10px;
+} 
 
 .editable #form {
   display: block;
+}
+
+#customize-css {
+  display: none;
+}
+
+#delete-button {
+  display: none;
+}
+
+#commit-button {
+  display: none;
 }
 
 .editable #customize-css {
   display: inline-block;
 }
 
-/** -------- in markdown ----------- **/
-.content video {
-  max-width: 100%;
+.editable #delete-button {
+  display: inline-block;
 }
 
-.content img {
-  max-width: 100%;
+.editable #commit-button {
+  display: inline-block;
 }
 
-.content a {
+/** sub **/
+#facebook {
+  display: none;
 }
 
-h1 {
-  color: #ff1493;
-}
-
-/** --------- in sub -----------------**/
-/** temp **/
-
-#parent-project-label {
-  font-size: 10px;
-}
-
-#child-project-list-label {
-  font-size: 10px;
-}
-
-textarea {
-  width: 100%;
-  height: 10em;
-}
-
-
-/** meta style **/
-
-/* we must rename to project */
-#repository {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-#owner {
-  display: inline;
-  background-size: 20px 20px;
-  height: 20px;
-  padding-left: 25px;
-  background-repeat: no-repeat;
-}
-
-#tags {
-  height: 12px;
-  padding: 5px 0 5px 0;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  border-top: 1px solid #ddd;
-}
-
-#tags:before {
-  content: "tags:";
+#sub {
+  display: none;
 }

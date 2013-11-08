@@ -13,7 +13,7 @@
 body {
   padding: 0;
   margin: 0;
-  background-color: #eee;
+  background-color: white;
   font-family: 'Open Sans Light', sans-serif;  
   font-size : 14px;
   font-weight: 400;
@@ -29,13 +29,17 @@ textarea {
 
 header {
   height: 40px;
-  border-bottom: 1px solid gray;
-  background-color: black;
+  border-bottom: 1px solid #ddd;
+  background-color: #eee;
 }
 
 header a {
   text-decoration: none;
-  color: white;
+  color: gray;
+}
+
+header a:hover {
+  color: black;
 }
 
 #contents {
@@ -102,7 +106,7 @@ header a {
 
 footer {
   clear: both;
-  border-top: 1px solid gray;
+  border-top: 1px solid #ddd;
   background-color: white;
   text-align: center;
   padding-bottom: 18px;
@@ -153,27 +157,24 @@ footer a {
 
 #toolbar {
   display: none;
-  text-align: center;
-  background-color: black;
-  color: white;
-  height: 30px;
-  line-height: 30px;
+  text-align: right;
   clear: both;
+  padding: 5px;
 }
 
-#toolbar a {
-  color: white;
+.button {
+  color: gray;
+  background-color: #eee;
   text-decoration: none;
-}
-
-#toolbar a:hover { text-decoration: underline; }
-
-.text-button {
-  color: blue;
+  padding: 2px 10px;
+  border-radius: 5px;
   cursor: pointer;
   display: inline-block;
 }
 
+.button:hover {
+  color: black;
+}
 .grid {
   position: absolute;
   list-style: none;
@@ -205,6 +206,7 @@ footer a {
   padding: 0px 0 5px 10px;
   font-size: 16px;
   font-weight: bold;
+  word-wrap: break-word;
 }
 
 .ownerLink {  

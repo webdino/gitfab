@@ -13,6 +13,7 @@ var projectController = {
 
     if (projectController.user) {
       CommonController.updateUI(projectController.user, projectController.avatar_url);
+      $("#main").addClass("hasToolbar");
     }
 
     if (projectController.user == projectController.owner) {
@@ -22,6 +23,7 @@ var projectController = {
         $("#owner").text(projectController.user);
         $("#owner").css("background-image", "url(" + projectController.avatar_url + ")");
         $("#repository").text("input-your-repository-name");
+        $("#tags").text("input tags");
         projectController.setEditable();
       } else {
         //update repository
@@ -119,16 +121,23 @@ var projectController = {
     projectController.reusable_input.attr("id", "reusable_input");
     projectController.reusable_textarea = $(document.createElement("textarea"));
     projectController.reusable_textarea.attr("id", "reusable_textarea");
+    projectController.reusable_textarea.attr("rows", "5");
     //
     var buttoncontainer = $(document.createElement("div"));
-    var button = $(document.createElement("button"));
+    var button = $(document.createElement("div"));
     button.text("apply");
+    button.addClass("button");
     buttoncontainer.attr("id", "reusable_applybutton");
     buttoncontainer.append(button);
     projectController.reusable_applybutton = buttoncontainer;
 
     $("#append-button").click(projectController.append);
-    $("#upload-button").click(projectController.appendViaUpload);
+    $("#append-file").click(projectController.appendViaUpload);
+
+    $("#append-heading").click(projectController.prepareHeading);
+    $("#append-text").click(projectController.prepareText);
+    $("#append-markdown").click(projectController.prepareMarkdown);
+
     $("#commit-button").click(projectController.commit);
     $("#delete-button").click(projectController.deleteRepository);
 
@@ -170,6 +179,9 @@ var projectController = {
       }
     }
     projectController.updateIndex();
+
+    var thumbnail = projectController.findThumbnail();
+    $("#thumbnail").attr("src", thumbnail.src);
   },
 
   editTextContent: function (e) {
@@ -250,7 +262,7 @@ var projectController = {
       text += target.markdown + "\n\n";
     } else {
       //append a item via upload
-      var item = projectController.append2dom("");
+      var item = projectController.append2dom("", true);
       target = item.find(".content").get(0);
       projectController.upload_target = $(target);
     }
@@ -368,16 +380,104 @@ var projectController = {
   },
 
   append: function (e) {
-    var textarea = $("#textarea");
-    var text = textarea.val();
-    projectController.append2dom(text, true);
-    textarea.val("");
-    projectController.updateIndex();
+    switch (projectController.append_type) {
+      case 1 : {
+        var text = "#"+$("#textfield").val();
+        projectController.append2dom(text, true);
+        projectController.updateIndex();
+        $("#textfield").val("");
+        break;
+      }
+      case 2 : {
+        var text = $("#textarea").val();
+        var content = $(".content:last");
+        if (content.length == 0) {
+          var item = projectController.append2dom("#noname heading", true);
+          projectController.updateIndex();
+          content = $(item.find(".content"));
+        }
+        var lines = text.split("\n");
+        var text = "";
+        var regex = /^#/;
+        for (var i = 0, n = lines.length; i < n; i++) {
+          var line = lines[i];
+          if (line.match(regex)) {
+            text += "\\"+line;
+          } else {
+            text += line;
+          }
+          text += "\n\n";
+        }
+        text = content.get(0).markdown + "\n\n" + text;
+        projectController.updateitem(text, content);
+        $("#textarea").val("");
+        break;
+      }
+      case 3 : {
+        var regex = /^#/;
+        var text = $("#textarea").val();
+        var content = null;
+        if (!text.match(regex)) {
+          content = $(".content:last");
+          if (content.length == 0) {
+            var item = projectController.append2dom("#noname heading", true);
+            projectController.updateIndex();
+            content = $(item.find(".content"));
+          }
+        }
+        var lines = text.split("\n");
+        var text = "";
+        for (var i = 0, n = lines.length; i < n; i++) {
+          var line = lines[i];
+          if (line.match(regex)) {
+            if (text.length > 0) {
+              projectController.updateitem(content.get(0).markdown + "\n\n" + text, content);
+              text = "";
+            }
+            var item = projectController.append2dom(line, true);
+            projectController.updateIndex();
+            content = $(item.find(".content"));
+          } else {
+            text += line;
+          }
+          text += "\n\n";
+        }
+        if (text.length > 0) {
+          projectController.updateitem(content.get(0).markdown + "\n\n" + text, content);
+        }
+        $("#textarea").val("");
+        break;
+      }
+    }
   },
 
   appendViaUpload: function (e) {
     projectController.upload_target = null;
     $("#upload").click();
+  },
+
+  prepareHeading: function(e) {
+    $("#textform-label").text("heading");
+    $("#textarea").hide();
+    $("#textfield").show();
+    $("#textform-container").show();
+    projectController.append_type = 1;
+  },
+
+  prepareText: function(e) {
+    $("#textform-label").text("text");
+    $("#textarea").show();
+    $("#textfield").hide();
+    $("#textform-container").show();
+    projectController.append_type = 2;
+  },
+
+  prepareMarkdown: function(e) {
+    $("#textform-label").text("markdown");
+    $("#textarea").show();
+    $("#textfield").hide();
+    $("#textform-container").show();
+    projectController.append_type = 3;
   },
 
   append2dom: function (text, isEditable) {
@@ -400,19 +500,19 @@ var projectController = {
       func.addClass("function");
       var edit = $(document.createElement("div"));
       edit.text("edit");
-      edit.addClass("text-button");
+      edit.addClass("button");
       var upButton = $(document.createElement("div"));
       upButton.text("up");
-      upButton.addClass("text-button");
+      upButton.addClass("button");
       var downButton = $(document.createElement("div"));
       downButton.text("down");
-      downButton.addClass("text-button");
+      downButton.addClass("button");
       var upload = $(document.createElement("div"));
       upload.text("upload");
-      upload.addClass("text-button");
+      upload.addClass("button");
       var remove = $(document.createElement("div"));
       remove.text("remove");
-      remove.addClass("text-button");
+      remove.addClass("button");
       edit.click(projectController.editTextContent);
       upload.click(projectController.kickUpload);
       remove.click(projectController.remove);
