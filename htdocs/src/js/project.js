@@ -169,7 +169,7 @@ var projectController = {
     $("#repository").text(title);
     for(key in tags) {
       var tag = $(document.createElement("a"));
-      tag.attr("href","/?tag="+tags[key]);
+      if(projectController.owner != projectController.user)tag.attr("href","/?tag="+tags[key]);
       tag.text(tags[key]+" ");
       $("#tags").append(tag); 
     }
