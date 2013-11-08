@@ -694,6 +694,23 @@ var projectController = {
       });
   },
 
+  sendThumbnail: function(){//gitfab/以下にthumbnail.pngが存在するかどうか
+    /*
+    sendThumbnail -> project.php 内の script タグが挿入されて thumbnail が作られ
+    projectController.commitThumbnail が呼ばれて commit される
+    */
+    var src = projectController.findThumbnail().src.split('/');
+    var path = src[src.length-1];
+    var url = "/project.php?owner=" + 
+    projectController.user + "&repository=" + 
+    projectController.repository + "&branch=" + 
+    projectController.branch + "&thumbnail=" + path;
+    setTimeout(function () {
+      window.location.href = url;
+      Logger.off();
+    }, 500);
+  },
+
   commitChain: function (path, content, message, tree, filemap) {
     CommonController.commit(projectController.token,
       projectController.user,

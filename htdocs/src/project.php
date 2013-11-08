@@ -49,6 +49,7 @@
         cvs.setAttribute("height",fw*h/w);
         ctx.drawImage(img,0,0,w,h,0,0,fw,fw*h/w);
         thumbnailData = cvs.toDataURL();
+        projectController.commitThumbnail(thumbnailData);
       };';
      }
 ?>
