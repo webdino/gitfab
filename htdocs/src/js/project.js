@@ -722,40 +722,45 @@ var projectController = {
 
   newRepository: function (name) {
     CommonController.getGithubRepositories(projectController.owner, function (res) {
+      var isUnique = true;
       for (var i = 0; i < res.length; i++) {
         if (res[i].name == name) {
+          isUnique = false;
+          console.log(res[i].name);
           alert("already exist name. type other name.");
           Logger.off();
-        } else {
-          CommonController.newRepository(projectController.token,
-            name,
-            function (result, error) {
+        } 
+      }
+      console.log("uniq: "+ isUnique);
+      if(isUnique){
+        CommonController.newRepository(projectController.token,
+          name,
+          function (result, error) {
+            if (CommonController.showError(error) == true) {
+              Logger.off();
+              return;
+            }
+            projectController.repository = name;
+            projectController.watch(projectController.user, projectController.repository, function (result, error) {
               if (CommonController.showError(error) == true) {
                 Logger.off();
                 return;
               }
-              projectController.repository = name;
-              projectController.watch(projectController.user, projectController.repository, function (result, error) {
-                if (CommonController.showError(error) == true) {
-                  Logger.off();
-                  return;
-                }
-                projectController.updateRepository();
-                CommonController.newDataBaseProject(
-                  projectController.user,
-                  name,
-                  "master");
-                var url = CommonController.getProjectPageURL(projectController.user,
-                  projectController.repository,
-                  "master");
-                Logger.log("reload: " + url);
-                setTimeout(function () {
-                  window.location.href = url;
-                  Logger.off();
-                }, 500);
-              });
+              projectController.updateRepository();
+              CommonController.newDataBaseProject(
+                projectController.user,
+                name,
+                "master");
+              var url = CommonController.getProjectPageURL(projectController.user,
+                projectController.repository,
+                "master");
+              Logger.log("reload: " + url);
+              setTimeout(function () {
+                window.location.href = url;
+                Logger.off();
+              }, 500);
             });
-        }
+        });
       }
     });
   },
