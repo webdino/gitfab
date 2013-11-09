@@ -300,9 +300,12 @@ footer a {
 #owner {
   background-size: 30px 30px;
   background-repeat: no-repeat;
-  padding-left: 35px;
   line-height: 30px;
   margin-top: 9px;
+}
+
+#owner img {
+  margin-right: 5px;  
 }
 
 #tools {
