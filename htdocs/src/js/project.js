@@ -726,12 +726,10 @@ var projectController = {
       for (var i = 0; i < res.length; i++) {
         if (res[i].name == name) {
           isUnique = false;
-          console.log(res[i].name);
           alert("already exist name. type other name.");
           Logger.off();
         } 
       }
-      console.log("uniq: "+ isUnique);
       if(isUnique){
         CommonController.newRepository(projectController.token,
           name,
