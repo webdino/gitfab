@@ -514,6 +514,7 @@ var projectController = {
 
       var func = $(document.createElement("div"));
       func.addClass("function");
+      func.hide();
       var edit = $(document.createElement("div"));
       edit.text("edit");
       edit.addClass("button");
@@ -540,6 +541,12 @@ var projectController = {
       func.append(upButton);
       func.append(downButton);
       item.append(func);
+      item.mouseover(function() {
+        func.show();
+      });
+      item.mouseout(function() {
+        func.hide();
+      });
     }
     item.append(content);
 
