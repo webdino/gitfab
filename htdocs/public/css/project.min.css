@@ -482,9 +482,8 @@ footer a {
 
 /** sub **/
 #facebook {
-  display: none;
+  padding-top: 30px;
 }
 
 #sub {
-  display: none;
 }
