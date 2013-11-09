@@ -278,8 +278,15 @@ var projectController = {
       text += target.markdown + "\n\n";
     } else {
       //append a item via upload
-      var item = projectController.append2dom("", true);
-      target = item.find(".content").get(0);
+      var content = $(".content:last");
+      console.log(content);
+      if (content.length == 0) {
+        var item = projectController.append2dom("#noname image", true);
+        projectController.updateIndex();
+        content = $(item.find(".content"));
+      }
+      target = content.get(0);
+      text += target.markdown + "\n\n";
       projectController.upload_target = $(target);
     }
     var file = this.files[0];
@@ -326,6 +333,7 @@ var projectController = {
     }
     var target = $(e.currentTarget.parentNode.parentNode);
     target.remove();
+    projectController.updateIndex();
   },
   up: function (e) {
     var target = $(e.currentTarget).parent().parent();
@@ -422,7 +430,7 @@ var projectController = {
           } else {
             text += line;
           }
-          text += "\n\n";
+          text += "\n";
         }
         text = content.get(0).markdown + "\n\n" + text;
         projectController.updateitem(text, content);
@@ -456,7 +464,7 @@ var projectController = {
           } else {
             text += line;
           }
-          text += "\n\n";
+          text += "\n";
         }
         if (text.length > 0) {
           projectController.updateitem(content.get(0).markdown + "\n\n" + text, content);
