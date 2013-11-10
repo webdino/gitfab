@@ -283,6 +283,15 @@ footer a {
   vertical-align: top;
 }
 
+#meta a {
+  text-decoration: none;
+  color: gray;
+}
+
+#meta a:hover {
+  color: black;
+}
+
 #thumbnail {
   height: 100px;
   margin: 5px 10px 0px 10px;
@@ -300,9 +309,12 @@ footer a {
 #owner {
   background-size: 30px 30px;
   background-repeat: no-repeat;
-  padding-left: 35px;
   line-height: 30px;
   margin-top: 9px;
+}
+
+#owner img {
+  margin-right: 5px;  
 }
 
 #tools {
@@ -470,9 +482,8 @@ footer a {
 
 /** sub **/
 #facebook {
-  display: none;
+  padding-top: 30px;
 }
 
 #sub {
-  display: none;
 }

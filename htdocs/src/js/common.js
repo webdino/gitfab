@@ -499,7 +499,7 @@ var CommonController = {
     projectLink.attr("href", CommonController.getProjectPageURL(ownerS, repositoryS, branchS));
     projectLink.addClass("projectLink");
 
-    if (thumbnailS != "") {
+    if (thumbnailS && thumbnailS != "undefined") {
       var thumbnail = $(document.createElement("img"));
       thumbnail.attr("src", thumbnailS);
       thumbnail.addClass("thumbnail");
