@@ -7,6 +7,7 @@ var projectController = {
     projectController.base64 = new Base64();
     projectController.current_id = 0;
     CommonController.setParameters(projectController);
+    thumbnailData = "";
     document.title =
       "gitFAB/" + projectController.owner + "/" + projectController.repository;
 
@@ -48,7 +49,6 @@ var projectController = {
     }
 
     $("#slide-button").click(projectController.slideshow);
-
   },
 
   loadGitfabDocument: function (isEditable) {
@@ -665,6 +665,50 @@ var projectController = {
     }
     //ここで userDocument を README.md の内容としてコミット
     projectController.commitChain(MAIN_DOCUMENT, projectController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
+  },
+  commitThumbnail: function(data){
+    var index = data.indexOf(",");
+    data = data.substring(index + 1);
+    CommonController.getSHATree(
+      projectController.user,
+      projectController.repository,
+      projectController.branch,
+      function(res,err){
+        if (CommonController.showError(err) == true) return;
+        console.log(res);
+        CommonController.commit(
+          projectController.token,
+          projectController.user,
+          projectController.repository,
+          projectController.branch,
+          GITFAB_DIR + "/thumbnail.png",
+          data,
+          "thumbnail",
+          res.tree,
+          function(res,err){        
+            if (CommonController.showError(err) == true) {
+            Logger.off();
+            return;
+            }
+          });
+      });
+  },
+
+  sendThumbnail: function(){//gitfab/以下にthumbnail.pngが存在するかどうか
+    /*
+    sendThumbnail -> project.php 内の script タグが挿入されて thumbnail が作られ
+    projectController.commitThumbnail が呼ばれて commit される
+    */
+    var src = projectController.findThumbnail().src.split('/');
+    var path = src[src.length-1];
+    var url = "/project.php?owner=" + 
+    projectController.user + "&repository=" + 
+    projectController.repository + "&branch=" + 
+    projectController.branch + "&thumbnail=" + path;
+    setTimeout(function () {
+      window.location.href = url;
+      Logger.off();
+    }, 500);
   },
 
   commitChain: function (path, content, message, tree, filemap) {
