@@ -174,7 +174,7 @@ var CommonController = {
 
   },
   getThumbnail: function (token, owner, repository, branch, callback) {
-    var url = "https://api.github.com/repos/" + owner + "/" + repository + "/contents/gitfab/thumbnail.jpg";
+    var url = "https://api.github.com/repos/" + owner + "/" + repository + "/contents/gitfab";
     var parameters = {
       ref: "heads/" + branch
     }

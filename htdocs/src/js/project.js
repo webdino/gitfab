@@ -279,7 +279,6 @@ var projectController = {
     } else {
       //append a item via upload
       var content = $(".content:last");
-      console.log(content);
       if (content.length == 0) {
         var item = projectController.append2dom("#noname image", true);
         projectController.updateIndex();
@@ -682,6 +681,7 @@ var projectController = {
     projectController.commitChain(MAIN_DOCUMENT, projectController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
   },
   commitThumbnail: function(data){
+    Logger.on();
     var index = data.indexOf(",");
     data = data.substring(index + 1);
     CommonController.getSHATree(
@@ -690,7 +690,6 @@ var projectController = {
       projectController.branch,
       function(res,err){
         if (CommonController.showError(err) == true) return;
-        console.log(res);
         CommonController.commit(
           projectController.token,
           projectController.user,
@@ -704,26 +703,60 @@ var projectController = {
             if (CommonController.showError(err) == true) {
             Logger.off();
             return;
-            }
+            }             
+            var url = CommonController.getProjectPageURL(projectController.user,
+            projectController.repository,
+            projectController.branch);
+            Logger.log("reload: " + url);
+            setTimeout(function () {
+              window.location.href = url;
+              Logger.off();
+            }, 500);
           });
       });
   },
 
-  sendThumbnail: function(){//gitfab/以下にthumbnail.pngが存在するかどうか
-    /*
-    sendThumbnail -> project.php 内の script タグが挿入されて thumbnail が作られ
-    projectController.commitThumbnail が呼ばれて commit される
-    */
+  generateThumbnail: function(){
     var src = projectController.findThumbnail().src.split('/');
-    var path = src[src.length-1];
-    var url = "/project.php?owner=" + 
-    projectController.user + "&repository=" + 
-    projectController.repository + "&branch=" + 
-    projectController.branch + "&thumbnail=" + path;
-    setTimeout(function () {
-      window.location.href = url;
-      Logger.off();
-    }, 500);
+    if(src.length>3 && src[2] == "raw.github.com"){
+      var path = src[src.length-1];
+      var url = "/api/imageProxy.php?owner=" + 
+      projectController.user + "&repository=" + 
+      projectController.repository + "&branch=" + 
+      projectController.branch + "&thumbnail=" + path;
+      $.get(url,{},function(res){
+        var img = new Image();
+        img.src = res;
+        img.onload = function(){
+          var cvs = document.getElementById("canvas");
+          var ctx = cvs.getContext("2d");
+          var h = img.naturalHeight;
+          var w = img.naturalWidth;
+          var fw = 182.286;
+          cvs.setAttribute("width",fw);
+          cvs.setAttribute("height",fw*h/w);
+          ctx.drawImage(img,0,0,w,h,0,0,fw,fw*h/w);
+          data = cvs.toDataURL();
+          projectController.commitThumbnail(data);
+        };
+      });
+    }
+  },
+  
+  checkThumbnail: function(){
+    CommonController.getThumbnail(
+      projectController.token,
+      projectController.owner,
+      projectController.repository,
+      projectController.branch,
+      function(res,err){
+        var exist = false;
+        for(key in res){
+          if(res[key].name == "thumbnail.png")exist = true; 
+        }
+        if(!exist)projectController.generateThumbnail();
+        else console.log("there is thumbnail.png");
+      });
   },
 
   commitChain: function (path, content, message, tree, filemap) {

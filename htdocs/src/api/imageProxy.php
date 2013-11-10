@@ -1,7 +1,5 @@
 <?php
-	header("Content-Type: image/jpeg");
-
-	$url ="https://raw.github.com/hrl7/mozbus-sticker/master/gitfab/resources/1-1.jpg";
+	$url = 'https://raw.github.com/'.$_GET['owner'].'/'.$_GET['repository'].'/'.$_GET['branch'].'/gitfab/resources/'.$_GET['thumbnail'];
 	$content = file_get_contents($url);
-	echo $content;
-	?>
+	echo 'data:image/jpeg;base64,'.base64_encode($content);
+?>
