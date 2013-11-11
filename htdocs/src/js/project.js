@@ -680,7 +680,7 @@ var projectController = {
     //ここで userDocument を README.md の内容としてコミット
     projectController.commitChain(MAIN_DOCUMENT, projectController.base64.encodeStringAsUTF8(userDocument), "", tree, filemap);
   },
-  commitThumbnail: function(data){
+  commitThumbnail: function(data){ 
     Logger.on();
     var index = data.indexOf(",");
     data = data.substring(index + 1);
@@ -717,30 +717,28 @@ var projectController = {
   },
 
   generateThumbnail: function(){
-    var src = projectController.findThumbnail().src.split('/');
-    if(src.length>3 && src[2] == "raw.github.com"){
-      var path = src[src.length-1];
-      var url = "/api/imageProxy.php?owner=" + 
-      projectController.user + "&repository=" + 
-      projectController.repository + "&branch=" + 
-      projectController.branch + "&thumbnail=" + path;
-      $.get(url,{},function(res){
-        var img = new Image();
-        img.src = res;
-        img.onload = function(){
-          var cvs = document.getElementById("canvas");
-          var ctx = cvs.getContext("2d");
-          var h = img.naturalHeight;
-          var w = img.naturalWidth;
-          var fw = 182.286;
-          cvs.setAttribute("width",fw);
-          cvs.setAttribute("height",fw*h/w);
-          ctx.drawImage(img,0,0,w,h,0,0,fw,fw*h/w);
-          data = cvs.toDataURL();
-          projectController.commitThumbnail(data);
-        };
-      });
-    }
+    var src = projectController.findThumbnailInGithub().src.split('/');
+    var path = src[src.length-1];
+    var url = "/api/imageProxy.php?owner=" + 
+    projectController.user + "&repository=" + 
+    projectController.repository + "&branch=" + 
+    projectController.branch + "&thumbnail=" + path;
+    $.get(url,{},function(res){
+      var img = new Image();
+      img.src = res;
+      img.onload = function(){
+        var cvs = document.getElementById("canvas");
+        var ctx = cvs.getContext("2d");
+        var h = img.naturalHeight;
+        var w = img.naturalWidth;
+        var fw = 182.286;
+        cvs.setAttribute("width",fw);
+        cvs.setAttribute("height",fw*h/w);
+        ctx.drawImage(img,0,0,w,h,0,0,fw,fw*h/w);
+        data = cvs.toDataURL();
+        projectController.commitThumbnail(data);
+      };
+    });
   },
   
   checkThumbnail: function(){
@@ -754,9 +752,40 @@ var projectController = {
         for(key in res){
           if(res[key].name == "thumbnail.png")exist = true; 
         }
-        if(!exist)projectController.generateThumbnail();
-        else console.log("there is thumbnail.png");
+        projectController.generateThumbnail();
       });
+  },
+
+  findThumbnailInGithub: function () {
+    var resources = $(".content img,.content video");
+
+    var thumbnail = {};
+    var resource;
+    for (var i = 0, n = resources.length; i < n; i++) {
+      resource = resources[i];
+      if (resource.tagName.toUpperCase() == "IMG") {
+        var src = resource.getAttribute("fileurl");
+        if (!src) {
+          src = resource.getAttribute("src");
+        }
+
+        if(src.split('/')[2] == "raw.github.com"){
+          thumbnail.src = src;
+          break;
+        }
+      }
+      var poster = resource.getAttribute("poster");
+      if (poster && poster.split('/')[2] == "raw.github.com") {
+        thumbnail.src = poster;
+        break;
+      }
+    }
+    if (thumbnail.src) {
+      resource = $(resource);
+      thumbnail.aspect = resource.width() / resource.height();
+    }
+
+    return thumbnail;
   },
 
   commitChain: function (path, content, message, tree, filemap) {
