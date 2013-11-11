@@ -195,9 +195,18 @@ var projectController = {
       }
     }
     projectController.updateIndex();
-
-    var thumbnail = projectController.findThumbnail();
-    $("#thumbnail").attr("src", thumbnail.src);
+    projectController.findGithubThumbnail(function(res){
+      if(res){
+        var src = "https://raw.github.com/" +
+          projectController.owner + "/" +
+          projectController.repository + "/" +
+          projectController.branch + "/gitfab/thumbnail.png";
+        $("#thumbnail").attr("src", src);
+      } else {
+        var thumbnail = projectController.findThumbnail();
+        $("#thumbnail").attr("src", thumbnail.src);
+      }
+    });
   },
 
   editTextContent: function (e) {
@@ -843,6 +852,9 @@ var projectController = {
                   Logger.off();
                 });
             } else {
+              if($('#thumbnail')[0].src.split('/')[7] != "thumbnail.png"){
+                projectController.generateThumbnail();
+              }
               Logger.off();
             }
           });
