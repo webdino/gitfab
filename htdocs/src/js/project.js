@@ -628,7 +628,7 @@ var projectController = {
     var thumbnail = projectController.findThumbnail();
     var thumbnailSrc = thumbnail ? thumbnail.src : "";
     var thumbnailAspect = thumbnail ? thumbnail.aspect : 0;
-
+    
     CommonController.updateMetadata(projectController.user,
       projectController.repository,
       projectController.oldrepository,
@@ -641,8 +641,7 @@ var projectController = {
   },
 
   commitDocument: function (result, error) {
-    if (CommonController.showError(error) == true) return;
-
+  if (CommonController.showError(error) == true) return;
     var tree = result.tree;
 
     var userDocument = "";
@@ -703,21 +702,41 @@ var projectController = {
             if (CommonController.showError(err) == true) {
             Logger.off();
             return;
-            }             
-            var url = CommonController.getProjectPageURL(projectController.user,
-            projectController.repository,
-            projectController.branch);
-            Logger.log("reload: " + url);
-            setTimeout(function () {
-              window.location.href = url;
-              Logger.off();
-            }, 500);
+            }   
+            projectController.updateDatabaseThumbnail(
+              function(){
+                var url = CommonController.getProjectPageURL(projectController.user,
+                projectController.repository,
+                projectController.branch);
+                Logger.log("reload: " + url);
+                setTimeout(function () {
+                  window.location.href = url;
+                  Logger.off();
+                }, 500);
+            });          
           });
       });
   },
 
+  updateDatabaseThumbnail: function(callback){
+    var tags = $("#tags").text();
+    var avatar = $("#login img").attr("src");
+    var src = "https://raw.github.com/" + projectController.owner + "/" +
+      projectController.repository + "/" + projectController.branch + "/gitfab/thumbnail.png";
+    var aspect = projectController.findThumbnailFromGitfabDocument().aspect;
+    CommonController.updateMetadata(projectController.user,
+      projectController.repository,
+      "",
+      projectController.branch,
+      tags,
+      avatar,
+      src,
+      aspect,
+      callback);
+  },
+
   generateThumbnail: function(){
-    var src = projectController.findThumbnailInGithub().src.split('/');
+    var src = projectController.findThumbnailFromGitfabDocument().src.split('/');
     var path = src[src.length-1];
     var url = "/api/imageProxy.php?owner=" + 
     projectController.user + "&repository=" + 
@@ -741,7 +760,7 @@ var projectController = {
     });
   },
   
-  checkThumbnail: function(){
+  findGithubThumbnail: function(callback){ // /gitfab 以下に thumbnail.png があると callback を実行
     CommonController.getThumbnail(
       projectController.token,
       projectController.owner,
@@ -752,11 +771,11 @@ var projectController = {
         for(key in res){
           if(res[key].name == "thumbnail.png")exist = true; 
         }
-        projectController.generateThumbnail();
+        callback(exist);
       });
   },
 
-  findThumbnailInGithub: function () {
+  findThumbnailFromGitfabDocument: function () {
     var resources = $(".content img,.content video");
 
     var thumbnail = {};

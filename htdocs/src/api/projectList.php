@@ -10,6 +10,4 @@
     $result["error"] = $e->getMessage();
   }
   echo json_encode($result);
-  //dbg($result);
-
 ?>
