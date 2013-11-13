@@ -1,5 +1,4 @@
-<?php session_start();
-?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this file,
@@ -7,9 +6,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title data-l10n-id="title">gitFAB</title>
-    
+    <title data-l10n-id="title">gitFAB</title>    
     <!-- development -->
+    <!--
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/projectList.css" type="text/css">
     <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
@@ -19,12 +18,11 @@
     <script type="text/javascript" src="/js/projectList.js"></script>
     <script type="text/javascript" src="/js/gridLayout.js"></script>
     <script type="text/javascript" src="/js/logger.js"></script>
+    -->
     <!-- release -->
-    <!--
     <link rel="stylesheet" href="/css/projectList.min.css" type="text/css">
     <script type="text/javascript" src="/js/require.min.js"></script>
     <script type="text/javascript" src="/js/main-projectList.min.js"></script>
-    -->
     <script>
       <?php include('scriptVariables.php.inc'); ?>
     </script>
