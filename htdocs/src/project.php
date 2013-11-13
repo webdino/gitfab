@@ -20,7 +20,8 @@
 <?php } ?>
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
-    <script type="text/javascript" src="/js/lib/showdown.js"></script>
+<!--    <script type="text/javascript" src="/js/lib/showdown.js"></script> -->
+    <script type="text/javascript" src="/js/lib/showdown-dev.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/project.js"></script>
     <script type="text/javascript" src="/js/gridLayout.js"></script>
