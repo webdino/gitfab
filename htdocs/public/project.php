@@ -16,12 +16,9 @@
     <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
     <link rel="stylesheet" href="/css/slide.css" type="text/css">
     <link rel="stylesheet" href="/css/logger.css" type="text/css">
-<?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
-    <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
-<?php } ?>
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
-    <script type="text/javascript" src="/js/lib/showdown.js"></script>
+    <script type="text/javascript" src="/js/lib/showdown-dev.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/project.js"></script>
     <script type="text/javascript" src="/js/gridLayout.js"></script>
@@ -35,9 +32,13 @@
     <script>
 <?php include('scriptVariables.php.inc'); ?>
     </script>
+<?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
+    <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
+<?php } ?>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
+    <canvas id="canvas" style="display:none;"></canvas>
     <?php include('header.php.inc'); ?>
     <?php include('toolBar.php.inc'); ?>
     <div id="contents">
