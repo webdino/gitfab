@@ -1,5 +1,4 @@
-<?php session_start();
-?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this file,
@@ -7,8 +6,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title data-l10n-id="title">gitFAB</title>
-    
+    <title data-l10n-id="title">gitFAB</title>    
     <!-- development -->
     <!--
     <link rel="stylesheet" href="/css/common.css" type="text/css">
