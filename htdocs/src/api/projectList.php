@@ -1,7 +1,6 @@
 <?php
   $owner = $_GET["owner"];
   $tag = $_GET["tag"];
-
   include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
