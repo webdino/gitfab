@@ -49,6 +49,10 @@
   margin-top: -3px;
 }
 
+#tags:before {
+  content: "tags: ";
+}
+
 #owner {
   background-size: 30px 30px;
   background-repeat: no-repeat;
