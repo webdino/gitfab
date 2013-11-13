@@ -20,8 +20,9 @@ var projectController = {
       if (projectController.repository == ":create") {
         //new repository
         projectController.repository = null;
-        $("#owner").text(projectController.user);
-        $("#owner").css("background-image", "url(" + projectController.avatar_url + ")");
+        projectController.appendOwnerName(projectController.user);
+        projectController.appendOwnerIcon(projectController.avatar_url);
+
         $("#repository").text("input-your-repository-name");
         $("#tags").text("input tags");
         projectController.setEditable();
@@ -69,14 +70,7 @@ var projectController = {
   loadRepositoryInformation: function () {
     CommonController.getRepositoryInformation(projectController.owner, projectController.repository, function (result, error) {
       //user's icon
-      //$("#owner").css("background-image", "url(" + result.owner.avatar_url + ")");
-      var icon = $(document.createElement("img"));
-      icon.attr("src",result.owner.avatar_url);
-      icon.css("width","30px");
-      icon.css("height","30px");
-      icon.css("float","left");
-      $("#owner").children().append(icon);
-      
+      projectController.appendOwnerIcon(result.owner.avatar_url);
       //parent
       if (result.parent) {
         var owner = result.parent.owner.login;
@@ -169,10 +163,8 @@ var projectController = {
 
     tags = tags.split(',');
     var owner = projectController.owner ? projectController.owner : projectController.user;
-    var a = $(document.createElement("a"));
-    a.attr("href", "/"+owner+"/");
-    a.text(owner);
-    $("#owner").append(a);
+    projectController.appendOwnerName(owner);
+
     $("#repository").text(title);
     for(key in tags) {
       var tag = $(document.createElement("a"));
@@ -207,6 +199,22 @@ var projectController = {
         $("#thumbnail").attr("src", thumbnail.src);
       }
     });
+  },
+
+  appendOwnerName: function(name) {
+    var a = $(document.createElement("a"));
+    a.attr("href", "/"+name+"/");
+    a.text(name);
+    $("#owner").append(a);
+  },
+
+  appendOwnerIcon: function(url) {
+    var icon = $(document.createElement("img"));
+    icon.attr("src", url);
+    icon.css("width","30px");
+    icon.css("height","30px");
+    icon.css("float","left");
+    $("#owner").children().append(icon);
   },
 
   editTextContent: function (e) {
