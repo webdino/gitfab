@@ -603,7 +603,8 @@ var projectController = {
     CommonController.watch(owner, repository, callback);
   },
 
-  updateRepository: function () {
+  updateRepository: function(callback) {
+    projectController.postUpdateRepository = callback ? callback : function(){};
     CommonController.getSHATree(projectController.user,
       projectController.repository,
       projectController.branch,
@@ -858,11 +859,10 @@ var projectController = {
                 function (result, error) {
                   CommonController.showError(error);
                   Logger.off();
+                  projectController.postUpdateRepository();
                 });
             } else {
-              if($('#thumbnail')[0].src.split('/')[7] != "thumbnail.png"){
-                projectController.generateThumbnail();
-              }
+              projectController.postUpdateRepository();
               Logger.off();
             }
           });
@@ -882,44 +882,40 @@ var projectController = {
 
   newRepository: function (name) {
     CommonController.getGithubRepositories(projectController.owner, function (res) {
-      var isUnique = true;
       for (var i = 0; i < res.length; i++) {
         if (res[i].name == name) {
-          isUnique = false;
           alert("already exist name. type other name.");
           Logger.off();
+          return;
         } 
       }
-      if(isUnique){
-        CommonController.newRepository(projectController.token,
-          name,
-          function (result, error) {
+      CommonController.newRepository(projectController.token,
+        name,
+        function (result, error) {
+          if (CommonController.showError(error) == true) {
+            Logger.off();
+            return;
+          }
+          projectController.repository = name;
+          projectController.watch(projectController.user, projectController.repository, function (result, error) {
             if (CommonController.showError(error) == true) {
               Logger.off();
               return;
             }
-            projectController.repository = name;
-            projectController.watch(projectController.user, projectController.repository, function (result, error) {
-              if (CommonController.showError(error) == true) {
-                Logger.off();
-                return;
-              }
-              projectController.updateRepository();
-              CommonController.newDataBaseProject(
-                projectController.user,
-                name,
-                "master");
-              var url = CommonController.getProjectPageURL(projectController.user,
-                projectController.repository,
-                "master");
-              Logger.log("reload: " + url);
-              setTimeout(function () {
-                window.location.href = url;
-                Logger.off();
-              }, 500);
+            CommonController.newDataBaseProject(projectController.user, name, "master", function(result, error) {
+              projectController.updateRepository(function() {
+                var url = CommonController.getProjectPageURL(projectController.user,
+                  projectController.repository,
+                  "master");
+                Logger.log("reload: " + url);
+                setTimeout(function () {
+                  window.location.href = url;
+                  Logger.off();
+                }, 500);
+              });
             });
-        });
-      }
+          });
+      });
     });
   },
 

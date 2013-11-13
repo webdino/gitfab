@@ -207,10 +207,10 @@ var CommonController = {
     });
   },
 
-  newDataBaseProject: function (owner, repository, branch) {
+  newDataBaseProject: function (owner, repository, branch, callback) {
     var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
-    CommonController.getJSON(url, function (res, err) {
-      if (err) throw (err);
+    CommonController.getJSON(url, function (result, error) {
+      callback(result, error)
     });
   },
 
