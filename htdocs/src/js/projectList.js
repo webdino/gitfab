@@ -9,13 +9,15 @@ var projectListController = {
     projectListController.parameters = parameters;
 
     Logger.on();
-    var promise = projectListController.loadProjectList();
-    promise.then(function() {
-      return projectListController.loadTagList();
+    var promise4list = projectListController.loadProjectList();
+    var promise4authorize = projectListController.authorize();
+    promise4list.then(function() {
+      if ($(".project").length = 0) {
+        return projectListController.loadTagList();
+      }
     });
-    promise.then(function() {
-      return projectListController.authorize();
-    });
+
+    var promise = $.when(promise4list, promise4authorize);
     promise.fail(function(error) {
       Logger.error(error);
     });
@@ -50,9 +52,6 @@ var projectListController = {
   },
 
   loadTagList: function() {
-    if ($(".project").length != 0) {
-      return null;
-    }
     var promise = CommonController.getTagList(null);
     promise.then(function(data) {
       var tagList = data.tagList;
