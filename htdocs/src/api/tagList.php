@@ -6,7 +6,7 @@
   try {
     include('localDatabaseFunctions.php.inc');
     $taglist = getTagList($owner);
-    $result["taglist"] = $taglist;
+    $result["tagList"] = $taglist;
   } catch (Exception $e) {
     $result["error"] = $e->getMessage();
   }

@@ -25,6 +25,109 @@ var CommonController = {
     return parameters;
   },
 
+  getOwner: function() {
+    return OWNER;
+  },
+
+  getRepository: function() {
+    return REPOSITORY;
+  },
+
+  getBranch: function() {
+    return BRANCH == "undefined" ? "master" : BRANCH;
+  },
+
+  getUser: function() {
+    return USER;
+  },
+
+  getToken: function() {
+    return TOKEN;
+  },
+
+  getAvatarURL: function() {
+    return AVATAR_URL;
+  },
+
+  //in projectList -----------------
+  getProjectList: function (tag, owner) {
+    var url = "/api/projectList.php";
+    if (tag) {
+      url += "?tag=" + tag;
+    } else if (owner) {
+      url += "?owner=" + owner;
+    }
+    return CommonController.getLocalJSON(url);
+  },
+
+  getTagList: function (owner) {
+    var url = "/api/tagList.php";
+    if (owner) {
+      url += "?owner=" + owner;
+    }
+    return CommonController.getLocalJSON(url);
+  },
+
+  authorize: function (code) {
+    var url = "/api/authorize.php?code=" + code;
+    return CommonController.getLocalJSON(url);
+  },
+
+  //----------------------------------
+  updateUI: function (username, avatarURL) {
+    var userImg = $(document.createElement("img"));
+    userImg.attr("src", avatarURL);
+    var userName = $(document.createElement("span"));
+    userName.text(username);
+    $("#login").html("");
+    $("#login").append(userImg);
+    $("#login").append(userName);
+    var createurl = CommonController.getProjectPageURL(username, ":create");
+    $("#create").attr("href", createurl);
+    $("#create").show();
+    var dashboardurl = CommonController.getDashboardURL(username);
+    $("#dashboard").attr("href", dashboardurl);
+    $("#dashboard").show();
+    $("#toolbar").show();
+  },
+
+  getLocalJSON: function (url) {
+    return CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
+  },
+
+  ajaxPromise: function(parameter) {
+    Logger.request(parameter.url);
+
+    var deferred = new $.Deferred();
+
+    parameter.success = function(result) {
+      Logger.response(parameter.url);
+      deferred.resolve(result);
+    };
+
+    parameter.error = function(xhr, textStatus, errorThrown) {
+      Logger.error(textStatus);
+      deferred.reject(xhr);
+    };
+
+    parameter.xhr = function() {
+      var XHR = $.ajaxSettings.xhr();
+      var progressListener = function(e) {
+        Logger.progress(e.loaded, e.total);
+        deferred.notify(e.loaded/e.total);
+      }
+      XHR.addEventListener('progress', progressListener);
+      if(XHR.upload) {
+        XHR.upload.addEventListener('progress', progressListener);
+      }
+      return XHR;
+    };
+
+    $.ajax(parameter);
+    return deferred.promise();
+  },
+//--------------------------------------------------------------------
+
   setParameters: function (object) {
     if (OWNER) {
       object.owner = OWNER;
@@ -47,25 +150,6 @@ var CommonController = {
     }
   },
 
-  updateUI: function (username, avatarURL) {
-    var userImg = $(document.createElement("img"));
-    userImg.attr("src", avatarURL);
-    var userName = $(document.createElement("span"));
-    userName.text(username);
-    $("#login").html("");
-    $("#login").append(userImg);
-    $("#login").append(userName);
-    var createurl = CommonController.getProjectPageURL(username, ":create");
-    $("#create").attr("href", createurl);
-    $("#create").show();
-    var dashboardurl = CommonController.getDashboardURL(username);
-    $("#dashboard").attr("href", dashboardurl);
-    $("#dashboard").show();
-
-    $("#toolbar").show();
-
-  },
-
   showError: function (error) {
     if (error) {
         alert(error);
@@ -73,29 +157,6 @@ var CommonController = {
     }
     return false;
   },
-
-  authorize: function (code, callback) {
-    var url = "/api/authorize.php?code=" + code;
-    Logger.request(url);
-    CommonController.getJSON(url, function (result, error) {
-      Logger.response(url);
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.error) {
-        callback(null, result.error);
-      } else {
-        callback(result);
-      }
-    });
-  },
-
-  getProjectList: function (callback) {
-    var url = "https://api.github.com/users/gitfab/subscriptions?callback=?";
-    CommonController.getGithubJSON(url, callback);
-  },
-
 
   getProjectPageURL: function (owner, repository, branch) {
     return "/" + owner + "/" + repository + "/" + branch + "/";
@@ -413,16 +474,6 @@ var CommonController = {
     });
   },
 
-  getProjectListFromDatabase: function (tag, owner, callback) {
-    var url = "/api/projectList.php";
-    if (tag) {
-      url += "?tag=" + tag;
-    } else if (owner) {
-      url += "?owner=" + owner;
-    }
-    CommonController.getLocalJSON(url, callback);
-  },
-
   watch: function (owner, repository, callback) {
     var url = "/api/watch.php?owner=" + owner + "&repository=" + repository;
     CommonController.getLocalJSON(url, callback);
@@ -436,14 +487,6 @@ var CommonController = {
 
   updateMetadata: function (owner, repository, oldrepository, branch, tags, avatar, thumbnail, thumbnailAspect, callback) {
     var url = "/api/updateMetadata.php?owner=" + owner + "&repository=" + repository + "&oldrepository=" + oldrepository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
-    CommonController.getLocalJSON(url, callback);
-  },
-
-  getTagList: function (owner, callback) {
-    var url = "/api/tagList.php";
-    if (owner) {
-      url += "?owner=" + owner;
-    } else console.log("owner not defined");
     CommonController.getLocalJSON(url, callback);
   },
 
@@ -473,22 +516,6 @@ var CommonController = {
       .error(function (xhr, textStatus, errorThrown) {
         callback(null, textStatus + ":" + xhr.responseText);
       })
-  },
-
-  getLocalJSON: function (url, callback) {
-    Logger.request(url);
-    CommonController.getJSON(url, function (result, error) {
-      Logger.response(url);
-      if (error) {
-        callback(null, error);
-        return;
-      }
-      if (result.message) {
-        callback(null, result.message);
-      } else {
-        callback(result);
-      }
-    });
   },
 
   createProjectUI: function (ownerS, repositoryS, avatarS, thumbnailS, branchS, tagsA) {

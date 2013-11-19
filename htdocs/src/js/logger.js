@@ -20,6 +20,10 @@ var Logger = {
     Logger.log("ERROR: "+content, "error");
   },
   
+  progress: function(loaded, total) {
+    Logger.log(loaded+"/"+total);
+  },
+
   log: function(content, className) {
     var element = $(document.createElement("div"));
     element.text(content);
