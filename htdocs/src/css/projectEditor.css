@@ -1,0 +1,96 @@
+#form-tools {
+  background-color: #eee;
+  line-height: 30px;
+  font-size: 16px;
+}
+
+#form-tools div {
+  color: black;
+  display: inline-block;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+#form-tools:before {
+  content: "append a item";  
+}
+
+#textform-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 10px 10px;
+  text-align: right;
+  display: none;
+}
+
+#textform-label {
+  text-align: left;  
+}
+
+#textarea {
+  width: 100%;
+  font-size: 16px;
+}
+
+#textfield {
+  width: 100%;
+  font-size: 16px;
+}
+
+#append-button {
+  margin-top: 5px;
+}
+
+#upload {
+  display: none;
+}
+
+#reusable-item-tools {
+  float: right;
+  margin-top: 6px;
+  margin-right: 20px;
+}
+
+#reusable-item-tools .button {
+  margin-left: 5px;
+  font-size: 10px;
+  width: 30px;
+  text-align: center;
+}
+
+#reusable-textarea {
+  width: 90%;
+  max-width: 600px;
+  padding: 0 10px;
+}
+
+#reusable-apply-button {
+  max-width: 600px;
+  width 90%;
+  text-align: right;
+  padding: 0 10px;
+} 
+
+#repository #reusable-textfield {
+  font-size: 36px;
+}
+
+#tags #reusable-textfield {
+  font-size: 14px;
+}
+
+.editable #form {
+  display: block;
+}
+
+.editable #customize-css {
+  display: inline-block;
+}
+
+.editable #delete-button {
+  display: inline-block;
+}
+
+.editable #commit-button {
+  display: inline-block;
+}

@@ -1,37 +1,38 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
-var projectListController = {
+var ProjectListController = {
   init: function () {
     var parameters = CommonController.getParametersFromQuery();
     document.title = "gitFAB" + (OWNER ? "/" + OWNER + "/" : "") +
       (parameters.QueryString ? "/?" + parameters.QueryString : "");
-    projectListController.parameters = parameters;
+    ProjectListController.parameters = parameters;
 
     Logger.on();
-    var promise4list = projectListController.loadProjectList();
-    var promise4authorize = projectListController.authorize();
+    var promise4list = ProjectListController.loadProjectList();
+    var promise4authorize = ProjectListController.authorize();
     promise4list.then(function() {
-      if ($(".project").length = 0) {
-        return projectListController.loadTagList();
+      if ($(".project").length == 0) {
+        return ProjectListController.loadTagList();
       }
     });
 
-    var promise = $.when(promise4list, promise4authorize);
+    var promise = CommonController.when(promise4list, promise4authorize);
     promise.fail(function(error) {
+      CommonController.showError(error);
       Logger.error(error);
-    });
-    promise.done(function() {
+    })
+    .done(function() {
       Logger.off();
     });
-    //window.onscroll = projectListController.autoPager();
+    //window.onscroll = ProjectListController.autoPager();
   },
   
   loadProjectList: function() {
-    var promise = CommonController.getProjectList(projectListController.parameters.tag, OWNER);
+    var promise = CommonController.getProjectList(ProjectListController.parameters.tag, OWNER);
     promise.then(function(data) {
       var projectList = data.projectList;
-      projectListController.createProjectListUI(projectList);
+      ProjectListController.createProjectListUI(projectList);
     });
     return promise;
   },
@@ -55,7 +56,7 @@ var projectListController = {
     var promise = CommonController.getTagList(null);
     promise.then(function(data) {
       var tagList = data.tagList;
-      projectListController.createTagListUI(tagList);
+      ProjectListController.createTagListUI(tagList);
     });
     return promise;
   },
@@ -80,17 +81,17 @@ var projectListController = {
   },
 
   authorize: function() {
-    var parameters = projectListController.parameters;
+    var parameters = ProjectListController.parameters;
     if (parameters.code) {
       var promise = CommonController.authorize(parameters.code);
       promise.then(function(data) {
-        projectListController.updateUserUI(data.user, data.avatar_url);
+        ProjectListController.updateUserUI(data.user, data.avatar_url);
       });
       return promise;
     } else {
       var user = CommonController.getUser();
       if (user) {
-        projectListController.updateUserUI(user, CommonController.getAvatarURL());
+        ProjectListController.updateUserUI(user, CommonController.getAvatarURL());
       }
     }
   },
@@ -103,17 +104,17 @@ var projectListController = {
   //----------------------------------------------------------
   /*
   autoPager: function () {
-    var rows = projectListController.showingProjects / 3;
-    if (projectListController.allProjects != projectListController.showingProjects &&
+    var rows = ProjectListController.showingProjects / 3;
+    if (ProjectListController.allProjects != ProjectListController.showingProjects &&
       scrollY > 60 + 218 * (rows - 3)) { //スクロール量の判定
-      if (3 * (rows + 1) < projectListController.allProjects) {
-        projectListController.loadAndAppendProject(
-          projectListController.showingProjects,
+      if (3 * (rows + 1) < ProjectListController.allProjects) {
+        ProjectListController.loadAndAppendProject(
+          ProjectListController.showingProjects,
           3 * (rows + 1)); //追加表示するプロジェクト数
       } else {
-        projectListController.loadAndAppendProject(
-          projectListController.showingProjects,
-          projectListController.allProjects);
+        ProjectListController.loadAndAppendProject(
+          ProjectListController.showingProjects,
+          ProjectListController.allProjects);
       }
     }
   }
@@ -121,5 +122,5 @@ var projectListController = {
 };
 
 $(document).ready(function () {
-  projectListController.init();
+  ProjectListController.init();
 });
