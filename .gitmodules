@@ -1,0 +1,3 @@
+[submodule "htdocs/src/api/lib/htmlpurifier"]
+	path = htdocs/src/api/lib/htmlpurifier
+	url = https://github.com/ezyang/htmlpurifier.git

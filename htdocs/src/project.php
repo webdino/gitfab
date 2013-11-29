@@ -33,7 +33,7 @@
 <?php include('scriptVariables.php.inc'); ?>
     </script>
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
-    <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
+    <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo htmlspecialchars($_GET["owner"],ENT_QUOTES); ?>&repository=<?php echo htmlspecialchars($_GET["repository"],ENT_QUOTES); ?>" type="text/css">
 <?php } ?>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
