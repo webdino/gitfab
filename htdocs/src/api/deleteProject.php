@@ -9,11 +9,17 @@
   include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
-    $connection = openConnection();
-    $connection -> beginTransaction();
+      $connection = openConnection();
+      $connection -> beginTransaction();
  
-    $id = -1;
-    $id = findProject($owner, $repository, $branch, $connection);
+      $query = "SELECT id FROM repositories WHERE owner=? AND name=? AND branch=?";
+      $statement = $connection -> prepare($query);
+      $statement -> execute(array($owner, $repository, $branch));
+      $id = -1;
+      if ($row = $statement -> fetch(PDO :: FETCH_ASSOC)) {
+          $id = $row["id"];
+      } 
+      $statement -> closeCursor();
       $query = "DELETE FROM tags WHERE repository_id=?";
       $statement = $connection -> prepare($query);
       $statement -> execute(array($id));

@@ -15,9 +15,16 @@
         $connection -> beginTransaction();
         $repository = $repository != null ? trim($repository) : "";
         $branch = $branch != null ? trim($branch) : "";
+        
+        $query = "SELECT id FROM repositories WHERE owner=? AND name=? AND branch=?";
+        $statement = $connection -> prepare($query);
+        $statement -> execute(array($owner, $repository, $branch));
         $id = -1;
-        $id = findProject($owner, $repository, $branch, $connection);
-        //    removeTags($id, $connection);
+        if ($row = $statement -> fetch(PDO :: FETCH_ASSOC)) {
+                $id = $row["id"];
+        } 
+        $statement -> closeCursor();
+       
         $query = "UPDATE repositories SET avatar=?,thumbnail=?,aspect=?,updated=CAST(now() AS DATETIME) WHERE id=?";
         $statement = $connection -> prepare($query);
         $statement -> execute(array($avatar, $thumbnail, $thumbnailAspect, $id));

@@ -14,7 +14,7 @@
     $statement -> execute(array($owner, $repository, $branch));
     $connection -> commit();
     closeConnection($connection);
-    return $projectList;
+    $result["projectList"] = $projectList;
   } catch (PDOException $e) {
     $result["error"] = $e->getMessage();
     $connection -> rollBack();      
