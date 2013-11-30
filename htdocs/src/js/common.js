@@ -8,6 +8,7 @@ var CUSTOM_CSS = GITFAB_DIR + "/custom.css";
 var GITHUB_RAW = "https://raw.github.com/";
 var GITHUB_API = "https://api.github.com/";
 var MASTER_BRANCH = "master";
+var CREATE_PROJECT_COMMAND = ":create";
 
 var CommonController = {
 
@@ -156,7 +157,7 @@ var CommonController = {
   },
 
   getProjectPageURL: function (owner, repository, branch) {
-    return "/" + owner + "/" + repository + "/" + branch + "/";
+    return "/" + owner + "/" + repository + "/" + (branch ? branch : "-") + "/";
   },
 
   getDashboardURL: function (owner) {
@@ -175,7 +176,7 @@ var CommonController = {
     $("#login").html("");
     $("#login").append(userImg);
     $("#login").append(userName);
-    var createurl = CommonController.getProjectPageURL(username, ":create");
+    var createurl = CommonController.getProjectPageURL(username, CREATE_PROJECT_COMMAND);
     $("#create").attr("href", createurl);
     $("#create").show();
     var dashboardurl = CommonController.getDashboardURL(username);
