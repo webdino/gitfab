@@ -59,52 +59,7 @@ function deleteRepository($id, $connection)
     $statement = $connection -> prepare($query);
     $statement -> execute(array($id));
 } 
- 
-function newProject($owner, $repository, $branch)
-{
-    try {
-        $connection = openConnection();
-        $connection -> beginTransaction();
- 
-        $query = "INSERT INTO repositories(owner,name,branch,created,updated) VALUES (?,?,?,CAST(now() AS DATETIME),CAST(now() AS DATETIME))";
-        $statement = $connection -> prepare($query);
-        $statement -> execute(array($owner, $repository, $branch));
-        $connection -> commit();
-        closeConnection($connection);
-        return $projectList;
-    } 
-    catch (PDOException $e) {
-        $connection -> rollBack();
-        throw $e;
-    } 
-} 
- 
-function deleteProject($owner, $repository, $branch)
-{
-    try {
-        $connection = openConnection();
-        $connection -> beginTransaction();
- 
-        $id = -1;
-        $id = findProject($owner, $repository, $branch, $connection);
- 
-        $query = "DELETE FROM tags WHERE repository_id=?";
-        $statement = $connection -> prepare($query);
-        $statement -> execute(array($id));
-        $query = "DELETE FROM repositories WHERE id=?";
-        $statement = $connection -> prepare($query);
-        $statement -> execute(array($id));
- 
-        $connection -> commit();
-        closeConnection($connection);
-        return $statement;
-    } 
-    catch (PDOException $e) {
-        $connection -> rollBack();
-        throw $e;
-    } 
-} 
- 
+
 function renameBranch($owner, $repository, $newBranch, $oldBranch)
 {
     try {
