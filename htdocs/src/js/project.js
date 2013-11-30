@@ -52,7 +52,7 @@ var ProjectController = {
     if (user == owner) {
       ProjectEditor.enable();
       $("#commit-button").click(ProjectController.commitProject);
-//    $("#delete-button").click(ProjectEditor.deleteRepository);
+      $("#delete-button").click(ProjectController.deleteProject);
 //    $("#customize-css").click(ProjectEditor.customizeCSS);
     }
   },
@@ -194,6 +194,41 @@ var ProjectController = {
   },
 
   //update the project ========================================
+  deleteProject: function() {
+    if (!window.confirm("are you sure to remove this project?")) {
+      return;
+    }
+    var user = CommonController.getUser();
+    var branch = CommonController.getBranch();
+    var token = CommonController.getToken();
+    var repository = CommonController.getRepository();
+
+    Logger.on();
+
+    var promise4github = null;
+    var promise4local = null;
+    if (branch == MASTER_BRANCH) {
+      promise4github = CommonController.deleteRepository(token, user, repository);
+      promise4local = CommonController.deleteLocalRepository(user, repository);
+    } else {
+      promise4github = CommonController.deleteBranch(token, user, repository, branch);
+      promise4local = CommonController.deleteLocalBranch(user, repository, branch);
+    }
+    var promise = CommonController.when(promise4github, promise4local);
+    promise.then(function() {
+    })
+    .fail(function(error) {
+      CommonController.showError(error);
+      Logger.error(error);
+    })
+    .done(function() {
+      setTimeout(function () {
+        window.location.href = "/";
+        Logger.off();
+      }, 500);
+    });
+  },
+
   commitProject: function() {
     var projectName = $.trim($("#repository").text());
     if (projectName.length == 0) {

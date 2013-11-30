@@ -151,8 +151,8 @@ var CommonController = {
     return GITHUB_RAW + owner + "/" + repository + "/" + branch + "/gitfab/thumbnail.png";
   },
 
-  getFileURL: function (user, repository, branch, path) {
-    return GITHUB_RAW + user + "/" + repository + "/" + branch + "/" + path;
+  getFileURL: function (owner, repository, branch, path) {
+    return GITHUB_RAW + owner + "/" + repository + "/" + branch + "/" + path;
   },
 
   getProjectPageURL: function (owner, repository, branch) {
@@ -194,8 +194,17 @@ var CommonController = {
     return CommonController.getLocalJSON(url);
   },
 
+  deleteLocalRepository: function(owner, repository) {
+    return CommonController.deleteLocalBranch(owner, repository, MASTER_BRANCH);
+  },
+
   renameLocalBranch: function(owner, repository, newBranch, previousBranch) {
     var url = "/api/renameBranchProject.php?owner=" + owner + "&repository=" + repository + "&newBranch=" + newBranch + "&previousBranch=" + previousBranch;
+    return CommonController.getLocalJSON(url);
+  },
+
+  deleteLocalBranch: function(owner, repository, branch) {
+    var url = "/api/deleteProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
     return CommonController.getLocalJSON(url);
   },
 
@@ -203,7 +212,6 @@ var CommonController = {
     var url = "/api/updateMetadata.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
     return CommonController.getLocalJSON(url);
   },
-
 
   getLocalJSON: function (url) {
     var deferred = new $.Deferred();
@@ -221,22 +229,31 @@ var CommonController = {
   },
 
   //github ----------------------------------
+  getGithubRepositoryPath: function(owner, repository) {
+    return  GITHUB_API+"repos/" + owner + "/" + repository;
+  },
+
+  getGithubBranchPath: function(owner, repository, branch) {
+    return  GITHUB_API+"repos/" + owner + "/" + repository + "/git/refs/heads/" + branch;
+  },
+
   getAdditionalInformation: function (owner, repository, branch) {
-    var url = GITHUB_API+"repos/" + owner + "/" + repository;
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
     return CommonController.getGithubJSON(url);
   },
 
-  getSHATree: function (user, repository, branch) {
-    var url = GITHUB_API+"repos/" + user + "/" + repository + "/git/trees/master?recursive=2&callback=?";
+  getSHATree: function (owner, repository, branch) {
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/git/trees/master?recursive=2&callback=?";
     return CommonController.getGithubJSON(url);
   },
 
-  getSHA: function (user, repository, branch) {
-    var url = GITHUB_API+"https://api.github.com/repos/" + user + "/" + repository + "/git/refs/heads/" + branch;
+  getSHA: function (owner, repository, branch) {
+    var url = CommonController.getGithubBranchPath(owner, repository, branch);
     return CommonController.getGithubJSON(url);
   },
  
-  commit: function (token, user, repository, branch, path, content, message, tree) {
+  commit: function (token, owner, repository, branch, path, content, message, tree) {
     var parameters = { path: path, message: message, content: content, branch: branch, };
     for (var i = 0, n = tree.length; i < n; i++) {
       var node = tree[i];
@@ -245,7 +262,8 @@ var CommonController = {
         break;
       }
     }
-    var url = GITHUB_API+"repos/" + user + "/" + repository + "/contents/" + path;
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/contents/" + path;
     return CommonController.getGithubJSON4Token(url, "PUT", token, parameters);
   },
 
@@ -260,18 +278,28 @@ var CommonController = {
     return CommonController.getGithubJSON4Token(url, "POST", token, parameters);
   },
 
-  renameRepository: function (token, user, newRepository, previousRepository) {
-    var url = GITHUB_API+"repos/" + user + "/" + previousRepository;
+  deleteRepository: function(token, owner, repository) {
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    return CommonController.getGithubJSON4Token(url, "DELETE", token, {});
+  },
+
+  renameRepository: function (token, owner, newRepository, previousRepository) {
+    var url = CommonController.getGithubRepositoryPath(owner, previousRepository);
     var parameters = { name: newRepository };
     return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
   },
 
-  renameBranch: function (token, user, name, newBranch, previousBranch) {
-    var promise = CommonController.getSHA(user, name, previousBranch);
+  deleteBranch: function(token, owner, repository, branch) {
+    var url = CommonController.getGithubBranchPath(owner, repository, branch);
+    return CommonController.getGithubJSON4Token(url, "DELETE", token, {});
+  },
+
+  renameBranch: function (token, owner, repository, newBranch, previousBranch) {
+    var promise = CommonController.getSHA(owner, repository, previousBranch);
     promise.then(function(result) {
       var sha = result.object.sha;
       var parameters = { sha: sha, force: "true" };
-      var url = GITHUB_API+"repos/" + user + "/" + name + "/git/refs/heads/" + newBranch;
+      var url = CommonController.getGithubBranchPath(owner, repository, newBranch);
       return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
     });
     return promise;
