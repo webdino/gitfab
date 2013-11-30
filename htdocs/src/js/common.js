@@ -273,6 +273,12 @@ var CommonController = {
     return CommonController.getLocalJSON(url);
   },
 
+  fork: function (token, owner, repository) {
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/forks";
+    return CommonController.getGithubJSON4Token(url, "POST", token, {});
+  },
+
   newRepository: function (token, name) {
     var url = GITHUB_API+"user/repos";
     var parameters = { name: name, auto_init: true };
@@ -288,6 +294,18 @@ var CommonController = {
     var url = CommonController.getGithubRepositoryPath(owner, previousRepository);
     var parameters = { name: newRepository };
     return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
+  },
+
+  newBranch: function (token, owner, repository, branch, newBranch) {
+    var promise = CommonController.getSHA(owner, repository, branch);
+    promise.then(function(result) {
+      var sha = result.object.sha;
+      var parameters = { sha: sha, ref: "refs/heads/" + newBranch };
+      var url = CommonController.getGithubRepositoryPath(owner, repository);
+      url += "/git/refs";
+      return CommonController.getGithubJSON4Token(url, "POST", token, parameters);
+    });
+    return promise;
   },
 
   deleteBranch: function(token, owner, repository, branch) {
