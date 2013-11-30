@@ -12,6 +12,7 @@ var ProjectController = {
     var owner = CommonController.getOwner();
     var repository = CommonController.getRepository();
     var branch = CommonController.getBranch();
+    var token = CommonController.getToken();
     var avatarURL = CommonController.getAvatarURL();
     document.title = "gitFAB/" + owner + "/" + repository;
 
@@ -24,6 +25,7 @@ var ProjectController = {
     //repository
     if (repository == CREATE_PROJECT_COMMAND) {
       ProjectController.newGitFABDocument(user, avatarURL);
+      $("#fork-button").hide();
     } else {
       var gitfabDocument = ProjectController.getGitFABDocument();
       if (gitfabDocument.length == 0) {
@@ -32,28 +34,24 @@ var ProjectController = {
       }
       ProjectController.parseGitFABDocument(gitfabDocument, owner, repository, branch, user);
       ProjectController.loadAdditionalInformation(owner, repository, branch);
-    }
 
-    //fork button
-    if (!user) {
-      $("#fork-button").click(function() {
-        alert("please login");
-      });
-    } else if (repository == ":create") {
-      $("#fork-button").hide();
-    } else {
-      $("#fork-button").click(ProjectController.fork);
+      if (!user) {
+        $("#fork-button").click(function() { alert("please login"); });
+      } else {
+        $("#fork-button").click(function() {ProjectController.forkProject(token, user, owner, repository, branch);});
+      }
     }
-    //slide button
-    $("#slide-button").click(ProjectController.slideshow);
 
     //editor
     if (user == owner) {
       ProjectEditor.enable();
-      $("#commit-button").click(ProjectController.commitProject);
-      $("#delete-button").click(ProjectController.deleteProject);
+      $("#commit-button").click(function() {ProjectController.commitProject(token, user, owner, repository, branch);});
+      $("#delete-button").click(function() {ProjectController.deleteProject(token, user, owner, repository, branch);});
 //    $("#customize-css").click(ProjectEditor.customizeCSS);
     }
+
+    //slide button
+    $("#slide-button").click(ProjectController.slideshow);
   },
 
   newGitFABDocument: function(user, avatar_url) {
@@ -193,14 +191,37 @@ var ProjectController = {
   },
 
   //update the project ========================================
-  deleteProject: function() {
+  forkProject: function(token, user, owner, repository, branch) {
+    Logger.on();
+    var promise = null;
+    if (user == owner) {
+      var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
+      promise = CommonController.newBranch(token, owner, repository, branch, newBranch);
+      branch = newBranch;
+    } else {
+      promise = CommonController.fork(token, owner, repository);
+      promise.then(function() {
+        branch = MASTER_BRANCH;
+        return CommonController.watch(user, repository);
+      });
+    }
+    promise.then(function() {
+      return CommonController.newLocalRepository(user, repository, branch);
+    })
+    .fail(function(error) {
+      CommonController.showError(error);
+      Logger.error(error);
+    })
+    .done(function() {
+      var url = CommonController.getProjectPageURL(user, repository, branch);
+      ProjectController.href(url);
+    });    
+  },
+
+  deleteProject: function(token, user, owner, repository, branch) {
     if (!window.confirm("are you sure to remove this project?")) {
       return;
     }
-    var user = CommonController.getUser();
-    var branch = CommonController.getBranch();
-    var token = CommonController.getToken();
-    var repository = CommonController.getRepository();
 
     Logger.on();
 
@@ -221,14 +242,11 @@ var ProjectController = {
       Logger.error(error);
     })
     .done(function() {
-      setTimeout(function () {
-        window.location.href = "/";
-        Logger.off();
-      }, 500);
+      ProjectController.href("/");
     });
   },
 
-  commitProject: function() {
+  commitProject: function(token, user, owner, repository, branch) {
     var projectName = $.trim($("#repository").text());
     if (projectName.length == 0) {
       CommonController.showError("please input the project name");
@@ -238,10 +256,6 @@ var ProjectController = {
     Logger.on();
 
     var tags = $.trim($("#tags").text());
-    var user = CommonController.getUser();
-    var branch = CommonController.getBranch();
-    var token = CommonController.getToken();
-    var repository = CommonController.getRepository();
     var promise = null;
     var isURLChanged = false;
     if (repository == CREATE_PROJECT_COMMAND) {
@@ -286,10 +300,7 @@ var ProjectController = {
     .done(function() {
       if (isURLChanged == true) {
         var url = CommonController.getProjectPageURL(user, repository, branch);
-        setTimeout(function () {
-          window.location.href = url;
-          Logger.off();
-        }, 500);
+        ProjectController.href(url);
       } else {
         Logger.off();
       }
@@ -369,6 +380,13 @@ var ProjectController = {
       userDocument += "---\n";
     }
     return {"document": userDocument, "attachments": filemap};
+  },
+
+  href: function(url) {
+    setTimeout(function () {
+      window.location.href = url;
+      Logger.off();
+    }, 500);
   },
 
   slideshow: function () {
