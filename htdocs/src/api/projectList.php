@@ -28,7 +28,7 @@
         $tags[] = $row4tags["name"];
       } 
       $statement4tags -> closeCursor();
-      
+
       $projectList[] = array("owner" => $row["owner"], "name" => $row["name"], "avatar" => $row["avatar"], "thumbnail" => $row["thumbnail"], "aspect" => $row["aspect"], "created" => $row["created"], "updated" => $row["updated"], "tags" => $tags, "branch" => $row["branch"]);
     } 
     $statement -> closeCursor();
@@ -36,7 +36,6 @@
     $result["projectList"] = $projectList;
   } 
   catch (PDOException $e) {
-    $connection -> rollBack();
     $result["error"] = $e->getMessage();
   }
   echo json_encode($result);

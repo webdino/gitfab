@@ -47,6 +47,7 @@ var ProjectController = {
       ProjectEditor.enable(user, repository, branch);
       $("#commit-button").click(function() {ProjectController.commitProject(token, user, owner, repository, branch);});
       $("#delete-button").click(function() {ProjectController.deleteProject(token, user, owner, repository, branch);});
+      ProjectController.originalThumbnail = ProjectController.findThumbnail();
     }
 
     //slide button
@@ -129,7 +130,6 @@ var ProjectController = {
   updateIndex: function () {
     var container = $("#index ul");
     container.empty();
-    //find heading
     var headings = $(".content h1");
     for (var i = 0, n = headings.length; i < n; i++) {
       var h1 = headings.get(i);
@@ -288,7 +288,8 @@ var ProjectController = {
     })
     .then(function() {
       var thumbnail = ProjectController.findThumbnail();
-      if (thumbnail) {
+      var originalThumbnail = ProjectController.originalThumbnail;
+      if (thumbnail && !(originalThumbnail && originalThumbnail.src == thumbnail.src)) {
         thumbnailAspect = thumbnail.aspect;
         thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
         return ProjectController.commitThumbnail(token, user, repository, branch, thumbnail, shaTree);

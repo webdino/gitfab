@@ -137,6 +137,8 @@ var ProjectEditor = {
         break;
       }
     }
+    $(".item").mouseover(ProjectEditor.showItemTools);
+    $(".item").mouseout(ProjectEditor.hideItemTools);
   },
 
   appendViaUpload: function (e) {
