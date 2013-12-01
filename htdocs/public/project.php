@@ -10,6 +10,7 @@
     <!-- development -->
     <!--
     <link rel="stylesheet" href="/css/common.css" type="text/css">
+    <link rel="stylesheet" href="/css/projectEditor.css" type="text/css">
     <link rel="stylesheet" href="/css/project.css" type="text/css">
     <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
     <link rel="stylesheet" href="/css/slide.css" type="text/css">
@@ -18,6 +19,7 @@
     <script type="text/javascript" src="/js/lib/base64.js"></script>
     <script type="text/javascript" src="/js/lib/showdown-dev.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/projectEditor.js"></script>
     <script type="text/javascript" src="/js/project.js"></script>
     <script type="text/javascript" src="/js/gridLayout.js"></script>
     <script type="text/javascript" src="/js/slide.js"></script>
@@ -30,13 +32,12 @@
     <script>
 <?php include('scriptVariables.php.inc'); ?>
     </script>
-<?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
-    <link rel="stylesheet" href="/api/userCss.php?owner=<?php echo $_GET["owner"] ?>&repository=<?php echo $_GET["repository"] ?>" type="text/css">
+<?php if (isset($_GET["owner"]) && isset($_GET["repository"]) && isset($_GET["branch"])) {?>
+    <link rel="stylesheet" id="current-custom-css" href="/api/userCss.php?owner=<?php echo htmlspecialchars($_GET["owner"],ENT_QUOTES); ?>&repository=<?php echo htmlspecialchars($_GET["repository"],ENT_QUOTES); ?>&branch=<?php echo htmlspecialchars($_GET["branch"],ENT_QUOTES); ?>" type="text/css">
 <?php } ?>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
-    <canvas id="canvas" style="display:none;"></canvas>
     <?php include('header.php.inc'); ?>
     <?php include('toolBar.php.inc'); ?>
     <div id="contents">
@@ -57,6 +58,10 @@
             <a id="fork-button" class="button">fork</a>
             <a id="commit-button" class="button">commit</a>
           </section>
+          <section id="css-editor">
+            <div>Edit CSS</div>
+          </section>
+
           <section id="index">
             <ul></ul>
           </section>
@@ -100,5 +105,6 @@
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>
     <?php include('slide.php.inc'); ?>
+
   </body>
 </html>

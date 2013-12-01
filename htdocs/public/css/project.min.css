@@ -319,6 +319,9 @@ footer a {
 
 #owner img {
   margin-right: 5px;  
+  width: 30px;
+  height: 30px;
+  float: left;
 }
 
 #tools {
@@ -375,25 +378,31 @@ footer a {
   text-decoration: underline; 
 }
 
-.function {
-  float: right;
-  margin-top: 6px;
-  margin-right: 20px;
-}
-
-.function .button {
-  margin-left: 5px;
-  font-size: 10px;
-  width: 30px;
-  text-align: center;
-}
-
-/** form **/
 #form {
   display: none;
   border-bottom: 1px solid black;
   margin-top: 50px;
   padding-bottom: 50px;
+}
+
+#customize-css {
+  display: none;
+}
+
+#delete-button {
+  display: none;
+}
+
+#commit-button {
+  display: none;
+}
+
+/** sub **/
+#facebook {
+  padding-top: 30px;
+}
+
+#sub {
 }
 
 #form-tools {
@@ -443,33 +452,42 @@ footer a {
   display: none;
 }
 
-#reusable_textarea {
+#reusable-item-tools {
+  float: right;
+  margin-top: 6px;
+  margin-right: 20px;
+}
+
+#reusable-item-tools .button {
+  margin-left: 5px;
+  font-size: 10px;
+  width: 30px;
+  text-align: center;
+}
+
+#reusable-textarea {
   width: 90%;
   max-width: 600px;
   padding: 0 10px;
 }
 
-#reusable_applybutton {
+#reusable-apply-button {
   max-width: 600px;
   width 90%;
   text-align: right;
   padding: 0 10px;
 } 
 
+#repository #reusable-textfield {
+  font-size: 36px;
+}
+
+#tags #reusable-textfield {
+  font-size: 14px;
+}
+
 .editable #form {
   display: block;
-}
-
-#customize-css {
-  display: none;
-}
-
-#delete-button {
-  display: none;
-}
-
-#commit-button {
-  display: none;
 }
 
 .editable #customize-css {
@@ -484,10 +502,8 @@ footer a {
   display: inline-block;
 }
 
-/** sub **/
-#facebook {
-  padding-top: 30px;
+#css-editor {
+  display: none;
+  margin: 10px;  
 }
 
-#sub {
-}
