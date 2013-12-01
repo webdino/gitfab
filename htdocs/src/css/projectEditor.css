@@ -94,3 +94,9 @@
 .editable #commit-button {
   display: inline-block;
 }
+
+#css-editor {
+  display: none;
+  margin: 10px;  
+}
+

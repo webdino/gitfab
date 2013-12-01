@@ -4,7 +4,9 @@
 var GITFAB_DIR = "gitfab";
 var MATERIALS_DIR = GITFAB_DIR + "/resources";
 var MAIN_DOCUMENT = "README.md";
+var CUSTOME_CSS_ID = "custome-css";
 var CUSTOM_CSS = GITFAB_DIR + "/custom.css";
+var THUMBNAIL = GITFAB_DIR + "/thumbnail.jpg";
 var GITHUB_RAW = "https://raw.github.com/";
 var GITHUB_API = "https://api.github.com/";
 var MASTER_BRANCH = "master";
@@ -149,7 +151,7 @@ var CommonController = {
   },
 
   getThumbnailURL: function(owner, repository, branch) {
-    return GITHUB_RAW + owner + "/" + repository + "/" + branch + "/gitfab/thumbnail.png";
+    return GITHUB_RAW + owner + "/" + repository + "/" + branch + "/" + THUMBNAIL;
   },
 
   getFileURL: function (owner, repository, branch, path) {
@@ -322,6 +324,34 @@ var CommonController = {
       return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
     });
     return promise;
+  },
+
+  getCustomCSS: function (owner, repository) {
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/contents/" + CUSTOM_CSS;
+    return CommonController.getGithubJSON(url);
+  },
+
+  getCSSTemplate: function () {
+    var url = "/css/customizeTemplate.css";
+    return CommonController.ajaxPromise({url: url, type:"GET"});
+  },
+
+  getImage: function (url) {
+    var proxyURL = "/api/imageProxy.php?url="+url;
+    Logger.log("read: "+proxyURL);
+
+    var deferred = new $.Deferred();
+
+    var image = new Image();
+    image.src = proxyURL;
+    image.onload = function () {
+      deferred.resolve(image);
+    };
+    image.onerror = function (e) {
+      deferred.reject(e);
+    };
+    return deferred.promise();
   },
 
   getGithubJSON: function(url) {

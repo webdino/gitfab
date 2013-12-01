@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 var ProjectEditor = {
 
-  enable: function () {
+  enable: function (user, repository, branch) {
     //reusable elements
     ProjectEditor.textfield = $(document.createElement("input"));
     ProjectEditor.textfield.attr("id", "reusable-textfield");
@@ -63,6 +63,8 @@ var ProjectEditor = {
     $("#tags").click(ProjectEditor.editTags);
 
     $("#main").addClass("editable");
+
+    $("#customize-css").click(function() {ProjectEditor.customizeCSS(user, repository, branch);});
   },
 
   appendItem: function (e) {
@@ -320,5 +322,58 @@ var ProjectEditor = {
       target.files = {};
     }
     target.files[url] = file;
+  },
+
+  customizeCSS: function (owner, repository, branch) {
+    var parent = $("#css-editor");
+    parent.append(ProjectEditor.textarea);
+    parent.append(ProjectEditor.applyButton);
+    parent.show();
+    ProjectEditor.textarea.blur(ProjectEditor.applyCSS);
+    ProjectEditor.textarea.focus();
+
+    var stylesheet = $("#" + CUSTOME_CSS_ID);
+    if (stylesheet.length != 0) {
+      ProjectEditor.textarea.val(stylesheet.text());
+    } else {
+      Logger.on();
+
+      var promise = CommonController.getCustomCSS(owner, repository, branch);
+      promise.then(function(result) {
+        var base64 = new Base64();
+        var content = base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+        ProjectEditor.textarea.val(content);
+      })
+      .fail(function() {
+        var templatePromise = CommonController.getCSSTemplate();
+        templatePromise.then(function(content) {
+          ProjectEditor.textarea.val(content);
+        })
+        .done(function() {
+          Logger.off();
+        });
+      })
+      .done(function() {
+        Logger.off();
+      });
+    }
+  },
+
+  applyCSS: function (e) {
+    $("#current-custom-css").remove();
+
+    ProjectEditor.textarea.unbind("blur", ProjectEditor.applyCSS);
+    var cssContent = ProjectEditor.textarea.val();
+    var stylesheet = $("#" + CUSTOME_CSS_ID);
+    if (stylesheet.length == 0) {
+      stylesheet = $(document.createElement("style"));
+      stylesheet.attr("type", "text/css");
+      stylesheet.attr("id", CUSTOME_CSS_ID);
+      document.body.appendChild(stylesheet.get(0));
+    }
+    stylesheet.text(cssContent);
+
+    $("#css-editor").hide();
   }
+
 };

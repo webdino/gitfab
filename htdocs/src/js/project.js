@@ -44,10 +44,9 @@ var ProjectController = {
 
     //editor
     if (user == owner) {
-      ProjectEditor.enable();
+      ProjectEditor.enable(user, repository, branch);
       $("#commit-button").click(function() {ProjectController.commitProject(token, user, owner, repository, branch);});
       $("#delete-button").click(function() {ProjectController.deleteProject(token, user, owner, repository, branch);});
-//    $("#customize-css").click(ProjectEditor.customizeCSS);
     }
 
     //slide button
@@ -255,9 +254,13 @@ var ProjectController = {
 
     Logger.on();
 
+    var avatar = $("#login img").attr("src");
     var tags = $.trim($("#tags").text());
     var promise = null;
     var isURLChanged = false;
+    var shaTree = null;
+    var thumbnailAspect = 0;
+    var thumbnailSrc = "";
     if (repository == CREATE_PROJECT_COMMAND) {
       promise = ProjectController.newRepository(token, user, projectName);
       repository = projectName;
@@ -280,17 +283,18 @@ var ProjectController = {
       return CommonController.getSHATree(user, repository, branch);
     })
     .then(function(result) {
-      var shatree = result.data.tree;
-      return ProjectController.commitElements(token, user, repository, branch, tags, shatree);
+      shaTree = result.data.tree;
+      return ProjectController.commitElements(token, user, repository, branch, tags, shaTree);
     })
     .then(function() {
-      //update thumbnail
-    })
-    .then(function() {
-      var avatar = $("#login img").attr("src");
       var thumbnail = ProjectController.findThumbnail();
-      var thumbnailSrc = thumbnail ? thumbnail.src : "";
-      var thumbnailAspect = thumbnail ? thumbnail.aspect : 0;
+      if (thumbnail) {
+        thumbnailAspect = thumbnail.aspect;
+        thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
+        return ProjectController.commitThumbnail(token, user, repository, branch, thumbnail, shaTree);
+      }
+    })
+    .then(function() {
       return ProjectController.updateRepositoryMeta(user, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
     })
     .fail(function(error) {
@@ -337,6 +341,9 @@ var ProjectController = {
     var elements = ProjectController.prepareCommitElements(user, repository, branch, tags);
     var promiseList = [];
     promiseList[0] = CommonController.commit(token, user, repository, branch, MAIN_DOCUMENT, base64.encodeStringAsUTF8(elements.document), "", shatree);
+    if (elements.customCSS) {
+      promiseList.push( CommonController.commit(token, user, repository, branch, CUSTOM_CSS, base64.encodeStringAsUTF8(elements.customCSS), "", shatree) );
+    }
     var attachments = elements.attachments;
     for (var attachmentName in attachments) {
       var attachment = attachments[attachmentName];
@@ -379,9 +386,39 @@ var ProjectController = {
       userDocument += text + "\n";
       userDocument += "---\n";
     }
-    return {"document": userDocument, "attachments": filemap};
+    var elements = {"document": userDocument, "attachments": filemap};
+    var stylesheet = $("#" + CUSTOME_CSS_ID);
+    if (stylesheet.length != 0) {
+      elements.customCSS = stylesheet.text();
+    }
+    return elements;
   },
 
+  commitThumbnail: function(token, user, repository, branch, thumbnail, shaTree) {
+    var promise = CommonController.getImage(thumbnail.src);
+    promise.then(function(image) {
+      var canvas = document.createElement("canvas");
+//      $(canvas).hide();
+//      document.body.appendChild(canvas);
+      var context = canvas.getContext("2d");
+      var width = 400;
+      var height = width * image.naturalHeight / image.naturalWidth;
+      canvas.setAttribute("width", width);
+      canvas.setAttribute("height", height);
+      context.drawImage(image, 0, 0, width, height);
+//      canvas.setAttribute("width", image.naturalWidth);
+//      canvas.setAttribute("height", image.naturalHeight);
+//      context.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, image.naturalWidth, image.naturalHeight);
+//      $(canvas).css({width: width+"px", height: height+"px"});
+      var data = canvas.toDataURL("image/jpeg");
+      var index = data.indexOf(",");
+      data = data.substring(index + 1);
+//      $(canvas).remove();
+      return CommonController.commit(token, user, repository, branch, THUMBNAIL, data, "", shaTree);
+    });
+    return promise;
+  },
+  
   href: function(url) {
     setTimeout(function () {
       window.location.href = url;

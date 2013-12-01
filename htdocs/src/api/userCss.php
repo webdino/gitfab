@@ -3,8 +3,9 @@
 
   $owner = $_GET["owner"];
   $repository = $_GET["repository"];
+  $branch = $_GET["branch"];
 
-  $url = "https://raw.github.com/".$owner."/".$repository."/master/gitfab/custom.css?".time();
+  $url = "https://raw.github.com/".$owner."/".$repository."/".$branch."/gitfab/custom.css?".time();
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_HTTPGET, 1);
