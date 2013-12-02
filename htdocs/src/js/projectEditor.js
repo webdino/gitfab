@@ -72,73 +72,56 @@ var ProjectEditor = {
       case 1 : {
         var text = "#"+$("#textfield").val();
         ProjectController.append2dom(text, true);
-        ProjectController.updateIndex();
         $("#textfield").val("");
         break;
       }
       case 2 : {
-        var text = $("#textarea").val();
-        var content = $(".content:last");
-        if (content.length == 0) {
-          var item = ProjectController.append2dom("#noname heading", true);
-          ProjectController.updateIndex();
-          content = $(item.find(".content"));
-        }
-        var lines = text.split("\n");
-        var text = "";
         var regex = /^#/;
+        var lines = $("#textarea").val().split("\n");
+        var itemContent = ProjectEditor.getLastItemContent();
         for (var i = 0, n = lines.length; i < n; i++) {
           var line = lines[i];
           if (line.match(regex)) {
-            text += "\\"+line;
+            itemContent.markdown += "\n\\"+line;
           } else {
-            text += line;
+            itemContent.markdown += "\n"+line;
           }
-          text += "\n";
         }
-        text = content.get(0).markdown + "\n\n" + text;
-        ProjectController.updateItem(text, content);
+        ProjectController.updateItem(itemContent.markdown, $(itemContent));
         $("#textarea").val("");
         break;
       }
       case 3 : {
         var regex = /^#/;
-        var text = $("#textarea").val();
-        var content = null;
-        if (!text.match(regex)) {
-          content = $(".content:last");
-          if (content.length == 0) {
-            var item = ProjectController.append2dom("#noname heading", true);
-            ProjectController.updateIndex();
-            content = $(item.find(".content"));
-          }
-        }
-        var lines = text.split("\n");
-        var text = "";
+        var lines = $("#textarea").val().split("\n");
+        var itemContent = ProjectEditor.getLastItemContent();
         for (var i = 0, n = lines.length; i < n; i++) {
           var line = lines[i];
           if (line.match(regex)) {
-            if (text.length > 0) {
-              ProjectController.updateItem(content.get(0).markdown + "\n\n" + text, content);
-              text = "";
-            }
-            var item = ProjectController.append2dom(line, true);
-            ProjectController.updateIndex();
-            content = $(item.find(".content"));
+            ProjectController.updateItem(itemContent.markdown, $(itemContent));
+            itemContent = ProjectEditor.appendAndGetItemContent(line);
           } else {
-            text += line;
+            itemContent.markdown += "\n"+line;
           }
-          text += "\n";
         }
-        if (text.length > 0) {
-          ProjectController.updateItem(content.get(0).markdown + "\n\n" + text, content);
-        }
+        ProjectController.updateItem(itemContent.markdown, $(itemContent));
         $("#textarea").val("");
         break;
       }
     }
+    ProjectController.updateIndex();
     $(".item").mouseover(ProjectEditor.showItemTools);
     $(".item").mouseout(ProjectEditor.hideItemTools);
+  },
+
+  getLastItemContent: function() {
+    var content = $(".content:last");
+    return content.length != 0 ? content.get(0) : ProjectEditor.appendAndGetItemContent("#noname heading");
+  },
+
+  appendAndGetItemContent: function(name) {
+    var item = ProjectController.append2dom(name, true);
+    return $(item.find(".content")).get(0);
   },
 
   appendViaUpload: function (e) {
