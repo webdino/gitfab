@@ -1,9 +1,5 @@
 Options -Indexes
 DirectoryIndex projectList.php
-SetEnv PASSWORD F4y9B2Ft
-SetEnv CLIENT_ID 16ba2e8652c226cfb442
-SetEnv CLIENT_SECRET 6188fab213b1272dbe402d8ad42dff9740c3f73e
-SetEnv CLEARDB_DATABASE_URL mysql://b9eee1b6d18627:e4db31e0@us-cdbr-east-04.cleardb.com/heroku_a7517f95ea166fa
 
 <ifModule mod_rewrite.c>
   RewriteEngine On
