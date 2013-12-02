@@ -5,6 +5,7 @@ CREATE TABLE `repositories` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `owner` VARCHAR(128) NOT NULL,
   `name` VARCHAR(128) NOT NULL,
+  `branch` varchar(128) NOT NULL DEFAULT 'master',
   `avatar` VARCHAR(200) ,
   `thumbnail` VARCHAR(200) ,
   `aspect` FLOAT UNSIGNED,
