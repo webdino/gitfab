@@ -209,7 +209,7 @@ var ProjectEditor = {
   editTags: function (e) {
     var tags = $("#tags");
     tags.unbind("click", ProjectEditor.editTags);
-    var text = tags.text();
+    var text = ProjectController.getTagString();
     tags.empty();
     tags.addClass("editing");
     ProjectEditor.textfield.val(text);
@@ -222,7 +222,9 @@ var ProjectEditor = {
   commitTags: function (e) {
     var text = ProjectEditor.textfield.val();
     var tags = $("#tags");
-    tags.text(text);
+
+    ProjectController.parseTagString(text);
+
     tags.removeClass("editing");
     tags.click(ProjectEditor.editTags);
     ProjectEditor.textfield.unbind("change", ProjectEditor.commitTags);

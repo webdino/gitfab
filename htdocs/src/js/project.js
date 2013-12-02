@@ -71,18 +71,11 @@ var ProjectController = {
     var title = branch == "master" ? repository : branch;
     var tags = lines[1].substring("## ".length);
 
-    tags = tags.split(',');
     ProjectController.appendOwnerName(owner);
+    ProjectController.parseTagString(tags);
 
     $("#repository").text(title);
-    for(key in tags) {
-      var tag = $(document.createElement("a"));
-      if(owner != user) {
-        tag.attr("href","/?tag="+$.trim(tags[key]));
-      }
-      tag.text(tags[key]+" ");
-      $("#tags").append(tag); 
-    }
+
     var text;
     for (var i = 4, n = lines.length; i < n; i++) {
       var line = lines[i];
@@ -101,6 +94,35 @@ var ProjectController = {
     var thumbnail = ProjectController.findThumbnail();
     $("#thumbnail").attr("src", thumbnail.src);
   },
+
+  parseTagString: function(text) {
+    var tagsElement = $("#tags");
+    tagsElement.empty();
+    var user = CommonController.getUser();
+    var owner = CommonController.getOwner();
+    var tags = text.split(",");
+    for(key in tags) {
+      var tag = $(document.createElement("a"));
+      if(owner != user) {
+        tag.attr("href","/?tag="+$.trim(tags[key]));
+      }
+      tag.text(tags[key]);
+      tagsElement.append(tag); 
+    }
+  },
+
+  getTagString: function() {
+    var tags = $("#tags");
+    var tagList = tags.find("a");
+    var text = "";
+    for (var i = 0, n = tagList.length; i < n; i++) {
+      if (i != 0) {
+        text += ",";
+      }
+      text += tagList.get(i).textContent;
+    }
+    return text;
+  },  
 
   append2dom: function (text) {
     var item = $(document.createElement("li"));
@@ -255,7 +277,7 @@ var ProjectController = {
     Logger.on();
 
     var avatar = $("#login img").attr("src");
-    var tags = $.trim($("#tags").text());
+    var tags = ProjectController.getTagString();
     var promise = null;
     var isURLChanged = false;
     var shaTree = null;
