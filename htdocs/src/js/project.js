@@ -289,7 +289,7 @@ var ProjectController = {
     .then(function() {
       var thumbnail = ProjectController.findThumbnail();
       var originalThumbnail = ProjectController.originalThumbnail;
-      if (thumbnail && !(originalThumbnail && originalThumbnail.src == thumbnail.src)) {
+      if (thumbnail.src && !(originalThumbnail.src && originalThumbnail.src == thumbnail.src)) {
         thumbnailAspect = thumbnail.aspect;
         thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
         return ProjectController.commitThumbnail(token, user, repository, branch, thumbnail, shaTree);
