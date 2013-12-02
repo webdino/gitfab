@@ -310,6 +310,10 @@ footer a {
   content: "tags: ";
 }
 
+#tags a {
+  margin-right: 0.5em;
+}
+
 #owner {
   background-size: 30px 30px;
   background-repeat: no-repeat;
