@@ -2,7 +2,7 @@
 $owner = $_GET["owner"];
 $repository = $_GET["repository"];
 
-$username = "gitfab";
+$username = getenv("USER");
 $password = getenv("PASSWORD");
 
 $url = "https://api.github.com/repos/$owner/$repository/subscription";
