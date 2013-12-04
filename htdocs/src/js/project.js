@@ -291,7 +291,12 @@ var ProjectController = {
     var promise4github = null;
     var promise4local = null;
     if (branch == MASTER_BRANCH) {
-      promise4github = CommonController.deleteRepository(token, user, repository);
+      var promise = CommonController.getLocalBranches(user,repository);
+      promise.then(function(res){
+        if(res.branches.length == 1){
+          promise4github = CommonController.deleteRepository(token, user, repository);
+        }
+      });
       promise4local = CommonController.deleteLocalRepository(user, repository);
     } else {
       promise4github = CommonController.deleteBranch(token, user, repository, branch);
@@ -342,7 +347,7 @@ var ProjectController = {
         repository = projectName;
         isURLChanged = true;
       } else if (branch != MASTER_BRANCH && projectName != branch) {
-        promise = ProjectController.renameBranch();
+        promise = ProjectController.renameBranch(token, user, repository, projectName, branch);
         branch = projectName;
         isURLChanged = true;
       } else {
@@ -408,7 +413,7 @@ var ProjectController = {
   },
 
   renameBranch: function(token, user, repository, newBranch, previousBranch) {
-    var promise4github = CommonController.renameBranch(token, user, repository, newBranch, previousBranch);
+    var promise4github = CommonController.newBranch(token, user, repository, previousBranch, newBranch);
     var promise4local = CommonController.renameLocalBranch(user, repository, newBranch, previousBranch);
     return CommonController.when(promise4github, promise4local);
   },
