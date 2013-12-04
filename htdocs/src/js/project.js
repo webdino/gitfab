@@ -273,7 +273,13 @@ var ProjectController = {
       CommonController.showError("please input the project name");
       return;
     }
-
+    for (i in projectName){
+      var c =projectName.charCodeAt(i);
+      if(c <45 || 45 < c && c < 48 || 57 < c && c < 65|| 90 < c && c < 97 || 122 <c){
+        alert("use only letters (A-Z, a-z), numbers (0-9),hyphen(-)");
+        return;
+      }
+    }
     Logger.on();
 
     var avatar = $("#login img").attr("src");
