@@ -413,7 +413,7 @@ var ProjectController = {
   },
 
   renameBranch: function(token, user, repository, newBranch, previousBranch) {
-    var promise4github = CommonController.newBranch(token, user, repository, previousBranch, newBranch);
+    var promise4github = CommonController.renameBranch(token, user, repository, newBranch, previousBranch);
     var promise4local = CommonController.renameLocalBranch(user, repository, newBranch, previousBranch);
     return CommonController.when(promise4github, promise4local);
   },
