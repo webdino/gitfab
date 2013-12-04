@@ -327,16 +327,8 @@ var CommonController = {
   renameBranch: function (token, owner, repository, newBranch, previousBranch) {
     return CommonController.newBranch(token, owner, repository, previousBranch, newBranch)
       .then(function(){
-        console.log("delete Branch");
         return CommonController.deleteBranch(token,owner, repository, previousBranch);
       });
-    /*var promise = CommonController.getSHA(owner, repository, previousBranch);
-    return promise.then(function(result) {
-      var sha = result.object.sha;
-      var parameters = { sha: sha, force: "true" };
-      var url = CommonController.getGithubBranchPath(owner, repository, newBranch);
-      return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
-    });*/
   },
 
   getCommitHistories: function (owner, repository, branch) {
