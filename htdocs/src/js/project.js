@@ -5,6 +5,7 @@
 var ProjectController = {
 
   init: function () {
+    ProjectController.doLayout();
     ProjectController.markdownParser = new Showdown.converter();
     ProjectController.current_item_id = 0;
 
@@ -34,6 +35,7 @@ var ProjectController = {
       }
       ProjectController.parseGitFABDocument(gitfabDocument, owner, repository, branch, user);
       ProjectController.loadAdditionalInformation(owner, repository, branch);
+      ProjectController.loadCommitHistories(owner, repository, branch);
 
       if (!user) {
         $("#fork-button").click(function() { alert("please login"); });
@@ -52,6 +54,15 @@ var ProjectController = {
 
     //slide button
     $("#slide-button").click(ProjectController.slideshow);
+
+    $(window).resize(ProjectController.doLayout);
+  },
+
+  doLayout: function() {
+    var wOfWindow = $(window).width();
+    var wOfSub = $("#sub").width();
+    var wOfMain = wOfWindow-wOfSub;
+    $("#main").width(wOfMain);
   },
 
   newGitFABDocument: function(user, avatar_url) {
@@ -211,6 +222,37 @@ var ProjectController = {
     });
   },
 
+  loadCommitHistories: function (owner, repository, branch) {
+    var promise = CommonController.getCommitHistories(owner, repository, branch);
+    promise.then(function(result) {
+      var ulElement = $(document.createElement("ul"));
+      for (var i = 0, n = result.length; i < n; i++) {
+        var hisotry = result[i];
+        var sha = hisotry.sha;
+        var date = hisotry.commit.committer.date;
+        var thumbnailURL = CommonController.getHistoricalFileURL(owner, repository, sha, THUMBNAIL);
+
+        var liElement = $(document.createElement("li"));
+        var dateElement = $(document.createElement("label"));
+        var thumbnailElement = $(document.createElement("img"));
+
+        dateElement.text(date);
+        thumbnailElement.attr("src", thumbnailURL);
+        liElement.append(thumbnailElement);
+        liElement.append(dateElement);
+
+        ulElement.append(liElement);
+      }
+      $("#histories").append(ulElement);
+    })
+    .fail(function(e) {
+      var element = $(document.createElement("label"));
+      element.addClass("error");
+      element.text(e);
+      $("#versions").append(element);
+    });
+  },
+
   //update the project ========================================
   forkProject: function(token, user, owner, repository, branch) {
     Logger.on();
@@ -220,8 +262,8 @@ var ProjectController = {
       promise = CommonController.newBranch(token, owner, repository, branch, newBranch);
       branch = newBranch;
     } else {
-      promise = CommonController.fork(token, owner, repository);
-      promise.then(function() {
+      promise = CommonController.fork(token, owner, repository)
+      .then(function() {
         branch = MASTER_BRANCH;
         return CommonController.watch(user, repository);
       });
@@ -308,7 +350,8 @@ var ProjectController = {
       shaTree = result.data.tree;
       return ProjectController.commitElements(token, user, repository, branch, tags, shaTree);
     })
-    .then(function() {
+    .then(function(result) {
+      console.log("lllllll");
       var thumbnail = ProjectController.findThumbnail();
       var originalThumbnail = ProjectController.originalThumbnail;
       if (thumbnail.src && !(originalThumbnail.src && originalThumbnail.src == thumbnail.src)) {
@@ -371,13 +414,14 @@ var ProjectController = {
     for (var attachmentName in attachments) {
       var attachment = attachments[attachmentName];
       var path = MATERIALS_DIR + "/" + attachment.name;
-      var promise4read = CommonController.readFile(attachment);
-      promise4read.then(function(content) {
-        var commitPromise = CommonController.commit(token, user, repository, branch, path, content, "", shatree);
-        promiseList.push(commitPromise);
+      var promise = CommonController.readFile(attachment);
+      promise.then(function(content) {
+        return CommonController.commit(token, user, repository, branch, path, content, "", shatree);
       });
+      promiseList.push(promise);
     }
-    return CommonController.when.apply(null, promiseList);
+//    return CommonController.when.apply($, promiseList);
+    return CommonController.customWhen(promiseList);
   },
 
   prepareCommitElements: function(user, repository, branch, tags) {
@@ -419,27 +463,19 @@ var ProjectController = {
 
   commitThumbnail: function(token, user, repository, branch, thumbnail, shaTree) {
     var promise = CommonController.getImage(thumbnail.src);
-    promise.then(function(image) {
+    return promise.then(function(image) {
       var canvas = document.createElement("canvas");
-//      $(canvas).hide();
-//      document.body.appendChild(canvas);
       var context = canvas.getContext("2d");
       var width = 400;
       var height = width * image.naturalHeight / image.naturalWidth;
       canvas.setAttribute("width", width);
       canvas.setAttribute("height", height);
       context.drawImage(image, 0, 0, width, height);
-//      canvas.setAttribute("width", image.naturalWidth);
-//      canvas.setAttribute("height", image.naturalHeight);
-//      context.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, image.naturalWidth, image.naturalHeight);
-//      $(canvas).css({width: width+"px", height: height+"px"});
       var data = canvas.toDataURL("image/jpeg");
       var index = data.indexOf(",");
       data = data.substring(index + 1);
-//      $(canvas).remove();
       return CommonController.commit(token, user, repository, branch, THUMBNAIL, data, "", shaTree);
     });
-    return promise;
   },
   
   href: function(url) {

@@ -1,9 +1,10 @@
 #main {
   margin-top: 20px;
+  float: left;
+  min-width: 320px;
 }
 
 #main.hasToolbar {
-  margin-top: 0;
 }
 
 #gitfab-document {
@@ -38,7 +39,6 @@
 #thumbnail {
   height: 100px;
   margin: 5px 10px 0px 10px;
-  border-radius: 5px;
 }
 
 #repository {
@@ -92,11 +92,11 @@
 }
 
 .content p img {
-  width: 100%;
+  width: 100%; 
 }
 
 .content p video {
-  width: 100%;
+  width: 100%; 
 }
 
 .content a{
@@ -144,10 +144,60 @@
   display: none;
 }
 
-/** sub **/
 #facebook {
   padding-top: 30px;
 }
 
 #sub {
+  margin-top: 20px;
+  float: right;
+  width: 180px;
+}
+
+#sub .button {
+  color: gray;
+  background-color: white;
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  margin: 0px 10px 0px 20px;
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px 1px 0 1px;
+  border-radius: 0;
+}
+
+#sub .button:last-child {
+  border-width: 1px 1px 1px 1px;
+}
+
+#sub .button:hover {
+  color: black;
+}
+
+#histories {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#histories ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#histories li {
+  margin: 0;
+  padding: 0;
+}
+
+#histories li img {
+  width: 120px;
+}
+
+#histories li label {
+  font-size: 10px;
+  position: relative;
+  top: -10px;
 }

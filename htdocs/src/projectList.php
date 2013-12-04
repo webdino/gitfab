@@ -30,7 +30,6 @@
   </head>
   <body>
     <?php include('header.php.inc'); ?>
-    <?php include('toolBar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
         <ul id="project-list">

@@ -16,6 +16,25 @@ var CommonController = {
 
   when: $.when,
 
+  customWhen: function(list) {
+    var deffered = new $.Deferred();
+    var count = 0;
+    for (var i = 0, n = list.length; i < n; i++) {
+      var promise = list[i];
+      promise.then(function() {
+        count += 1;
+        if (count == list.length) {
+          console.log("resolve");
+          deffered.resolve();
+        }
+      })
+      .fail(function(e) {
+        deffered.reject(e);
+      });
+    }
+    return deffered.promise();
+  },
+
   emptyPromise: function() {
     var deffered = new $.Deferred();
     deffered.resolve();
@@ -158,6 +177,10 @@ var CommonController = {
     return GITHUB_RAW + owner + "/" + repository + "/" + branch + "/" + path;
   },
 
+  getHistoricalFileURL: function(owner, repository, sha, path) {
+    return GITHUB_RAW + owner + "/" + repository + "/" + sha + "/" + path;
+  },
+
   getProjectPageURL: function (owner, repository, branch) {
     return "/" + owner + "/" + repository + "/" + (branch ? branch : "-") + "/";
   },
@@ -175,14 +198,16 @@ var CommonController = {
     userImg.attr("src", avatarURL);
     var userName = $(document.createElement("span"));
     userName.text(username);
-    $("#login").html("");
-    $("#login").append(userImg);
-    $("#login").append(userName);
+    $("#login").hide();
     var createurl = CommonController.getProjectPageURL(username, CREATE_PROJECT_COMMAND);
     $("#create").attr("href", createurl);
     $("#create").show();
     var dashboardurl = CommonController.getDashboardURL(username);
     $("#dashboard").attr("href", dashboardurl);
+    $("#dashboard").html("");
+    $("#dashboard").append(userImg);
+    $("#dashboard").append(userName);
+
     $("#dashboard").show();
     $("#toolbar").show();
   },
@@ -300,14 +325,13 @@ var CommonController = {
 
   newBranch: function (token, owner, repository, branch, newBranch) {
     var promise = CommonController.getSHA(owner, repository, branch);
-    promise.then(function(result) {
+    return promise.then(function(result) {
       var sha = result.object.sha;
       var parameters = { sha: sha, ref: "refs/heads/" + newBranch };
       var url = CommonController.getGithubRepositoryPath(owner, repository);
       url += "/git/refs";
       return CommonController.getGithubJSON4Token(url, "POST", token, parameters);
     });
-    return promise;
   },
 
   deleteBranch: function(token, owner, repository, branch) {
@@ -317,13 +341,22 @@ var CommonController = {
 
   renameBranch: function (token, owner, repository, newBranch, previousBranch) {
     var promise = CommonController.getSHA(owner, repository, previousBranch);
-    promise.then(function(result) {
+    return promise.then(function(result) {
       var sha = result.object.sha;
       var parameters = { sha: sha, force: "true" };
       var url = CommonController.getGithubBranchPath(owner, repository, newBranch);
       return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
     });
-    return promise;
+  },
+
+  getCommitHistories: function (owner, repository, branch) {
+    var promise = CommonController.getSHA(owner, repository, branch);
+    return promise.then(function(result) {
+      var sha = result.object.sha;
+      var url = CommonController.getGithubRepositoryPath(owner, repository);
+      url += "/commits?path=README.md&sha="+sha;
+      return CommonController.getGithubJSON(url);
+    });
   },
 
   getCustomCSS: function (owner, repository) {
@@ -383,12 +416,16 @@ var CommonController = {
     return deferred.promise();
   },
 
+  counttttt: 1,
+
   ajaxPromise: function(parameter) {
+    CommonController.counttttt += 1;
     Logger.request(parameter.url);
 
     var deferred = new $.Deferred();
 
     parameter.success = function(result) {
+      console.log("success:"+CommonController.counttttt);
       Logger.response(parameter.url);
       deferred.resolve(result);
     };
@@ -401,6 +438,7 @@ var CommonController = {
     parameter.xhr = function() {
       var XHR = $.ajaxSettings.xhr();
       var progressListener = function(e) {
+      console.log("progress:"+CommonController.counttttt);
         Logger.progress(e.loaded, e.total);
         deferred.notify(e.loaded/e.total);
       }

@@ -39,7 +39,6 @@
   </head>
   <body>
     <?php include('header.php.inc'); ?>
-    <?php include('toolBar.php.inc'); ?>
     <div id="contents">
       <div id="main" role="main">
         <div id="project">
@@ -50,13 +49,6 @@
               <div id="tags"></div>
               <div id="owner"></div>
             </div>
-          </section>
-          <section id="tools">
-            <a id="slide-button" class="button">slide show</a>
-            <a id="customize-css" class="button">customize css</a>
-            <a id="delete-button" class="button">delete</a>
-            <a id="fork-button" class="button">fork</a>
-            <a id="commit-button" class="button">commit</a>
           </section>
           <section id="css-editor">
             <div>Edit CSS</div>
@@ -87,19 +79,30 @@
             <input id="upload" name="file" type="file" />
           </section>
         </div>
-
         <div id="facebook">
           <?php include('facebook.php.inc'); ?>
         </div>
-        <div id="sub">
-          <div id="parent-project-label"></div>
-          <div id="parent-project" class="project">
-          </div>
-          <hr/>
-          <div id="child-project-list-label"></div>
-          <div id="child-project-list">
-          </div>
+      </div>
+      <div id="sub">
+        <section id="tools">
+          <a id="slide-button" class="button">slide show</a>
+          <a id="customize-css" class="button">customize css</a>
+          <a id="delete-button" class="button">delete</a>
+          <a id="fork-button" class="button">fork</a>
+          <a id="commit-button" class="button">commit</a>
+        </section>
+        <section id="histories">
+          <label>commit history</label>
+        </section>
+        <!--
+        <div id="parent-project-label"></div>
+        <div id="parent-project" class="project">
         </div>
+        <hr/>
+        <div id="child-project-list-label"></div>
+        <div id="child-project-list">
+        </div>
+        -->
       </div>
     </div>
     <?php include('footer.php.inc'); ?>
