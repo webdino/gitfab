@@ -16,25 +16,6 @@ var CommonController = {
 
   when: $.when,
 
-  customWhen: function(list) {
-    var deffered = new $.Deferred();
-    var count = 0;
-    for (var i = 0, n = list.length; i < n; i++) {
-      var promise = list[i];
-      promise.then(function() {
-        count += 1;
-        if (count == list.length) {
-          console.log("resolve");
-          deffered.resolve();
-        }
-      })
-      .fail(function(e) {
-        deffered.reject(e);
-      });
-    }
-    return deffered.promise();
-  },
-
   emptyPromise: function() {
     var deffered = new $.Deferred();
     deffered.resolve();
@@ -272,7 +253,7 @@ var CommonController = {
 
   getSHATree: function (owner, repository, branch) {
     var url = CommonController.getGithubRepositoryPath(owner, repository);
-    url += "/git/trees/master?recursive=2&callback=?";
+    url += "/git/trees/master?recursive=2";
     return CommonController.getGithubJSON(url);
   },
 
@@ -371,6 +352,7 @@ var CommonController = {
   },
 
   getImage: function (url) {
+    url = encodeURIComponent(url);
     var proxyURL = "/api/imageProxy.php?url="+url;
     Logger.log("read: "+proxyURL);
 
@@ -416,16 +398,14 @@ var CommonController = {
     return deferred.promise();
   },
 
-  counttttt: 1,
-
   ajaxPromise: function(parameter) {
-    CommonController.counttttt += 1;
+    var name = parameter.url.substring(parameter.url.lastIndexOf("/"));
+
     Logger.request(parameter.url);
 
     var deferred = new $.Deferred();
 
     parameter.success = function(result) {
-      console.log("success:"+CommonController.counttttt);
       Logger.response(parameter.url);
       deferred.resolve(result);
     };
@@ -438,8 +418,7 @@ var CommonController = {
     parameter.xhr = function() {
       var XHR = $.ajaxSettings.xhr();
       var progressListener = function(e) {
-      console.log("progress:"+CommonController.counttttt);
-        Logger.progress(e.loaded, e.total);
+        Logger.progress(name, name, e.loaded, e.total);
         deferred.notify(e.loaded/e.total);
       }
       XHR.addEventListener('progress', progressListener);

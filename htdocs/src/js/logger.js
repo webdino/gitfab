@@ -20,8 +20,14 @@ var Logger = {
     Logger.log("ERROR: "+content, "error");
   },
   
-  progress: function(loaded, total) {
-    Logger.log(loaded+"/"+total);
+  progress: function(id, name, loaded, total) {
+    var element = document.getElementById(id);
+    if (!element) {
+      element = document.createElement("div");
+      element.setAttribute("id", id);
+      document.getElementById("logger").appendChild(element);
+    }
+    element.textContent = name+":"+loaded+"/"+total;
   },
 
   log: function(content, className) {

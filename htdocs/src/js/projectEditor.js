@@ -296,6 +296,10 @@ var ProjectEditor = {
       ProjectEditor.upload_target = $(target);
     }
     var file = this.files[0];
+    CommonController.readFile(file)
+    .then(function(contents) {
+      file.contents = contents;
+    });
 
     var urlObject = window.URL ? window.URL : window.webkitURL;
     var url = urlObject.createObjectURL(file);

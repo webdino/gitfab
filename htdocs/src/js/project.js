@@ -324,13 +324,13 @@ var ProjectController = {
     }
     Logger.on();
 
-    var avatar = $("#login img").attr("src");
+    var avatar = $("#dashboard img").attr("src");
     var tags = ProjectController.getTagString();
     var promise = null;
     var isURLChanged = false;
     var shaTree = null;
-    var thumbnailAspect = 0;
-    var thumbnailSrc = "";
+    var thumbnailAspect = ProjectController.originalThumbnail.aspect;
+    var thumbnailSrc = ProjectController.originalThumbnail.src;
     if (repository == CREATE_PROJECT_COMMAND) {
       promise = ProjectController.newRepository(token, user, projectName);
       repository = projectName;
@@ -353,17 +353,21 @@ var ProjectController = {
       return CommonController.getSHATree(user, repository, branch);
     })
     .then(function(result) {
-      shaTree = result.data.tree;
+      shaTree = result.tree;
       return ProjectController.commitElements(token, user, repository, branch, tags, shaTree);
     })
     .then(function(result) {
-      console.log("lllllll");
       var thumbnail = ProjectController.findThumbnail();
       var originalThumbnail = ProjectController.originalThumbnail;
-      if (thumbnail.src && !(originalThumbnail.src && originalThumbnail.src == thumbnail.src)) {
-        thumbnailAspect = thumbnail.aspect;
-        thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
-        return ProjectController.commitThumbnail(token, user, repository, branch, thumbnail, shaTree);
+      if (!thumbnail.src) {
+        thumbnailAspect = 0;
+        thumbnailSrc = "";
+      } else {
+        if (originalThumbnail.src != thumbnail.src) {
+          thumbnailAspect = thumbnail.aspect;
+          thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
+          return ProjectController.commitThumbnail(token, user, repository, branch, thumbnail, shaTree);
+        }
       }
     })
     .then(function() {
@@ -372,6 +376,7 @@ var ProjectController = {
     .fail(function(error) {
       CommonController.showError(error);
       Logger.error(error);
+      console.log(error);
     })
     .done(function() {
       if (isURLChanged == true) {
@@ -419,15 +424,11 @@ var ProjectController = {
     var attachments = elements.attachments;
     for (var attachmentName in attachments) {
       var attachment = attachments[attachmentName];
-      var path = MATERIALS_DIR + "/" + attachment.name;
-      var promise = CommonController.readFile(attachment);
-      promise.then(function(content) {
-        return CommonController.commit(token, user, repository, branch, path, content, "", shatree);
-      });
+      var path = MATERIALS_DIR + "/" + attachment.escaledName;
+      var promise = CommonController.commit(token, user, repository, branch, path, attachment.contents, "", shatree)
       promiseList.push(promise);
     }
-//    return CommonController.when.apply($, promiseList);
-    return CommonController.customWhen(promiseList);
+    return CommonController.when.apply($, promiseList);
   },
 
   prepareCommitElements: function(user, repository, branch, tags) {
@@ -449,8 +450,9 @@ var ProjectController = {
       var files = content.files;
       for (key in files) {
         var file = files[key];
+        file.escaledName = file.name.replace(/\s/g, "-");
         filemap[key] = file;
-        var fileURL = CommonController.getFileURL(user, repository, branch, MATERIALS_DIR + "/" + file.name);
+        var fileURL = CommonController.getFileURL(user, repository, branch, MATERIALS_DIR + "/" + file.escaledName);
         text = text.replace(key, fileURL);
         $("img[src='" + key + "']").attr("fileurl", fileURL);
       }
