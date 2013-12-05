@@ -65,6 +65,8 @@ var ProjectEditor = {
     $("#main").addClass("editable");
 
     $("#customize-css").click(function() {ProjectEditor.customizeCSS(user, repository, branch);});
+
+    ProjectEditor.uploaded_images = [];
   },
 
   appendItem: function (e) {
@@ -305,6 +307,7 @@ var ProjectEditor = {
     var url = urlObject.createObjectURL(file);
     if (file.type.match(/image.*/)) {
       text += "![" + file.name + "](" + url + ")";
+      ProjectEditor.uploaded_images.push(file);
     } else {
       text += "[" + file.name + "](" + url + ")";
     }
