@@ -12,7 +12,7 @@ CREATE TABLE `repositories` (
   `created` DATETIME NOT NULL,
   `updated` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY (`owner`, `name`)
+  UNIQUE KEY (`owner`, `name`, `branch`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tags` (
