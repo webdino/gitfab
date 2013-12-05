@@ -74,6 +74,11 @@ var CommonController = {
     return CommonController.getLocalJSON(url);
   },
 
+  getOwnersProjectList: function(owner) {
+    var url = "/api/ownersProjectList.php?owner="+owner;
+    return CommonController.getLocalJSON(url);
+  },
+
   getTagList: function (owner) {
     var url = "/api/tagList.php";
     if (owner) {
