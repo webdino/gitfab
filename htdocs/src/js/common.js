@@ -371,11 +371,38 @@ var CommonController = {
   },
 
   getGithubJSON: function(url) {
-    return CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
+    var deferred = new $.Deferred();
+    var promise = CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
+    promise.then(function(result) {
+      deferred.resolve(result);
+    })
+    .fail(function(result) {
+      var json = JSON.parse(result.responseText);
+      if (json.message) {
+        deferred.reject(json.message);
+      } else {
+        deferred.reject(statusText);
+      }
+    });
+    return deferred.promise();
+
   },
 
   getGithubJSON4Token: function (url, method, token, parameters, callback) {
-    return CommonController.ajaxPromise({url: url, type:method, dataType:"json", data: JSON.stringify(parameters), headers: { "Authorization": " bearer " + token}});
+    var deferred = new $.Deferred();
+    var promise = CommonController.ajaxPromise({url: url, type:method, dataType:"json", data: JSON.stringify(parameters), headers: { "Authorization": " bearer " + token}});
+    promise.then(function(result) {
+      deferred.resolve(result);
+    })
+    .fail(function(result) {
+      var json = JSON.parse(result.responseText);
+      if (json.message) {
+        deferred.reject(json.message);
+      } else {
+        deferred.reject(statusText);
+      }
+    });
+    return deferred.promise();
   },
 
   readFile: function(file) {
@@ -412,8 +439,7 @@ var CommonController = {
     };
 
     parameter.error = function(xhr, textStatus, errorThrown) {
-      Logger.error(textStatus);
-      deferred.reject(textStatus);
+      deferred.reject(xhr);
     };
 
     parameter.xhr = function() {
