@@ -221,6 +221,10 @@ var CommonController = {
     var url = "/api/updateMetadata.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
     return CommonController.getLocalJSON(url);
   },
+  getLocalBranches: function(owner, repository){
+    var url = "/api/check.php?owner=" + owner + "&repository=" + repository;
+    return CommonController.getLocalJSON(url);
+  },
 
   getLocalJSON: function (url) {
     var deferred = new $.Deferred();
@@ -321,13 +325,10 @@ var CommonController = {
   },
 
   renameBranch: function (token, owner, repository, newBranch, previousBranch) {
-    var promise = CommonController.getSHA(owner, repository, previousBranch);
-    return promise.then(function(result) {
-      var sha = result.object.sha;
-      var parameters = { sha: sha, force: "true" };
-      var url = CommonController.getGithubBranchPath(owner, repository, newBranch);
-      return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
-    });
+    return CommonController.newBranch(token, owner, repository, previousBranch, newBranch)
+      .then(function(){
+        return CommonController.deleteBranch(token,owner, repository, previousBranch);
+      });
   },
 
   getCommitHistories: function (owner, repository, branch) {
