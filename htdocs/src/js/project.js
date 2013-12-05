@@ -8,6 +8,8 @@ var ProjectController = {
     ProjectController.doLayout();
     ProjectController.markdownParser = new Showdown.converter();
     ProjectController.current_item_id = 0;
+    ProjectController.readmeSHA = null;
+    ProjectController.thumbnailSHA = null;
 
     var user = CommonController.getUser();
     var owner = CommonController.getOwner();
@@ -401,6 +403,22 @@ var ProjectController = {
     })
     .then(function(result) {
       shaTree = result.tree;
+      if(ProjectController.readmeSHA != null){
+        for(i in shaTree){
+          if(shaTree[i].path == "README.md"){
+            shaTree[i].sha = ProjectController.readmeSHA;
+            break;
+          }
+        }
+      }
+      if(ProjectController.thumbnailSHA != null){
+        for(i in shaTree){
+          if(shaTree[i].path == "gitfab/thumbnail.jpg"){
+            shaTree[i].sha = ProjectController.thumbnailSHA;
+            break;
+          }
+        }
+      }
       return ProjectController.commitElements(token, user, repository, branch, tags, shaTree);
     })
     .then(function(result) {
@@ -474,7 +492,10 @@ var ProjectController = {
     var base64 = new Base64();
     var elements = ProjectController.prepareCommitElements(user, repository, branch, tags);
     var promiseList = [];
-    promiseList[0] = CommonController.commit(token, user, repository, branch, MAIN_DOCUMENT, base64.encodeStringAsUTF8(elements.document), "", shatree);
+    promiseList[0] = CommonController.commit(token, user, repository, branch, MAIN_DOCUMENT, base64.encodeStringAsUTF8(elements.document), "", shatree)
+            .then(function(res){
+                    ProjectController.readmeSHA = res.content.sha;
+            });
     if (elements.customCSS) {
       promiseList.push( CommonController.commit(token, user, repository, branch, CUSTOM_CSS, base64.encodeStringAsUTF8(elements.customCSS), "", shatree) );
     }
@@ -539,7 +560,10 @@ var ProjectController = {
       var data = canvas.toDataURL("image/jpeg");
       var index = data.indexOf(",");
       data = data.substring(index + 1);
-      return CommonController.commit(token, user, repository, branch, THUMBNAIL, data, "", shaTree);
+      return CommonController.commit(token, user, repository, branch, THUMBNAIL, data, "", shaTree)
+        .then(function(res){
+          ProjectController.thumbnailSHA  = res.content.sha;
+        });
     });
   },
   
