@@ -425,7 +425,7 @@ var ProjectController = {
     for (var attachmentName in attachments) {
       var attachment = attachments[attachmentName];
       var path = MATERIALS_DIR + "/" + attachment.escaledName;
-      var promise = CommonController.commit(token, user, repository, branch, path, attachment.contents, "", shatree)
+      var promise = CommonController.commit(token, user, repository, branch, path, attachment.contents, "", shatree);
       promiseList.push(promise);
     }
     return CommonController.when.apply($, promiseList);
