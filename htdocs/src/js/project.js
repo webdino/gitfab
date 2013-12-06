@@ -283,7 +283,7 @@ var ProjectController = {
         }else {
           for (j in ProjectController.myProjectList){
             if(ProjectController.myProjectList[j].name == repository && 
-                    iBranchName == ProjectController.myProjectList[j].branch)
+              iBranchName == ProjectController.myProjectList[j].branch)
             else {
               var url = res[i].object.url;
               var p = ProjectController.DeferredWithValue(
