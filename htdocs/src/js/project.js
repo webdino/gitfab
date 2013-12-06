@@ -280,22 +280,15 @@ var ProjectController = {
         var iBranchName = res[i].ref.substr(11);
         branchName.push(iBranchName);
         if(iBranchName == "master" || iBranchName == branch){
-          console.log("no need to check this branch: "+iBranchName);
         }else {
-          console.log(ProjectController.myProjectList);
           for (j in ProjectController.myProjectList){
             if(ProjectController.myProjectList[j].name == repository && 
                     iBranchName == ProjectController.myProjectList[j].branch)
-                    console.log("this repos are exist in DB");
             else {
-              console.log(ProjectController.myProjectList[j].name);
-              console.log(iBranchName);
-            
               var url = res[i].object.url;
               var p = ProjectController.DeferredWithValue(
               i,CommonController.getGithubJSON(url))
               .done(function(index,res){
-                console.log(branchName[index]);
                 CommonController.deleteBranch(token,user,repository,branchName[index]);
               });
               promiseList.push(p);
@@ -303,12 +296,10 @@ var ProjectController = {
           }
         }
         $.when.apply(null,promiseList).then(function(res){
-          console.log(res);
           var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
           if (ProjectController.isDuplicate(repository, newBranch) == true) {
             promise4return.reject("this project name already exist");
           }
-          console.log("check finished");
           promise4return.resolve();
         });
       }
