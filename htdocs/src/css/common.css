@@ -74,10 +74,24 @@ header a:hover {
 
 #dashboard {
   display: none;
+  line-height:40px;
+}
+
+#dashboard img {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  top: 9px;
+  right: 3px;
 }
 
 #create {
   display: none;
+  float: right;
+  font-size: 12px;
+  line-height: 47px;
+  margin-right: 10px;
+  margin-left: 5px;
 }
 
 #login {
@@ -100,7 +114,7 @@ header a:hover {
 #help {
   float: right;
   line-height:40px;
-  font-size: 20px;
+  font-size: 18px;
   margin-left: 5px;
 }
 
