@@ -198,8 +198,8 @@ var CommonController = {
     $("#toolbar").show();
   },
 
-  newLocalRepository: function (owner, repository, branch) {
-    var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
+  newLocalRepository: function(owner, repository, branch, tags, avatar, thumbnail, thumbnailAspect) {
+    var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
     return CommonController.getLocalJSON(url);
   },
 

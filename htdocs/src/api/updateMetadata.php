@@ -7,7 +7,7 @@
   $thumbnailAspect = $_GET["thumbnailAspect"];
   $branch = $_GET["branch"];
 
-  include('localDatabaseFunctions.php.inc');
+  include_once('localDatabaseFunctions.php.inc');
   $result = array();
   try {
     $connection = openConnection();

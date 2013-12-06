@@ -3,21 +3,17 @@
   $repository = $_GET["repository"];
   $branch = $_GET["branch"];
 
-  include('localDatabaseFunctions.php.inc');
-  $result = array();
+  include_once('localDatabaseFunctions.php.inc');
   try {
     $connection = openConnection();
-    $connection -> beginTransaction();
- 
     $query = "INSERT INTO repositories(owner,name,branch,created,updated) VALUES (?,?,?,CAST(now() AS DATETIME),CAST(now() AS DATETIME))";
     $statement = $connection -> prepare($query);
     $statement -> execute(array($owner, $repository, $branch));
-    $connection -> commit();
     closeConnection($connection);
-    $result["projectList"] = $projectList;
+    include('updateMetadata.php');
   } catch (PDOException $e) {
+    $result = array();
     $result["error"] = $e->getMessage();
-    $connection -> rollBack();      
+    echo json_encode($result);
   }
-  echo json_encode($result);
 ?>

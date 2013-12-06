@@ -291,7 +291,12 @@ var ProjectController = {
       });
     }
     promise.then(function() {
-      return CommonController.newLocalRepository(user, repository, branch);
+      var avatar = $("#dashboard img").attr("src");
+      var tags = ProjectController.getTagString();
+      var thumbnail = ProjectController.findThumbnail();
+      var thumbnailAspect = thumbnail.aspect;
+      var thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
+      return CommonController.newLocalRepository(user, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
     })
     .fail(function(error) {
       CommonController.showError(error);
