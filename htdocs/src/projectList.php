@@ -1,5 +1,4 @@
-<?php session_start();
-?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this file,
@@ -13,6 +12,7 @@
     <link rel="stylesheet" href="/css/projectList.css" type="text/css">
     <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
     <link rel="stylesheet" href="/css/logger.css" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700,900' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/projectList.js"></script>
@@ -31,8 +31,15 @@
   </head>
   <body>
     <?php include('header.php.inc'); ?>
+
+    <!-- <div id="sort">Sorted by</div> -->
+    <!-- <div id="sort-item">Likes</div> -->
+    <!-- <div id="sort-item">Forks</div> -->
+    <!-- <div id="sort-item">Date</div> -->
+
+
     <div id="contents">
-      <div id="main" role="main">
+      <div id="main" role="main">        
         <ul id="project-list">
         </ul>
       </div>

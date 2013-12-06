@@ -102,17 +102,32 @@ var CommonController = {
     projectLink.addClass("projectLink");
 
     if (thumbnailS && thumbnailS != "undefined") {
-      var thumbnail = $(document.createElement("img"));
-      thumbnail.attr("src", thumbnailS);
+      var thumbnail = $(document.createElement("div"));
+      thumbnail.attr("style", "background-image:url('"+thumbnailS+"'); background-size:cover; background-position: center center;");
       thumbnail.addClass("thumbnail");
       projectLink.append(thumbnail);
+    }
+    else {
+     var thumbnail2 = $(document.createElement("div"));
+      thumbnail2.text("no Image");
+      thumbnail2.attr("style", "line-height:240px; text-align:center; font-size: 48px;font-family: FabFont;");
+      thumbnail2.addClass("thumbnail");
+      projectLink.append(thumbnail2); 
     }
 
     var projectName = $(document.createElement("div"));
     projectName.addClass("projectName");
     if (branchS == "master") {
+
+      if(repositoryS.length > 22){
+        repositoryS = repositoryS.substring(0,22)+"…";
+      }
+
       projectName.text(repositoryS);
     } else {
+      if(branchS.length > 22){
+        branchS = branchS.substring(0,22)+"…";
+      }
       projectName.text(branchS);
     }
     projectLink.append(projectName);

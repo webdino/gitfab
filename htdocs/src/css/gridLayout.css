@@ -5,7 +5,7 @@
 
 .project a {
   text-decoration: none;
-  color: gray;
+  color: black;
 }
 
 .project a:hover {
@@ -13,42 +13,57 @@
 }
 
 .project {
-  border: 1px solid #ddd;
+  width: 300px;
+  height: 300px;
+
+  /*border: 1px solid #ddd;*/
   background-color: white;
-  border-radius: 5px;
-  padding-bottom: 5px;
+  /*border-radius: 2px;*/
+  padding-bottom: 9px;
+  border-bottom: 1px solid #000;
 }
 
 .thumbnail {
-  width: 100%;
-  border-bottom: 1px solid #ddd;
-  border-radius: 5px 5px 0 0;
+  /*width: 100%;*/
+  width: 300px;
+  height: 225px;
+
+  /*border-bottom: 1px solid #ddd;*/
+  /*border-radius: 5px 5px 0 0;*/
 }
 
 .projectName {
-  padding: 0px 0 5px 10px;
-  font-size: 16px;
+  margin-top: -3px;
+  /*padding: 0px 0 5px 10px;*/
+  padding: 0px 0 3px 10px;
+  font-size: 24px;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   word-wrap: break-word;
+ 
 }
 
 .ownerLink {  
 }
 
 .owner {
-  font-size: 10px;
+  font-size: 18px;
   vertical-align: top;
-  padding: 0 0 5px 31px;
-  background-size: 16px 16px;
+  padding: 0 0 0px 31px;
+  background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-position: 10px 0px;
+  background-position: 8px 0px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400; /*standard*/
 }
-
+  
 .tags {
-  border-top: 1px solid #ddd;
-  font-size: 10px;
+  /*border-top: 1px solid #ddd;*/
+  font-size: 12px;
   padding-left: 10px;
-  padding-top: 5px;
+  padding-top: 0px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300; /*light*/
 }
 
 .tags a {
