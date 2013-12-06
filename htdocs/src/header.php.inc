@@ -12,6 +12,4 @@
     <input name="tag" type="text" placeholder="search by a tag">
   </form>
 </div>
-
-<div id =>
 </header>
