@@ -74,23 +74,10 @@ header a:hover {
 
 #dashboard {
   display: none;
-  line-height:40px;
-}
-
-#dashboard img {
-  width: 28px;
-  height: 28px;
-  position: relative;
-  top: 9px;
-  right: 3px;
 }
 
 #create {
   display: none;
-  float: right;
-  font-size: 24px;
-  line-height: 38px;
-  margin-right: 10px;
 }
 
 #login {
@@ -187,4 +174,58 @@ footer a {
 
 .button:hover {
   color: black;
+}
+
+
+#sort-container {
+  border-radius: 5px;
+}
+
+#sort {
+  width: 302px;
+  float: left;
+  font-size: 48px;
+  font-family: FabFont;
+  text-align: center;
+
+  padding-top: 13px;
+  padding-bottom: 2px;
+
+  margin-left: 16px;
+  margin-top: 5px;
+
+  border: #000000;
+  border-style: solid ;
+  border-color: black;
+  border-width: 5px;
+  background: #FFFFFF;
+}
+
+#sort-item {
+  width: 302px;
+  float: left;
+  font-size: 48px;
+  font-family: FabFont;
+  text-align: center;
+  padding: 13px 0 2px 0;
+  margin-left: -5px;
+  margin-top: 5px;
+  border: #000000;
+  border-style: solid ;
+  border-color: black;
+  border-width: 5px;
+  background: #FFFFFF;
+}
+#sort-item:hover {
+  font: #000000;
+  background:#FFFFFF; 
+}
+
+#no-image {
+  width:  300px;
+  height: 225px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 48px;
+  font-family: FabFont;
 }

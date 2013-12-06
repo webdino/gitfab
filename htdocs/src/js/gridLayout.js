@@ -4,8 +4,8 @@
 
 var GridLayout = {
   doLayout: function(containerwidth, container, elements, informations) {
-    var DEFAULT_REPOSITORY_UI_SIZE = 180;
-    var GRID_MARGIN = 10;
+    var DEFAULT_REPOSITORY_UI_SIZE = 300;//180;
+    var GRID_MARGIN = 16;//10;
 //    GridLayout.doVerticalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
 //    GridLayout.doHorizontalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
 //    GridLayout.doSquareLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
@@ -24,8 +24,8 @@ var GridLayout = {
     if (columns == 0) {
       columns = 1;
     }
-    var wOfProject = (containerwidth-(margin*columns+1))/columns;
-    var wOfMargin = (containerwidth - (wOfProject*columns)) / columns;
+    var wOfProject = 300;//(containerwidth-(margin*columns+1))/columns;
+    var wOfMargin = 16;//(containerwidth - (wOfProject*columns)) / columns;
 
     if (!GridLayout.current_height_list) {
       GridLayout.current_height_list = [];
@@ -51,9 +51,9 @@ var GridLayout = {
       var thumbnailHeight = thumbnail.height();
       if (thumbnailHeight == 0) {
         var information = informations[i];
-        if (information.aspect && information.aspect > 0) {
-          $(thumbnail).css("height", wOfProject/information.aspect);
-        }
+        // if (information.aspect && information.aspect > 0) {
+        //   $(thumbnail).css("height", wOfProject/information.aspect);
+        // }
       }
 
       var left = wOfMargin + columnIndex * (wOfProject + wOfMargin);
@@ -141,10 +141,10 @@ var GridLayout = {
       if (nextx > containerwidth) {
         GridLayout.doLineLayout(lineElements, containerwidth, margin);
         lineElements = [];
-        lineElements.push(element)
+        lineElements.push(element);
         x = margin + width + margin;
       } else {
-        lineElements.push(element)
+        lineElements.push(element);
         x = nextx;
       }
     }
