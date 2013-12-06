@@ -26,6 +26,7 @@ var GridLayout = {
     }
     var wOfProject = 300;//(containerwidth-(margin*columns+1))/columns;
     var wOfMargin = 16;//(containerwidth - (wOfProject*columns)) / columns;
+    var hOfMargin = 24;
 
     if (!GridLayout.current_height_list) {
       GridLayout.current_height_list = [];
@@ -57,7 +58,7 @@ var GridLayout = {
       }
 
       var left = wOfMargin + columnIndex * (wOfProject + wOfMargin);
-      var top = hOfCurrents[columnIndex] + wOfMargin;
+      var top = hOfCurrents[columnIndex] + hOfMargin;
       element.css({width:width+"px", "left": left+"px", "top": top+"px"});
       container.append(element);
 
