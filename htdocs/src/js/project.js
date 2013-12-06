@@ -265,20 +265,76 @@ var ProjectController = {
       $("#versions").append(element);
     });
   },
+  checkOwnGithubBranch: function(){
+    var promise4return = new $.Deferred();
+    var owner = CommonController.getOwner();
+    var user = CommonController.getUser();
+    var repository = CommonController.getRepository();
+    var branch = CommonController.getBranch();
+    var token = CommonController.getToken();
+    var promise= CommonController.getAllReference(user,repository);
+    var promiseList = [];
+    promise.then(function(res){
+      var branchName = [];
+      for (i in res){
+        var iBranchName = res[i].ref.substr(11);
+        branchName.push(iBranchName);
+        if(iBranchName == "master" || iBranchName == branch){
+          console.log("no need to check this branch: "+iBranchName);
+        }else {
+          console.log(ProjectController.myProjectList);
+          for (j in ProjectController.myProjectList){
+            if(ProjectController.myProjectList[j].name == repository && 
+                    iBranchName == ProjectController.myProjectList[j].branch)
+                    console.log("this repos are exist in DB");
+            else {
+              console.log(ProjectController.myProjectList[j].name);
+              console.log(iBranchName);
+            
+              var url = res[i].object.url;
+              var p = ProjectController.DeferredWithValue(
+              i,CommonController.getGithubJSON(url))
+              .done(function(index,res){
+                console.log(branchName[index]);
+                CommonController.deleteBranch(token,user,repository,branchName[index]);
+              });
+              promiseList.push(p);
+            } 
+          }
+        }
+        $.when.apply(null,promiseList).then(function(res){
+          console.log(res);
+          var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
+          if (ProjectController.isDuplicate(repository, newBranch) == true) {
+            promise4return.reject("this project name already exist");
+          }
+          console.log("check finished");
+          promise4return.resolve();
+        });
+      }
+    });
+    return promise4return;
+  },
+
+  DeferredWithValue: function(val,promise){
+    var dfd = new $.Deferred();
+      promise.done(function(res,err){
+        dfd.resolve(val,res,err); 
+      });
+    return dfd.promise();
+  },
 
   //update the project ========================================
   forkProject: function(token, user, owner, repository, branch) {
     var promise = null;
-    if (user == owner) {
-      var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
-      if (ProjectController.isDuplicate(repository, newBranch) == true) {
-        CommonController.showError("Already this project name["+newBranch+"] exists.");        
-        return;
-      }
-      Logger.on();
-      promise = CommonController.newBranch(token, owner, repository, branch, newBranch);
-      branch = newBranch;
-    } else {
+    if (user == owner) {// fork from itself
+        var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
+        Logger.on();
+        promise = ProjectController.checkOwnGithubBranch().done(function(){
+          CommonController.newBranch(token, owner, repository, branch, newBranch);
+          branch = newBranch;
+        });
+    } else { // fork from others
       if (ProjectController.isDuplicate(repository, MASTER_BRANCH) == true) {
         CommonController.showError("Already this project name["+repository+"] exists.");        
         return;
@@ -286,17 +342,11 @@ var ProjectController = {
       Logger.on();
       promise = CommonController.fork(token, owner, repository)
       .then(function() {
-        branch = MASTER_BRANCH;
         return CommonController.watch(user, repository);
       });
     }
-    promise.then(function() {
-      var avatar = $("#dashboard img").attr("src");
-      var tags = ProjectController.getTagString();
-      var thumbnail = ProjectController.findThumbnail();
-      var thumbnailAspect = thumbnail.aspect;
-      var thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
-      return CommonController.newLocalRepository(user, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
+    promise.then(function(){
+      return CommonController.newLocalRepository(user, repository, branch);
     })
     .fail(function(error) {
       CommonController.showError(error);
@@ -307,6 +357,7 @@ var ProjectController = {
       ProjectController.href(url);
     });    
   },
+
 
   deleteProject: function(token, user, owner, repository, branch) {
     if (!window.confirm("Are you sure to remove this project?")) {

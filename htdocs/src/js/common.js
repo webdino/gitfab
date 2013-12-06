@@ -262,12 +262,17 @@ var CommonController = {
 
   getSHATree: function (owner, repository, branch) {
     var url = CommonController.getGithubRepositoryPath(owner, repository);
-    url += "/git/trees/master?recursive=2";
+    url += "/git/trees/"+branch+"?recursive=2";
     return CommonController.getGithubJSON(url);
   },
 
   getSHA: function (owner, repository, branch) {
     var url = CommonController.getGithubBranchPath(owner, repository, branch);
+    return CommonController.getGithubJSON(url);
+  },
+  
+  getAllReference: function (owner, repository) {
+    var url = GITHUB_API + "repos/" + owner + "/" + repository + "/git/refs";
     return CommonController.getGithubJSON(url);
   },
  
