@@ -74,6 +74,11 @@ var CommonController = {
     return CommonController.getLocalJSON(url);
   },
 
+  getOwnersProjectList: function(owner) {
+    var url = "/api/ownersProjectList.php?owner="+owner;
+    return CommonController.getLocalJSON(url);
+  },
+
   getTagList: function (owner) {
     var url = "/api/tagList.php";
     if (owner) {
@@ -125,9 +130,6 @@ var CommonController = {
       }
       projectName.text(branchS);
     }
-
-
-
     projectLink.append(projectName);
 
     var ownerLink = $(document.createElement("a"));
@@ -176,6 +178,10 @@ var CommonController = {
     return GITHUB_RAW + owner + "/" + repository + "/" + branch + "/" + path;
   },
 
+  getHistoricalFileURL: function(owner, repository, sha, path) {
+    return GITHUB_RAW + owner + "/" + repository + "/" + sha + "/" + path;
+  },
+
   getProjectPageURL: function (owner, repository, branch) {
     return "/" + owner + "/" + repository + "/" + (branch ? branch : "-") + "/";
   },
@@ -193,20 +199,22 @@ var CommonController = {
     userImg.attr("src", avatarURL);
     var userName = $(document.createElement("span"));
     userName.text(username);
-    $("#login").html("");
-    $("#login").append(userImg);
-    $("#login").append(userName);
+    $("#login").hide();
     var createurl = CommonController.getProjectPageURL(username, CREATE_PROJECT_COMMAND);
     $("#create").attr("href", createurl);
     $("#create").show();
     var dashboardurl = CommonController.getDashboardURL(username);
     $("#dashboard").attr("href", dashboardurl);
+    $("#dashboard").html("");
+    $("#dashboard").append(userImg);
+    $("#dashboard").append(userName);
+
     $("#dashboard").show();
     $("#toolbar").show();
   },
 
-  newLocalRepository: function (owner, repository, branch) {
-    var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch;
+  newLocalRepository: function(owner, repository, branch, tags, avatar, thumbnail, thumbnailAspect) {
+    var url = "/api/newProject.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
     return CommonController.getLocalJSON(url);
   },
 
@@ -231,6 +239,10 @@ var CommonController = {
 
   updateRepositoryMetadata: function (owner, repository, branch, tags, avatar, thumbnail, thumbnailAspect) {
     var url = "/api/updateMetadata.php?owner=" + owner + "&repository=" + repository + "&branch=" + branch + "&tags=" + tags + "&avatar=" + avatar + "&thumbnail=" + thumbnail +"&thumbnailAspect="+thumbnailAspect;
+    return CommonController.getLocalJSON(url);
+  },
+  getLocalBranches: function(owner, repository){
+    var url = "/api/check.php?owner=" + owner + "&repository=" + repository;
     return CommonController.getLocalJSON(url);
   },
 
@@ -265,7 +277,7 @@ var CommonController = {
 
   getSHATree: function (owner, repository, branch) {
     var url = CommonController.getGithubRepositoryPath(owner, repository);
-    url += "/git/trees/master?recursive=2&callback=?";
+    url += "/git/trees/master?recursive=2";
     return CommonController.getGithubJSON(url);
   },
 
@@ -318,14 +330,13 @@ var CommonController = {
 
   newBranch: function (token, owner, repository, branch, newBranch) {
     var promise = CommonController.getSHA(owner, repository, branch);
-    promise.then(function(result) {
+    return promise.then(function(result) {
       var sha = result.object.sha;
       var parameters = { sha: sha, ref: "refs/heads/" + newBranch };
       var url = CommonController.getGithubRepositoryPath(owner, repository);
       url += "/git/refs";
       return CommonController.getGithubJSON4Token(url, "POST", token, parameters);
     });
-    return promise;
   },
 
   deleteBranch: function(token, owner, repository, branch) {
@@ -334,14 +345,20 @@ var CommonController = {
   },
 
   renameBranch: function (token, owner, repository, newBranch, previousBranch) {
-    var promise = CommonController.getSHA(owner, repository, previousBranch);
-    promise.then(function(result) {
+    return CommonController.newBranch(token, owner, repository, previousBranch, newBranch)
+      .then(function(){
+        return CommonController.deleteBranch(token,owner, repository, previousBranch);
+      });
+  },
+
+  getCommitHistories: function (owner, repository, branch) {
+    var promise = CommonController.getSHA(owner, repository, branch);
+    return promise.then(function(result) {
       var sha = result.object.sha;
-      var parameters = { sha: sha, force: "true" };
-      var url = CommonController.getGithubBranchPath(owner, repository, newBranch);
-      return CommonController.getGithubJSON4Token(url, "PATCH", token, parameters);
+      var url = CommonController.getGithubRepositoryPath(owner, repository);
+      url += "/commits?path=README.md&sha="+sha;
+      return CommonController.getGithubJSON(url);
     });
-    return promise;
   },
 
   getCustomCSS: function (owner, repository) {
@@ -356,6 +373,7 @@ var CommonController = {
   },
 
   getImage: function (url) {
+    url = encodeURIComponent(url);
     var proxyURL = "/api/imageProxy.php?url="+url;
     Logger.log("read: "+proxyURL);
 
@@ -373,11 +391,38 @@ var CommonController = {
   },
 
   getGithubJSON: function(url) {
-    return CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
+    var deferred = new $.Deferred();
+    var promise = CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
+    promise.then(function(result) {
+      deferred.resolve(result);
+    })
+    .fail(function(result) {
+      var json = JSON.parse(result.responseText);
+      if (json.message) {
+        deferred.reject(json.message);
+      } else {
+        deferred.reject(statusText);
+      }
+    });
+    return deferred.promise();
+
   },
 
   getGithubJSON4Token: function (url, method, token, parameters, callback) {
-    return CommonController.ajaxPromise({url: url, type:method, dataType:"json", data: JSON.stringify(parameters), headers: { "Authorization": " bearer " + token}});
+    var deferred = new $.Deferred();
+    var promise = CommonController.ajaxPromise({url: url, type:method, dataType:"json", data: JSON.stringify(parameters), headers: { "Authorization": " bearer " + token}});
+    promise.then(function(result) {
+      deferred.resolve(result);
+    })
+    .fail(function(result) {
+      var json = JSON.parse(result.responseText);
+      if (json.message) {
+        deferred.reject(json.message);
+      } else {
+        deferred.reject(statusText);
+      }
+    });
+    return deferred.promise();
   },
 
   readFile: function(file) {
@@ -402,6 +447,8 @@ var CommonController = {
   },
 
   ajaxPromise: function(parameter) {
+    var name = parameter.url.substring(parameter.url.lastIndexOf("/"));
+
     Logger.request(parameter.url);
 
     var deferred = new $.Deferred();
@@ -412,14 +459,13 @@ var CommonController = {
     };
 
     parameter.error = function(xhr, textStatus, errorThrown) {
-      Logger.error(textStatus);
-      deferred.reject(textStatus);
+      deferred.reject(xhr);
     };
 
     parameter.xhr = function() {
       var XHR = $.ajaxSettings.xhr();
       var progressListener = function(e) {
-        Logger.progress(e.loaded, e.total);
+        Logger.progress(name, name, e.loaded, e.total);
         deferred.notify(e.loaded/e.total);
       }
       XHR.addEventListener('progress', progressListener);
