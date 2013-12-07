@@ -336,7 +336,12 @@ var ProjectController = {
       });
     }
     promise.then(function(){
-      return CommonController.newLocalRepository(user, repository, branch);
+      var avatar = $("#dashboard img").attr("src");
+      var tags = ProjectController.getTagString();
+      var thumbnail = ProjectController.findThumbnail();
+      var thumbnailAspect = thumbnail.aspect;
+      var thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
+      return CommonController.newLocalRepository(user, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
     })
     .fail(function(error) {
       CommonController.showError(error);
@@ -518,7 +523,7 @@ var ProjectController = {
     promise4github.then(function() {
       return CommonController.watch(user, repository);
     });
-    var promise4local = CommonController.newLocalRepository(user, repository, MASTER_BRANCH);
+    var promise4local = CommonController.newLocalRepository(user, repository, MASTER_BRANCH, "", "", "", 0);
     return CommonController.when(promise4github, promise4local);
   },
 
