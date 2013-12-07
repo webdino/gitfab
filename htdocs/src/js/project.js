@@ -374,7 +374,7 @@ var ProjectController = {
     for (i in projectName){
       var c =projectName.charCodeAt(i);
       if(c <45 || 45 < c && c < 48 || 57 < c && c < 65|| 90 < c && c < 97 || 122 <c){
-        alert("Use only letters (A-Z, a-z), numbers (0-9),hyphen(-)");
+        alert("Project name can use only letters (A-Z, a-z), numbers (0-9),hyphen(-)");
         return;
       }
     }

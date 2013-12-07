@@ -43,6 +43,7 @@
 
 #repository {
   font-size: 36px;  
+  min-width: 200px;
 }
 
 #tags {
