@@ -205,6 +205,7 @@ var ProjectController = {
     promise.then(function(result) {
       ProjectController.appendOwnerIcon(result.owner.avatar_url);
       //find a parent and children at here
+      console.log(result);
     });
   },
 
@@ -239,75 +240,40 @@ var ProjectController = {
     });
   },
 
-  checkOwnGithubBranch: function(){
-    var promise4return = new $.Deferred();
-    var owner = CommonController.getOwner();
-    var user = CommonController.getUser();
-    var repository = CommonController.getRepository();
-    var branch = CommonController.getBranch();
-    var token = CommonController.getToken();
-    var promise= CommonController.getAllReference(user,repository);
-    var promiseList = [];
-    promise.then(function(res){
-      var branchName = [];
-      for (i in res){
-        var iBranchName = res[i].ref.substr(11);
-        branchName.push(iBranchName);
-        if(iBranchName == "master" || iBranchName == branch){
-        }else {
-          for (j in ProjectController.myProjectList){
-            if(!(ProjectController.myProjectList[j].name == repository && 
-              iBranchName == ProjectController.myProjectList[j].branch)){
-              var url = res[i].object.url;
-              var p = ProjectController.DeferredWithValue(
-              i,CommonController.getGithubJSON(url))
-              .done(function(index,res){
-                CommonController.deleteBranch(token,user,repository,branchName[index]);
-              });
-              promiseList.push(p);
-            } 
-          }
-        }
-        $.when.apply(null,promiseList).then(function(res){
-          var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
-          if (ProjectController.isDuplicate(repository, newBranch) == true) {
-            promise4return.reject("this project name already exist");
-          }
-          promise4return.resolve();
-        });
-      }
-    });
-    return promise4return;
-  },
-
-  DeferredWithValue: function(val,promise){
-    var dfd = new $.Deferred();
-      promise.done(function(res,err){
-        dfd.resolve(val,res,err); 
-      });
-    return dfd.promise();
-  },
-
   //update the project ========================================
   forkProject: function(token, user, owner, repository, branch) {
     var promise = null;
     if (user == owner) {// fork from itself
         var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
         Logger.on();
-        promise = ProjectController.checkOwnGithubBranch().done(function(){
-          CommonController.newBranch(token, owner, repository, branch, newBranch);
-          branch = newBranch;
-        });
+        promise = CommonController.newBranch(token, owner, repository, branch, newBranch);
+        branch = newBranch;
     } else { // fork from others
-      if (ProjectController.isDuplicate(repository, MASTER_BRANCH) == true) {
-        CommonController.showError("Already this project name["+repository+"] exists.");        
+      var projectName = branch == MASTER_BRANCH ? repository : branch;
+      if (ProjectController.existProjectName(projectName) == true) {
+        CommonController.showError("Already this project name["+projectName+"] exists.");        
         return;
       }
       Logger.on();
+      var projectName = branch == MASTER_BRANCH ? repository : branch;
+      promise = ProjectController.cloneProject(token, user, owner, repository, branch, projectName);
+      var parentOwner = owner;
+      var parentRepository = repository;
+      var parentBranch = branch;
+      var childOwner = user;
+      var childRepository = projectName;
+      var childBranch = MASTER_BRANCH;
+      repository = projectName;
+      branch = MASTER_BRANCH;
+      promise = promise.then(function() {
+        return CommonController.newLocalFork(parentOwner, parentRepository, parentBranch, childOwner, childRepository, childBranch);
+      });
+      /*
       promise = CommonController.fork(token, owner, repository)
       .then(function() {
         return CommonController.watch(user, repository);
       });
+      */
     }
     promise.then(function(){
       var avatar = $("#dashboard img").attr("src");
@@ -327,28 +293,72 @@ var ProjectController = {
     });    
   },
 
+  cloneProject: function(token, user, owner, repository, branch, projectName) {
+    var deferred = new $.Deferred();
+    var originalTree;
+    ProjectController.newRepository(token, user, projectName)
+    .then(function(result) {
+      return CommonController.getSHATree(owner, repository, branch);
+    })
+    .then(function(result) {
+      originalTree = result.tree;
+      return CommonController.getSHATree(user, projectName, MASTER_BRANCH);
+    })
+    .then(function(result) {
+      var promiseList = [];
+      var tree = result.tree;
+      var pathmap = {};
+      for (var i = 0, n = originalTree.length; i < n; i++) {
+        var element = originalTree[i];
+        if (element.type == "tree") {
+          continue;
+        }
+        pathmap[element.url] = element.path;
+        var promise = 
+        CommonController.getGithubJSON(element.url)
+        .then(function(response) {
+          var contents = response.content.replace(/\n/g, "");
+          var url = response.url;
+          var path = pathmap[url];
+          return CommonController.commit(token, user, projectName, MASTER_BRANCH, path, contents, "", tree);
+        });
+        promiseList.push(promise);
+      }
+      return CommonController.when.apply($, promiseList);
+    })
+    .fail(function(error) {
+      deferred.reject(error);
+    })
+    .done(function() {
+      deferred.resolve();
+    });
+    return deferred.promise();
+  },
 
   deleteProject: function(token, user, owner, repository, branch) {
     if (!window.confirm("Are you sure to remove this project?")) {
       return;
     }
 
-    Logger.on();
-
     var promise4github = null;
     var promise4local = null;
     if (branch == MASTER_BRANCH) {
-      var promise = CommonController.getLocalBranches(user,repository);
-      promise.then(function(res){
-        if(res.branches.length == 1){
-          promise4github = CommonController.deleteRepository(token, user, repository);
+      for (var i = 0, n = ProjectController.myProjectList.length; i < n; i++) {
+        var myProject = ProjectController.myProjectList[i];
+        if (myProject.name == repository && myProject.branch != MASTER_BRANCH) {
+          CommonController.showError("Because this project has some branches, so could not delete it.");
+          return;
         }
-      });
+      }
+      promise4github = CommonController.deleteRepository(token, user, repository);
+//      promise4github = CommonController.emptyPromise();
       promise4local = CommonController.deleteLocalRepository(user, repository);
+//      promise4local = CommonController.emptyPromise();
     } else {
       promise4github = CommonController.deleteBranch(token, user, repository, branch);
       promise4local = CommonController.deleteLocalBranch(user, repository, branch);
     }
+    Logger.on();
     var promise = CommonController.when(promise4github, promise4local);
     promise.then(function() {
     })
@@ -388,7 +398,7 @@ var ProjectController = {
     var thumbnailAspect = thumbnail.width()/thumbnail.height();
     var thumbnailSrc = thumbnail.attr("src");
     if (repository == CREATE_PROJECT_COMMAND) {
-      if (ProjectController.isDuplicate(projectName, MASTER_BRANCH) == true) {
+      if (ProjectController.existProjectName(projectName) == true) {
         CommonController.showError("Already this project name["+projectName+"] exists.");        
         return;
       }
@@ -400,7 +410,7 @@ var ProjectController = {
       isURLChanged = true;
     } else {
       if (branch == MASTER_BRANCH && projectName != repository) {
-        if (ProjectController.isDuplicate(projectName, branch) == true) {
+        if (ProjectController.existProjectName(projectName) == true) {
           CommonController.showError("Already this project name["+projectName+"] exists.");        
           return;
         }
@@ -410,7 +420,7 @@ var ProjectController = {
         repository = projectName;
         isURLChanged = true;
       } else if (branch != MASTER_BRANCH && projectName != branch) {
-        if (ProjectController.isDuplicate(repository, projectName) == true) {
+        if (ProjectController.existProjectName(projectName) == true) {
           CommonController.showError("Already this project name["+projectName+"] exists.");        
           return;
         }
@@ -492,10 +502,11 @@ var ProjectController = {
     });
   },
 
-  isDuplicate: function(repository, branch) {
+  existProjectName: function(name) {
     for (var i = 0, n = ProjectController.myProjectList.length; i < n; i++) {
       var project = ProjectController.myProjectList[i];
-      if (project.name == repository && project.branch == branch) {
+      var projectName = project.branch == MASTER_BRANCH ? project.name : project.branch;
+      if (name == projectName) {
         return true;
       }
     }

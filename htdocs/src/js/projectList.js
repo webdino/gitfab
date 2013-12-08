@@ -44,7 +44,7 @@ var ProjectListController = {
     for (var i = 0, n = projectList.length; i < n; i++) {
       var project = projectList[i];
       var li = $(document.createElement("li"));
-      var ui = CommonController.createProjectUI(project.owner, project.name, project.avatar, project.thumbnail, project.branch, project.tags);
+      var ui = CommonController.createProjectUI(project.owner, project.name, project.avatar, project.thumbnail, project.aspect, project.branch, project.tags);
       li.append(ui);
       elements.push(li);
     }
@@ -86,6 +86,7 @@ var ProjectListController = {
       var promise = CommonController.authorize(parameters.code);
       promise.then(function(data) {
         ProjectListController.updateUserUI(data.user, data.avatar_url);
+        window.location.href = "/";
       });
       return promise;
     } else {

@@ -93,7 +93,7 @@ var CommonController = {
   },
 
   //----------------------------------
-  createProjectUI: function (ownerS, repositoryS, avatarS, thumbnailS, branchS, tagsA) {
+  createProjectUI: function (ownerS, repositoryS, avatarS, thumbnailS, aspectF, branchS, tagsA) {
     var project = $(document.createElement("div"));
     project.addClass("project");
 
@@ -101,7 +101,7 @@ var CommonController = {
     projectLink.attr("href", CommonController.getProjectPageURL(ownerS, repositoryS, branchS));
     projectLink.addClass("projectLink");
 
-    if (thumbnailS && thumbnailS != "undefined") {
+    if (aspectF != 0) {
       var thumbnail = $(document.createElement("div"));
       thumbnail.attr("style", "background-image:url('"+thumbnailS+"'); background-size:cover; background-position: center center;");
       thumbnail.addClass("thumbnail");
@@ -242,7 +242,12 @@ var CommonController = {
     return CommonController.getLocalJSON(url);
   },
   getLocalBranches: function(owner, repository){
-    var url = "/api/check.php?owner=" + owner + "&repository=" + repository;
+    var url = "/api/getBranchProjects.php?owner=" + owner + "&repository=" + repository;
+    return CommonController.getLocalJSON(url);
+  },
+
+  newLocalFork: function (parentOwner, parentRepository, parentBranch, childOwner, childRepository, childBranch) {
+    var url = "/api/fork.php?parentOwner="+parentOwner+"&parentRepository="+parentRepository+"&parentBranch="+parentBranch+"&childOwner="+childOwner+"&childRepository="+childRepository+"&childBranch="+childBranch;
     return CommonController.getLocalJSON(url);
   },
 

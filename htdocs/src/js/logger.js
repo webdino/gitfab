@@ -6,6 +6,8 @@ var Logger = {
   on: function() {
     clearTimeout(Logger.timer);
     $("#logger").show();
+    Logger.height = $("#logger").height();
+    Logger.hideHeight = Logger.height*0.5;
   },
 
   request: function(url) {
@@ -25,7 +27,8 @@ var Logger = {
     if (!element) {
       element = document.createElement("div");
       element.setAttribute("id", id);
-      document.getElementById("logger").appendChild(element);
+      $("#logger")[0].appendChild(element);
+      Logger.hideExtraLine($(element));
     }
     element.textContent = name+":"+loaded+"/"+total;
   },
@@ -37,8 +40,16 @@ var Logger = {
       element.addClass(className);
     }
     $("#logger").append(element);
+    Logger.hideExtraLine(element);
   },
   
+  hideExtraLine: function(element) {
+    if (element.offset().top > Logger.hideHeight) {
+      var logger = $("#logger").get(0);
+      logger.removeChild(logger.firstChild);
+    }
+  },
+
   off: function() {
     Logger.timer = setTimeout(function() {
       $("#logger").hide();
