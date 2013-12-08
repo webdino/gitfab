@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `forks`;
 DROP TABLE IF EXISTS `tags`;
 DROP TABLE IF EXISTS `repositories`;
 
@@ -21,3 +22,12 @@ CREATE TABLE `tags` (
   UNIQUE KEY (`name`, `repository_id`),
   FOREIGN KEY (`repository_id`) REFERENCES `repositories` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `forks` (
+  `parent_id` INT UNSIGNED NOT NULL,
+  `child_id` INT UNSIGNED NOT NULL,
+  UNIQUE KEY (`parent_id`, `child_id`),
+  FOREIGN KEY (`parent_id`) REFERENCES `repositories` (`id`),
+  FOREIGN KEY (`child_id`) REFERENCES `repositories` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
