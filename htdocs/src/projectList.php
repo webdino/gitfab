@@ -12,12 +12,13 @@
     <link rel="stylesheet" href="/css/projectList.css" type="text/css">
     <link rel="stylesheet" href="/css/gridLayout.css" type="text/css">
     <link rel="stylesheet" href="/css/logger.css" type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700,900' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/projectList.js"></script>
     <script type="text/javascript" src="/js/gridLayout.js"></script>
     <script type="text/javascript" src="/js/logger.js"></script>
+    <!--
+    -->
     <!-- release -->
     <!--
     <link rel="stylesheet" href="/css/projectList.min.css" type="text/css">
@@ -27,6 +28,7 @@
     <script>
       <?php include('scriptVariables.php.inc'); ?>
     </script>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700,900' rel='stylesheet' type='text/css'>
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
