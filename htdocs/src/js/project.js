@@ -351,9 +351,7 @@ var ProjectController = {
         }
       }
       promise4github = CommonController.deleteRepository(token, user, repository);
-//      promise4github = CommonController.emptyPromise();
       promise4local = CommonController.deleteLocalRepository(user, repository);
-//      promise4local = CommonController.emptyPromise();
     } else {
       promise4github = CommonController.deleteBranch(token, user, repository, branch);
       promise4local = CommonController.deleteLocalBranch(user, repository, branch);
@@ -519,7 +517,7 @@ var ProjectController = {
 
   newRepository: function(token, user, repository) {
     var promise4github = CommonController.newRepository(token, repository);
-    promise4github.then(function() {
+    promise4github = promise4github.then(function() {
       return CommonController.watch(user, repository);
     });
     var promise4local = CommonController.newLocalRepository(user, repository, MASTER_BRANCH, "", "", "", 0);
