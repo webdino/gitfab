@@ -188,9 +188,12 @@ var ProjectController = {
     }
   },
 
-  updateItem: function (text, target) { target.get(0).markdown = text; var
-  html = ProjectController.encode4html(text); target.html(html);
-  target.find("a").attr("target", "_blank"); ProjectController.updateIndex();
+  updateItem: function (text, target) {
+    target.get(0).markdown = text;
+    var html = ProjectController.encode4html(text);
+    target.html(html);
+    target.find("a").attr("target", "_blank");
+    ProjectController.updateIndex();
   },
 
   encode4html: function (text) {
