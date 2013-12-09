@@ -9,15 +9,22 @@ var GridLayout = {
 //    GridLayout.doVerticalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
 //    GridLayout.doHorizontalLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth, GRID_MARGIN, container, elements, informations);
 //    GridLayout.doSquareLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
-    GridLayout.doCardLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
+//    GridLayout.doCardLayout(DEFAULT_REPOSITORY_UI_SIZE, containerwidth-15, GRID_MARGIN, container, elements, informations);
 
-/*
     for (var i = 0, n = elements.length; i < n; i++) {
       var element = elements[i];
       container.append(element);
     }
-*/
-  },
+    //centerize;
+    var item = $(".project");
+    var wOfMargin = parseInt(item.css('margin-left'), 10);
+    var wOfProject = item.width() + wOfMargin;
+    var wOfContainer = container.width();
+    var wOfActual = Math.floor(wOfContainer/wOfProject) * wOfProject;
+    var diff = wOfContainer-wOfActual;
+    var left = (diff-wOfMargin) / 2;
+    container.css("padding-left", left+"px");
+  },  
 
   doCardLayout: function(gridsize, containerwidth, margin, container, elements, informations) {
     var columns = Math.floor(containerwidth/(gridsize+margin));

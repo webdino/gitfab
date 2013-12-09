@@ -110,8 +110,8 @@ var CommonController = {
     else {
      var thumbnail2 = $(document.createElement("div"));
       thumbnail2.text("no Image");
-      thumbnail2.attr("style", "line-height:240px; text-align:center; font-size: 48px;font-family: FabFont;");
       thumbnail2.addClass("thumbnail");
+      thumbnail2.addClass("no-image");
       projectLink.append(thumbnail2); 
     }
 

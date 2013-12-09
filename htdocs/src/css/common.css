@@ -235,11 +235,10 @@ footer a {
   background:#FFFFFF; 
 }
 
-#no-image {
-  width:  300px;
-  height: 225px;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 48px;
+.no-image {
+  line-height:200px;
+  text-align:center;
+  font-size: 40px;
   font-family: FabFont;
+  border: 1px solid #ddd;
 }
