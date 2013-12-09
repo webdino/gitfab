@@ -6,7 +6,7 @@ a:hover{
 #main {
   margin-top: 20px;
   float: left;
-  width:80%;
+  max-width:1024px;
   min-width: 320px;
   font-family: 'Roboto', sans-serif;
   font-size:16px;

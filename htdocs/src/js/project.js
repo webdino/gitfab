@@ -5,7 +5,7 @@
 var ProjectController = {
 
   init: function () {
-    // ProjectController.doLayout();
+    ProjectController.doLayout();
     ProjectController.markdownParser = new Showdown.converter();
     ProjectController.current_item_id = 0;
     ProjectController.readmeSHA = null;
