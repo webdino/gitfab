@@ -315,13 +315,21 @@ footer a {
 }
 
 
+
+a:hover{
+  background: #ff8c00;
+}
+
 #main {
   margin-top: 20px;
   float: left;
   min-width: 320px;
+  font-family: 'Roboto', sans-serif;
+  font-size:16px;
 }
 
 #main.hasToolbar {
+  /*width:1200px;*/
 }
 
 #gitfab-document {
@@ -329,12 +337,22 @@ footer a {
 }
 
 #project {
-  color: gray;  
+  color: black;
+  max-width: 1024px;
+  margin-left: 28px;
 }
 
+@media screen and (max-width: 360px) {
+  #project {
+    margin-left:0px;
+  }
+}
+
+
 #meta {
+
   margin-bottom: 5px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid black;
   margin-right: 5px;
   padding-bottom: 10px;
 }
@@ -342,11 +360,12 @@ footer a {
 #meta .container {
   display: inline-block;
   vertical-align: top;
+  width:100%;
 }
 
 #meta a {
   text-decoration: none;
-  color: gray;
+  color: black;
 }
 
 #meta a:hover {
@@ -354,17 +373,47 @@ footer a {
 }
 
 #thumbnail {
-  height: 100px;
-  margin: 5px 10px 0px 10px;
+  height: 225px;
+  /*width: 400px;*/
+  margin: 5px 10px 0px 0px;
+  float:left;
+}
+
+#description{
+  margin-left: 20px;
+  min-width: 320px;
+  max-width: 600px;
+  float:left;
 }
 
 #repository {
-  font-size: 36px;  
+  font-size: 48px; 
+  font-weight: 900;
+  width: 80%;
   min-width: 200px;
+  max-width: 1024px;
+  word-wrap: break-word;
+}
+
+#abstract-title{
+  margin: 6px 0 0 0;
+  font-size:24px;
+  font-weight: 700;
+  width: 80%;
+  min-width: 200px;
+  word-wrap: break-word;
+}
+
+#abstract-text{
+  height: 110px;
+  margin: 8px 0;
+  font-size:16px;
+  font-weight: 500;
 }
 
 #tags {
   margin-top: -3px;
+  font-size: 16px;
 }
 
 #tags:before {
@@ -375,11 +424,17 @@ footer a {
   margin-right: 0.5em;
 }
 
+#tags a:hover{
+  background: #ff8c00;
+}
+
 #owner {
   background-size: 30px 30px;
   background-repeat: no-repeat;
   line-height: 30px;
   margin-top: 9px;
+  font-size: 24px;
+  /*bottom:0;*/
 }
 
 #owner img {
@@ -387,6 +442,10 @@ footer a {
   width: 30px;
   height: 30px;
   float: left;
+}
+
+#owner :hover{
+  background: #ff8c00;
 }
 
 #tools {
@@ -399,14 +458,31 @@ footer a {
   padding: 0;
 }
 
+.item{
+  /*width: 320px;*/
+  width: 50%;
+  max-width: 480px;
+  min-width: 320px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 28px 14px 28px 14px; 
+}
+
+@media screen and (max-width: 360px) {
+  .item {
+    margin: 28px 0;
+  }
+}
+
 .content h1 {
-  margin-right: 20px;
-  border-bottom: 1px solid #ddd;
+  /*margin-right: 20px;*/
+  border-bottom: 1px solid black;
 }
 
 .content p {
-  margin-left: 10px;
-  margin-right: 10px;
+ /* margin-left: 10px;
+  margin-right: 10px;*/
+  font-size: 16px;
 }
 
 .content p img {
@@ -430,6 +506,9 @@ footer a {
   text-decoration: underline; 
 }
 
+#index {
+    max-width:1024px;
+}
 #index a{
   text-decoration: none;
   color:#3387b6;
@@ -463,8 +542,19 @@ footer a {
 }
 
 #facebook {
+  width:400px;
   padding-top: 30px;
+  /*clear:right;*/
 }
+
+@media screen and (max-width: 360px) {
+  #facebook {
+    width:320px;
+  }
+}
+
+
+
 
 #sub {
   margin-top: 20px;
@@ -473,21 +563,23 @@ footer a {
 }
 
 #sub .button {
-  color: gray;
+  color: black;
   background-color: white;
   text-decoration: none;
   cursor: pointer;
   display: block;
   text-align: center;
   margin: 0px 10px 5px 20px;
-  border-color: gray;
+  border-color: black;
   border-style: solid;
   border-width: 1px 1px 1px 1px;
   border-radius: 0;
+  font-family: 'Roboto',sans-serif;
+  font-size: 16px;
 }
 
 #sub .button:hover {
-  color: black;
+  background: #ff8c00;
 }
 
 #histories {

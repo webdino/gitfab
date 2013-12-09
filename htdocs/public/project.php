@@ -42,16 +42,31 @@
   <body>
     <?php include('header.php.inc'); ?>
     <div id="contents">
+      <div id="sub">
+        <section id="tools">
+          <a id="slide-button" class="button">slide show</a>
+          <a id="customize-css" class="button">customize css</a>
+          <a id="delete-button" class="button">delete</a>
+          <a id="fork-button" class="button">fork</a>
+          <a id="commit-button" class="button">commit</a>
+        </section>
+      </div>
       <div id="main" role="main">
+
         <div id="project">
           <section id="meta">
-            <img id="thumbnail"></img>
             <div class="container">
               <div id="repository"></div>
-              <div id="tags"></div>
-              <div id="owner"></div>
+              <img id="thumbnail"></img>
+              <div id="description">
+                <div id="abstract-title"></div>
+                <div id="abstract-text"></div>
+                <div id="tags"></div>
+                <div id="owner"></div>
+              </div>
             </div>
           </section>
+
           <section id="css-editor">
             <div>Edit CSS</div>
           </section>
@@ -59,6 +74,7 @@
           <section id="index">
             <ul></ul>
           </section>
+
 <?php if (isset($_GET["owner"]) && isset($_GET["repository"])) {?>
           <section id="gitfab-document"><?php include('./api/gitfabDocument.php'); ?></section>
 <?php } ?>
@@ -82,17 +98,10 @@
           </section>
         </div>
         <div id="facebook">
-          <?php include('facebook.php.inc'); ?>
+            <?php include('facebook.php.inc'); ?>
         </div>
       </div>
       <div id="sub">
-        <section id="tools">
-          <a id="slide-button" class="button">slide show</a>
-          <a id="customize-css" class="button">customize css</a>
-          <a id="delete-button" class="button">delete</a>
-          <a id="fork-button" class="button">fork</a>
-          <a id="commit-button" class="button">commit</a>
-        </section>
         <section id="histories">
           <label>commit history</label>
         </section>
@@ -106,6 +115,8 @@
         </div>
         -->
       </div>
+
+
     </div>
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>
