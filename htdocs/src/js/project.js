@@ -258,6 +258,12 @@ var ProjectController = {
   //update the project ========================================
   forkProject: function(token, user, owner, repository, branch) {
     var promise = null;
+    var parentOwner;
+    var parentRepository;
+    var parentBranch;
+    var childOwner;
+    var childRepository;
+    var childBranch;
     if (user == owner) {// fork from itself
         var newBranch = "duplicate-of-"+(branch == MASTER_BRANCH ? repository : branch);
         Logger.on();
@@ -272,23 +278,14 @@ var ProjectController = {
       }
       Logger.on();
       promise = ProjectController.cloneProject(token, user, owner, repository, branch, projectName);
-      var parentOwner = owner;
-      var parentRepository = repository;
-      var parentBranch = branch;
-      var childOwner = user;
-      var childRepository = projectName;
-      var childBranch = MASTER_BRANCH;
+      parentOwner = owner;
+      parentRepository = repository;
+      parentBranch = branch;
+      childOwner = user;
+      childRepository = projectName;
+      childBranch = MASTER_BRANCH;
       repository = projectName;
       branch = MASTER_BRANCH;
-      promise = promise.then(function() {
-        return CommonController.newLocalFork(parentOwner, parentRepository, parentBranch, childOwner, childRepository, childBranch);
-      });
-      /*
-      promise = CommonController.fork(token, owner, repository)
-      .then(function() {
-        return CommonController.watch(user, repository);
-      });
-      */
     }
     promise.then(function(){
       var avatar = $("#dashboard img").attr("src");
@@ -297,6 +294,11 @@ var ProjectController = {
       var thumbnailAspect = image.width() / image.height();
       var thumbnailSrc = image.attr("src");
       return CommonController.newLocalRepository(user, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
+    })
+    .then(function() {
+      if (parentOwner) {
+        return CommonController.newLocalFork(parentOwner, parentRepository, parentBranch, childOwner, childRepository, childBranch);
+      }
     })
     .fail(function(error) {
       CommonController.showError(error);
@@ -311,7 +313,11 @@ var ProjectController = {
   cloneProject: function(token, user, owner, repository, branch, projectName) {
     var deferred = new $.Deferred();
     var originalTree;
-    ProjectController.newRepository(token, user, projectName)
+
+    CommonController.newRepository(token, projectName)
+    .then(function(result) {
+      return CommonController.watch(user, projectName);
+    })
     .then(function(result) {
       return CommonController.getSHATree(owner, repository, branch);
     })
