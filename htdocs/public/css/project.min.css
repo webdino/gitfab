@@ -323,6 +323,7 @@ a:hover{
 #main {
   margin-top: 20px;
   float: left;
+  max-width:1060px;
   min-width: 320px;
   font-family: 'Roboto', sans-serif;
   font-size:16px;
@@ -405,7 +406,6 @@ a:hover{
 }
 
 #abstract-text{
-  height: 110px;
   margin: 8px 0;
   font-size:16px;
   font-weight: 500;
@@ -544,12 +544,15 @@ a:hover{
 #facebook {
   width:400px;
   padding-top: 30px;
+  margin-left: 28px;
+
   /*clear:right;*/
 }
 
 @media screen and (max-width: 360px) {
   #facebook {
     width:320px;
+    margin-left: 0px;
   }
 }
 

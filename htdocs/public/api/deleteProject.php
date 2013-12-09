@@ -23,13 +23,12 @@
       $query = "DELETE FROM tags WHERE repository_id=?";
       $statement = $connection -> prepare($query);
       $statement -> execute(array($id));
-      $query = "DELETE FROM repositories WHERE id=?";
-      $statement = $connection -> prepare($query);
-      $statement -> execute(array($id));
-
       $query = "DELETE FROM forks WHERE parent_id=? OR child_id=?";
       $statement = $connection -> prepare($query);
       $statement -> execute(array($id, $id));
+      $query = "DELETE FROM repositories WHERE id=?";
+      $statement = $connection -> prepare($query);
+      $statement -> execute(array($id));
  
       $connection -> commit();
       closeConnection($connection);
