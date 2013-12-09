@@ -5,6 +5,7 @@
 var Logger = {
   on: function() {
     clearTimeout(Logger.timer);
+    $("#logger").html("");
     $("#logger").show();
     Logger.height = $("#logger").height();
     Logger.hideHeight = Logger.height*0.5;
@@ -53,7 +54,6 @@ var Logger = {
   off: function() {
     Logger.timer = setTimeout(function() {
       $("#logger").hide();
-      $("#logger").html("");
     }, 500);
   }
 }
