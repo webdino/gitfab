@@ -202,7 +202,6 @@ var CommonController = {
     $("#login").hide();
     var createurl = CommonController.getProjectPageURL(username, CREATE_PROJECT_COMMAND);
     $("#create").attr("href", createurl);
-    $("#create").show();
     var dashboardurl = CommonController.getDashboardURL(username);
     $("#dashboard").attr("href", dashboardurl);
     $("#dashboard").html("");
@@ -211,6 +210,8 @@ var CommonController = {
 
     $("#dashboard").show();
     $("#toolbar").show();
+    $("#logout").show();
+    $("#create").show();
   },
 
   newLocalRepository: function(owner, repository, branch, tags, avatar, thumbnail, thumbnailAspect) {

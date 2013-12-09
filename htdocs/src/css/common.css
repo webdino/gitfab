@@ -65,6 +65,12 @@ header a:hover {
   margin-right: 3px;
 }
 
+#menus a {
+  line-height:40px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 #searchbox {
   display: inline-block;
   margin-right: 10px;
@@ -74,7 +80,6 @@ header a:hover {
 
 #dashboard {
   display: none;
-  line-height:40px;
 }
 
 #dashboard img {
@@ -87,33 +92,20 @@ header a:hover {
 
 #create {
   display: none;
-  float: right;
   font-size: 12px;
-  line-height: 47px;
-  margin-right: 10px;
-  margin-left: 5px;
 }
 
 #login {
-  line-height:40px;
-}
-
-#login-text {
   position: relative;
   top: 3px;
 }
 
-#login img {
-  width: 28px;
-  height: 28px;
-  position: relative;
-  top: 9px;
-  right: 3px;
+#logout {
+  display: none;
 }
 
 #help {
   float: right;
-  line-height:40px;
   font-size: 18px;
   margin-left: 5px;
 }
