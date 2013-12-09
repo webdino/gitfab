@@ -94,7 +94,7 @@ var ProjectEditor = {
         break;
       }
       case 3 : {
-        var regex = /^#/;
+        var regex = /^#[^#]/;
         var lines = $("#textarea").val().split("\n");
         var itemContent = ProjectEditor.getLastItemContent();
         for (var i = 0, n = lines.length; i < n; i++) {
