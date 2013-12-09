@@ -5,7 +5,7 @@
 var ProjectController = {
 
   init: function () {
-    ProjectController.doLayout();
+    // ProjectController.doLayout();
     ProjectController.markdownParser = new Showdown.converter();
     ProjectController.current_item_id = 0;
     ProjectController.readmeSHA = null;
@@ -54,6 +54,20 @@ var ProjectController = {
       } else {
         $("#fork-button").click(function() {ProjectController.forkProject(token, user, owner, repository, branch);});
       }
+
+      var abstractHTML = $(".content:first").html();      
+      var abstractTitle = abstractHTML.split("</h1>")[0].split(">");
+      // abstractTitle = abstractTitle[0].split(">");
+
+      var abstractText = $(".content:first").text();
+      abstractText = abstractText.split(abstractTitle[1])[1];
+      abstractText = abstractText.substring(0,200);
+
+      $("#abstract-title").text(abstractTitle[1]);
+      $("#abstract-text").text(abstractText);
+
+
+
     }
 
     //editor
