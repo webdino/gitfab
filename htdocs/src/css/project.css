@@ -25,6 +25,13 @@ a:hover{
   margin-left: 28px;
 }
 
+@media screen and (max-width: 360px) {
+  #project {
+    margin-left:0px;
+  }
+}
+
+
 #meta {
 
   margin-bottom: 5px;
@@ -64,13 +71,18 @@ a:hover{
 #repository {
   font-size: 48px; 
   font-weight: 900;
+  width: 80%;
   min-width: 200px;
+  max-width: 1024px;
+  word-wrap: break-word;
 }
 
 #abstract-title{
   margin: 6px 0 0 0;
   font-size:24px;
   font-weight: 700;
+  width: 80%;
+  min-width: 200px;
   word-wrap: break-word;
 }
 
@@ -138,6 +150,12 @@ a:hover{
   margin: 28px 14px 28px 14px; 
 }
 
+@media screen and (max-width: 360px) {
+  .item {
+    margin: 28px 0;
+  }
+}
+
 .content h1 {
   /*margin-right: 20px;*/
   border-bottom: 1px solid black;
@@ -171,7 +189,7 @@ a:hover{
 }
 
 #index {
-    width:1024px;
+    max-width:1024px;
 }
 #index a{
   text-decoration: none;
@@ -210,6 +228,15 @@ a:hover{
   padding-top: 30px;
   /*clear:right;*/
 }
+
+@media screen and (max-width: 360px) {
+  #facebook {
+    width:320px;
+  }
+}
+
+
+
 
 #sub {
   margin-top: 20px;
