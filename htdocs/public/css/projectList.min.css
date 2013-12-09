@@ -65,6 +65,12 @@ header a:hover {
   margin-right: 3px;
 }
 
+#menus a {
+  line-height:40px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 #searchbox {
   display: inline-block;
   margin-right: 10px;
@@ -74,7 +80,6 @@ header a:hover {
 
 #dashboard {
   display: none;
-  line-height:40px;
 }
 
 #dashboard img {
@@ -87,33 +92,21 @@ header a:hover {
 
 #create {
   display: none;
-  float: right;
-  font-size: 24px;
-  line-height: 38px;
-  margin-right: 10px;
+  font-size: 12px;
 }
 
 #login {
-  line-height:40px;
-}
-
-#login-text {
   position: relative;
   top: 3px;
 }
 
-#login img {
-  width: 28px;
-  height: 28px;
-  position: relative;
-  top: 9px;
-  right: 3px;
+#logout {
+  display: none;
 }
 
 #help {
   float: right;
-  line-height:40px;
-  font-size: 20px;
+  font-size: 18px;
   margin-left: 5px;
 }
 
@@ -188,6 +181,65 @@ footer a {
 .button:hover {
   color: black;
 }
+
+
+#sort-container {
+  border-radius: 5px;
+}
+
+#sort {
+  width: 302px;
+  float: left;
+  font-size: 48px;
+  font-family: FabFont;
+  text-align: center;
+
+  padding-top: 13px;
+  padding-bottom: 2px;
+
+  margin-left: 16px;
+  margin-top: 5px;
+
+  border: #000000;
+  border-style: solid ;
+  border-color: black;
+  border-width: 5px;
+  background: #FFFFFF;
+}
+
+#sort-item {
+  width: 302px;
+  float: left;
+  font-size: 48px;
+  font-family: FabFont;
+  text-align: center;
+  padding: 13px 0 2px 0;
+  margin-left: -5px;
+  margin-top: 5px;
+  border: #000000;
+  border-style: solid ;
+  border-color: black;
+  border-width: 5px;
+  background: #FFFFFF;
+}
+#sort-item:hover {
+  font: #000000;
+  background:#FFFFFF; 
+}
+
+.no-image {
+  line-height:200px;
+  text-align:center;
+  font-size: 40px;
+  font-family: FabFont;
+  border: 1px solid #ddd;
+}
+
+#project-list li {
+  float: left;
+  list-style-type: none;  
+}
+
 .grid {
   position: absolute;
   list-style: none;
@@ -195,7 +247,7 @@ footer a {
 
 .project a {
   text-decoration: none;
-  color: gray;
+  color: black;
 }
 
 .project a:hover {
@@ -203,21 +255,26 @@ footer a {
 }
 
 .project {
-  border: 1px solid #ddd;
+  width: 250px;
+  height: 250px;
+
+  margin-top: 20px;
+  margin-left: 20px;
   background-color: white;
-  border-radius: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #000;
 }
 
 .thumbnail {
-  width: 100%;
-  border-bottom: 1px solid #ddd;
-  border-radius: 5px 5px 0 0;
+  width: 250px;
+  height: 190px;
 }
 
 .projectName {
-  padding: 0px 0 5px 10px;
-  font-size: 16px;
+  margin-top: -3px;
+  padding: 0px 0 3px 10px;
+  font-size: 20px;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   word-wrap: break-word;
 }
@@ -226,19 +283,23 @@ footer a {
 }
 
 .owner {
-  font-size: 10px;
+  font-size: 16px;
   vertical-align: top;
-  padding: 0 0 5px 31px;
-  background-size: 16px 16px;
+  padding: 0 0 0px 31px;
+  background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-position: 10px 0px;
+  background-position: 8px 0px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400; /*standard*/
 }
-
+  
 .tags {
-  border-top: 1px solid #ddd;
-  font-size: 10px;
+  /*border-top: 1px solid #ddd;*/
+  font-size: 12px;
   padding-left: 10px;
-  padding-top: 5px;
+  padding-top: 3px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300; /*light*/
 }
 
 .tags a {
@@ -247,8 +308,9 @@ footer a {
 }
 
 #project-list {
+  /*top:48px;*/
   padding: 0;
-  margin: 0;
+  margin: 20px 0 0 0;
   position: relative;
 }
 
@@ -272,6 +334,7 @@ footer a {
 }
 
 #main.hasToolbar {
+  padding-top: 0;
 }
 #logger {
   width: 100%;

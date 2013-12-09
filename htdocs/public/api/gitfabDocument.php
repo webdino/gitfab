@@ -13,12 +13,15 @@
   curl_setopt($ch, CURLOPT_FAILONERROR, true);
   curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER["HTTP_USER_AGENT"]);
   $contents = curl_exec($ch);
-
  
   $config = HTMLPurifier_Config::createDefault();
-  $config->set('Core.Encoding', 'UTF-8');
-  $config->set('Core.Language', 'ja');
-  $config->set('HTML.AllowedElements', array('video'));
+  $config->set('HTML.SafeIframe', true);
+  $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/)%');
+  $config->set('HTML.SafeEmbed', true);
+  $config->set('HTML.SafeObject', true);
+  $config->set('HTML.SafeVideo', true);
+
+/*
   $def = $config->getHTMLDefinition(true);
   $video = $def->addElement(
     'video',
@@ -27,10 +30,14 @@
     'Core', 
     array( 
       'src*' => 'URI',
+      'width' => 'Length',
+      'height' => 'Length',
       'poster' => 'URI',
-	    'controls' => 'Bool')
-    );
+      'controls' => 'Bool'
+    )
+  );
   $video->excludes = array('video' => true);
+*/
 
   $hp = new HTMLPurifier($config);
   $contents = $hp->purify($contents);

@@ -65,6 +65,12 @@ header a:hover {
   margin-right: 3px;
 }
 
+#menus a {
+  line-height:40px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 #searchbox {
   display: inline-block;
   margin-right: 10px;
@@ -74,7 +80,6 @@ header a:hover {
 
 #dashboard {
   display: none;
-  line-height:40px;
 }
 
 #dashboard img {
@@ -87,33 +92,21 @@ header a:hover {
 
 #create {
   display: none;
-  float: right;
-  font-size: 24px;
-  line-height: 38px;
-  margin-right: 10px;
+  font-size: 12px;
 }
 
 #login {
-  line-height:40px;
-}
-
-#login-text {
   position: relative;
   top: 3px;
 }
 
-#login img {
-  width: 28px;
-  height: 28px;
-  position: relative;
-  top: 9px;
-  right: 3px;
+#logout {
+  display: none;
 }
 
 #help {
   float: right;
-  line-height:40px;
-  font-size: 20px;
+  font-size: 18px;
   margin-left: 5px;
 }
 
@@ -188,6 +181,60 @@ footer a {
 .button:hover {
   color: black;
 }
+
+
+#sort-container {
+  border-radius: 5px;
+}
+
+#sort {
+  width: 302px;
+  float: left;
+  font-size: 48px;
+  font-family: FabFont;
+  text-align: center;
+
+  padding-top: 13px;
+  padding-bottom: 2px;
+
+  margin-left: 16px;
+  margin-top: 5px;
+
+  border: #000000;
+  border-style: solid ;
+  border-color: black;
+  border-width: 5px;
+  background: #FFFFFF;
+}
+
+#sort-item {
+  width: 302px;
+  float: left;
+  font-size: 48px;
+  font-family: FabFont;
+  text-align: center;
+  padding: 13px 0 2px 0;
+  margin-left: -5px;
+  margin-top: 5px;
+  border: #000000;
+  border-style: solid ;
+  border-color: black;
+  border-width: 5px;
+  background: #FFFFFF;
+}
+#sort-item:hover {
+  font: #000000;
+  background:#FFFFFF; 
+}
+
+.no-image {
+  line-height:200px;
+  text-align:center;
+  font-size: 40px;
+  font-family: FabFont;
+  border: 1px solid #ddd;
+}
+
 #logger {
   width: 100%;
   height: 100%;
@@ -313,6 +360,7 @@ footer a {
 
 #repository {
   font-size: 36px;  
+  min-width: 200px;
 }
 
 #tags {
