@@ -43,6 +43,7 @@ a:hover{
 #meta .container {
   display: inline-block;
   vertical-align: top;
+  width:100%;
 }
 
 #meta a {
