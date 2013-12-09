@@ -265,12 +265,12 @@ var ProjectController = {
         branch = newBranch;
     } else { // fork from others
       var projectName = branch == MASTER_BRANCH ? repository : branch;
+      projectName = owner+"-"+projectName;
       if (ProjectController.existProjectName(projectName) == true) {
         CommonController.showError("Already this project name["+projectName+"] exists.");        
         return;
       }
       Logger.on();
-      var projectName = branch == MASTER_BRANCH ? repository : branch;
       promise = ProjectController.cloneProject(token, user, owner, repository, branch, projectName);
       var parentOwner = owner;
       var parentRepository = repository;
