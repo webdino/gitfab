@@ -1,10 +1,18 @@
+
+a:hover{
+  background: #ff8c00;
+}
+
 #main {
   margin-top: 20px;
   float: left;
   min-width: 320px;
+  font-family: 'Roboto', sans-serif;
+  font-size:16px;
 }
 
 #main.hasToolbar {
+  /*width:1200px;*/
 }
 
 #gitfab-document {
@@ -12,12 +20,15 @@
 }
 
 #project {
-  color: gray;  
+  color: black;
+  width: 1024px;
+  margin-left: 28px;
 }
 
 #meta {
+
   margin-bottom: 5px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid black;
   margin-right: 5px;
   padding-bottom: 10px;
 }
@@ -29,7 +40,7 @@
 
 #meta a {
   text-decoration: none;
-  color: gray;
+  color: black;
 }
 
 #meta a:hover {
@@ -37,17 +48,40 @@
 }
 
 #thumbnail {
-  height: 100px;
-  margin: 5px 10px 0px 10px;
+  height: 225px;
+  /*width: 400px;*/
+  margin: 5px 10px 0px 0px;
+  float:left;
+}
+
+#description{
+  margin-left: 20px;
+  width: 600px;
+  float:left;
 }
 
 #repository {
-  font-size: 36px;  
+  font-size: 48px; 
+  font-weight: 900;
   min-width: 200px;
+}
+
+#abstract-title{
+  margin: 6px 0 0 0;
+  font-size:24px;
+  font-weight: 700;
+}
+
+#abstract-text{
+  height: 110px;
+  margin: 8px 0;
+  font-size:16px;
+  font-weight: 500;
 }
 
 #tags {
   margin-top: -3px;
+  font-size: 16px;
 }
 
 #tags:before {
@@ -58,11 +92,17 @@
   margin-right: 0.5em;
 }
 
+#tags a:hover{
+  background: #ff8c00;
+}
+
 #owner {
   background-size: 30px 30px;
   background-repeat: no-repeat;
   line-height: 30px;
   margin-top: 9px;
+  font-size: 24px;
+  /*bottom:0;*/
 }
 
 #owner img {
@@ -70,6 +110,10 @@
   width: 30px;
   height: 30px;
   float: left;
+}
+
+#owner :hover{
+  background: #ff8c00;
 }
 
 #tools {
@@ -82,14 +126,25 @@
   padding: 0;
 }
 
+.item{
+  /*width: 320px;*/
+  width: 50%;
+  max-width: 480px;
+  min-width: 320px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 28px 14px 28px 14px; 
+}
+
 .content h1 {
-  margin-right: 20px;
-  border-bottom: 1px solid #ddd;
+  /*margin-right: 20px;*/
+  border-bottom: 1px solid black;
 }
 
 .content p {
-  margin-left: 10px;
-  margin-right: 10px;
+ /* margin-left: 10px;
+  margin-right: 10px;*/
+  font-size: 16px;
 }
 
 .content p img {
@@ -113,6 +168,9 @@
   text-decoration: underline; 
 }
 
+#index {
+    width:1024px;
+}
 #index a{
   text-decoration: none;
   color:#3387b6;
@@ -146,7 +204,9 @@
 }
 
 #facebook {
+  width:400px;
   padding-top: 30px;
+  /*clear:right;*/
 }
 
 #sub {
@@ -156,21 +216,23 @@
 }
 
 #sub .button {
-  color: gray;
+  color: black;
   background-color: white;
   text-decoration: none;
   cursor: pointer;
   display: block;
   text-align: center;
   margin: 0px 10px 5px 20px;
-  border-color: gray;
+  border-color: black;
   border-style: solid;
   border-width: 1px 1px 1px 1px;
   border-radius: 0;
+  font-family: 'Roboto',sans-serif;
+  font-size: 16px;
 }
 
 #sub .button:hover {
-  color: black;
+  background: #ff8c00;
 }
 
 #histories {

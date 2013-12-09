@@ -8,3 +8,4 @@ htdocs/node_modules/
 htdocs/components/
 htdocs/public/test/
 htdocs/public/css/test-gitfab.css
+htdocs/src/.htaccess
