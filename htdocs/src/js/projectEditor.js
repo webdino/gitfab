@@ -255,9 +255,9 @@ var ProjectEditor = {
     if (!window.confirm("are you sure to remove this item?")) {
       return;
     }
+    var target = $(e.currentTarget.parentNode.parentNode);
     var itemToolEntity = ProjectEditor.itemTools.get(0);
     itemToolEntity.parentNode.removeChild(itemToolEntity);
-    var target = $(e.currentTarget.parentNode.parentNode);
     target.remove();
     ProjectController.updateIndex();
   },
