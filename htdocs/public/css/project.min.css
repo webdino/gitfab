@@ -465,7 +465,7 @@ a:hover{
   min-width: 320px;
   display: inline-block;
   vertical-align: top;
-  margin: 28px 14px 28px 14px; 
+  margin: 28px 0px; 
 }
 
 @media screen and (max-width: 360px) {
@@ -475,13 +475,12 @@ a:hover{
 }
 
 .content h1 {
-  /*margin-right: 20px;*/
+  width: 95%;
   border-bottom: 1px solid black;
 }
 
 .content p {
- /* margin-left: 10px;
-  margin-right: 10px;*/
+  width: 95%;
   font-size: 16px;
 }
 
