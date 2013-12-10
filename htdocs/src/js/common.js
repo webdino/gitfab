@@ -16,12 +16,24 @@ var CommonController = {
 
   when: $.when,
 
-  emptyPromise: function() {
-    var deffered = new $.Deferred();
-    deffered.resolve();
-    return deffered.promise();
+  getDeferred: function() {
+    return new $.Deferred();
   },
 
+  emptyPromise: function() {
+    var deferred = CommonController.getDeferred();
+    deferred.resolve();
+    return deferred.promise();
+  },
+
+  timerPromise: function(time) {
+    var deferred = CommonController.getDeferred();
+    setTimeout(function() {
+      deferred.resolve();
+    }, time);
+    return deferred.promise();
+  },
+  
   getParametersFromQuery: function () {
     var parameters = {};
     var url = window.location.href;
@@ -164,7 +176,14 @@ var CommonController = {
 
   showError: function (error) {
     if (error) {
-      alert(error);
+      if (error.errors && error.errors.length != 0) {
+        var e = error.errors[0];
+        alert(error.message+"\ncode:"+e.code+"\nfield:"+e.field+"\nresource:"+e.resource+"\nmessage:"+e.message);
+      } else if (error.message) {
+        alert(error.message);
+      } else {
+        alert(error);
+      }
       return true;
     }
     return false;
@@ -253,7 +272,7 @@ var CommonController = {
   },
 
   getLocalJSON: function (url) {
-    var deferred = new $.Deferred();
+    var deferred = CommonController.getDeferred();
     var promise = CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
     promise.then(function(result) {
       if (null == result) {
@@ -388,7 +407,7 @@ var CommonController = {
     var proxyURL = "/api/imageProxy.php?url="+url;
     Logger.log("read: "+proxyURL);
 
-    var deferred = new $.Deferred();
+    var deferred = CommonController.getDeferred();
 
     var image = new Image();
     image.src = proxyURL;
@@ -402,36 +421,29 @@ var CommonController = {
   },
 
   getGithubJSON: function(url) {
-    var deferred = new $.Deferred();
+    var deferred = CommonController.getDeferred();
     var promise = CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
     promise.then(function(result) {
       deferred.resolve(result);
     })
     .fail(function(result) {
       var json = JSON.parse(result.responseText);
-      if (json.message) {
-        deferred.reject(json.message);
-      } else {
-        deferred.reject(statusText);
-      }
+      json.errorCode = result.status;
+      deferred.reject(json);
     });
     return deferred.promise();
-
   },
 
   getGithubJSON4Token: function (url, method, token, parameters, callback) {
-    var deferred = new $.Deferred();
+    var deferred = CommonController.getDeferred();
     var promise = CommonController.ajaxPromise({url: url, type:method, dataType:"json", data: JSON.stringify(parameters), headers: { "Authorization": " bearer " + token}});
     promise.then(function(result) {
       deferred.resolve(result);
     })
     .fail(function(result) {
       var json = JSON.parse(result.responseText);
-      if (json.message) {
-        deferred.reject(json.message);
-      } else {
-        deferred.reject(statusText);
-      }
+      json.errorCode = result.status;
+      deferred.reject(json);
     });
     return deferred.promise();
   },
@@ -439,7 +451,7 @@ var CommonController = {
   readFile: function(file) {
     Logger.log("read: "+file.name);
 
-    var deferred = new $.Deferred();
+    var deferred = CommonController.getDeferred();
 
     var reader = new FileReader();
     reader.onload = function (e) {
@@ -462,7 +474,7 @@ var CommonController = {
 
     Logger.request(parameter.url);
 
-    var deferred = new $.Deferred();
+    var deferred = CommonController.getDeferred();
 
     parameter.success = function(result) {
       Logger.response(parameter.url);
@@ -471,6 +483,8 @@ var CommonController = {
 
     parameter.error = function(xhr, textStatus, errorThrown) {
       deferred.reject(xhr);
+      console.log("ERROR:"+parameter.url);
+      console.log(xhr);
     };
 
     parameter.xhr = function() {
