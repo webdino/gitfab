@@ -21,23 +21,20 @@
   $config->set('HTML.SafeObject', true);
   $config->set('HTML.SafeVideo', true);
 
-/*
+  
   $def = $config->getHTMLDefinition(true);
   $video = $def->addElement(
     'video',
     'Block', 
-    'Empty', 
+    'Inline', 
     'Core', 
     array( 
       'src*' => 'URI',
-      'width' => 'Length',
-      'height' => 'Length',
       'poster' => 'URI',
       'controls' => 'Bool'
     )
   );
   $video->excludes = array('video' => true);
-*/
 
   $hp = new HTMLPurifier($config);
   $contents = $hp->purify($contents);
