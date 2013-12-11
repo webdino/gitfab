@@ -5,11 +5,8 @@
 var ProjectController = {
 
   init: function () {
-    ProjectController.doLayout();
     ProjectController.markdownParser = new Showdown.converter();
     ProjectController.current_item_id = 0;
-    ProjectController.readmeSHA = null;
-    ProjectController.thumbnailSHA = null;
 
     var user = CommonController.getUser();
     var owner = CommonController.getOwner();
@@ -22,7 +19,6 @@ var ProjectController = {
     //header
     if (user) {
       CommonController.updateUI(user, avatarURL);
-      $("#main").addClass("hasToolbar");
       CommonController.getOwnersProjectList(user)
       .then(function(result) {
         ProjectController.myProjectList = result.projectList;
@@ -42,11 +38,12 @@ var ProjectController = {
         $("#project").text("project not found["+owner+"/"+repository+"]");
         return;
       }
-      ProjectController.parseGitFABDocument(gitfabDocument, owner, repository, branch, user);
+      ProjectController.parseGitFABDocument(gitfabDocument, owner, repository, branch);
       var thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
       $("#thumbnail").attr("src", thumbnailSrc);
 
-      ProjectController.loadAdditionalInformation(owner, repository, branch);
+//      ProjectController.loadAdditionalInformation(owner, repository, branch);
+      ProjectController.loadCollaborators(token, user, owner, repository, branch);
       ProjectController.loadCommitHistories(owner, repository, branch);
 
       if (!user) {
@@ -70,28 +67,8 @@ var ProjectController = {
 
     }
 
-    //editor
-    if (user == owner) {
-      ProjectEditor.enable(user, repository, branch);
-      $("#commit-button").click(function() {ProjectController.commitProject(token, user, owner, repository, branch);});
-      $("#delete-button").click(function() {ProjectController.deleteProject(token, user, owner, repository, branch);});
-    } else {
-      $("#commit-button").hide();
-      $("#customize-css").hide();
-      $("#delete-button").hide();
-    }
-
     //slide button
     $("#slide-button").click(ProjectController.slideshow);
-
-    $(window).resize(ProjectController.doLayout);
-  },
-
-  doLayout: function() {
-    var wOfWindow = $(window).width();
-    var wOfSub = $("#sub").width();
-    var wOfMain = wOfWindow-wOfSub;
-    $("#main").width(wOfMain);
   },
 
   newGitFABDocument: function(user, avatar_url) {
@@ -105,7 +82,7 @@ var ProjectController = {
     return document.getElementById("gitfab-document").innerHTML;
   },
 
-  parseGitFABDocument: function (content, owner, repository, branch, user) {
+  parseGitFABDocument: function (content, owner, repository, branch) {
     //parse
     var lines = content.split("\n");
     var title = branch == "master" ? repository : branch;
@@ -136,14 +113,10 @@ var ProjectController = {
   parseTagString: function(text) {
     var tagsElement = $("#tags");
     tagsElement.empty();
-    var user = CommonController.getUser();
-    var owner = CommonController.getOwner();
     var tags = text.split(",");
     for(key in tags) {
       var tag = $(document.createElement("a"));
-      if(owner != user) {
-        tag.attr("href","/?tag="+$.trim(tags[key]));
-      }
+      tag.attr("href","/?tag="+$.trim(tags[key]));
       tag.text(tags[key]);
       tagsElement.append(tag); 
     }
@@ -220,6 +193,64 @@ var ProjectController = {
       ProjectController.appendOwnerIcon(result.owner.avatar_url);
       //find a parent and children at here
 //      console.log(result);
+    });
+  },
+
+  loadCollaborators: function(token, user, owner, repository, branch) {
+    CommonController.getCollaborators(owner, repository, branch)
+    .then(function(result) {
+      var editorType = 0;
+      for (var i = 0, n = result.length; i < n; i++) {
+        var collaborator = result[i];
+        var account = collaborator.login;
+        var avatar = collaborator.avatar_url;
+        if (owner == account) {
+          ProjectController.appendOwnerIcon(avatar);
+          if (user == owner) {
+            editorType = 2;
+          }
+          continue;
+        }
+        if (user == account) {
+          editorType = 1;
+        }
+        var container = $(document.createElement("div"));
+        container.addClass("collaborator");
+        var a = $(document.createElement("a"));
+        a.attr("href", "/"+account+"/");
+        a.text(account);
+        container.append(a);
+        var icon = $(document.createElement("img"));
+        icon.attr("src", avatar);
+        container.children().append(icon);
+        $("#collaborators").append(container);
+      }      
+      //editor
+      switch (editorType) {
+        case 1 : {
+          ProjectEditor.enable(owner, repository, branch);
+          $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
+          $("#delete-button").hide();
+          break;
+        }
+        case 2 : {
+          ProjectEditor.enable(owner, repository, branch);
+          $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
+          $("#delete-button").click(function() {ProjectController.deleteProject(token, owner, repository, branch);});
+          break;
+        }
+        default : {
+          $("#commit-button").hide();
+          $("#customize-css").hide();
+          $("#delete-button").hide();
+        }
+      }
+    })
+    .fail(function(error) {
+      $("#error-display").text(error.message);
+      $("#commit-button").hide();
+      $("#customize-css").hide();
+      $("#delete-button").hide();
     });
   },
 
@@ -344,7 +375,7 @@ var ProjectController = {
     return deferred.promise();
   },
 
-  deleteProject: function(token, user, owner, repository, branch) {
+  deleteProject: function(token, owner, repository, branch) {
     if (!window.confirm("Are you sure to remove this project?")) {
       return;
     }
@@ -359,11 +390,11 @@ var ProjectController = {
           return;
         }
       }
-      promise4github = CommonController.deleteRepository(token, user, repository);
-      promise4local = CommonController.deleteLocalRepository(user, repository);
+      promise4github = CommonController.deleteRepository(token, owner, repository);
+      promise4local = CommonController.deleteLocalRepository(owner, repository);
     } else {
-      promise4github = CommonController.deleteBranch(token, user, repository, branch);
-      promise4local = CommonController.deleteLocalBranch(user, repository, branch);
+      promise4github = CommonController.deleteBranch(token, owner, repository, branch);
+      promise4local = CommonController.deleteLocalBranch(owner, repository, branch);
     }
     Logger.on();
     var promise = CommonController.when(promise4github, promise4local);
@@ -379,7 +410,7 @@ var ProjectController = {
     });
   },
 
-  commitProject: function(token, user, owner, repository, branch) {
+  commitProject: function(token, owner, repository, branch) {
     var projectName = $.trim($("#repository").text());
     if (projectName.length == 0) {
       CommonController.showError("please input the project name");
@@ -397,7 +428,7 @@ var ProjectController = {
       }
     }
 
-    var avatar = $("#dashboard img").attr("src");
+    var avatar = $("#owner img").attr("src");
     var tags = ProjectController.getTagString();
     var promise = null;
     var isURLChanged = false;
@@ -412,7 +443,7 @@ var ProjectController = {
       }
       Logger.on();
 
-      promise = ProjectController.newRepository(token, user, projectName, "", "", "", 0);
+      promise = ProjectController.newRepository(token, owner, projectName, "", "", "", 0);
       repository = projectName;
       branch = MASTER_BRANCH;
       isURLChanged = true;
@@ -424,7 +455,7 @@ var ProjectController = {
         }
         Logger.on();
 
-        promise = ProjectController.renameRepository(token, user, projectName, repository);
+        promise = ProjectController.renameRepository(token, owner, projectName, repository);
         repository = projectName;
         isURLChanged = true;
       } else if (branch != MASTER_BRANCH && projectName != branch) {
@@ -434,7 +465,7 @@ var ProjectController = {
         }
         Logger.on();
 
-        promise = ProjectController.renameBranch(token, user, repository, projectName, branch);
+        promise = ProjectController.renameBranch(token, owner, repository, projectName, branch);
         branch = projectName;
         isURLChanged = true;
       } else {
@@ -443,11 +474,11 @@ var ProjectController = {
       }
     }
     promise.then(function() {
-      return CommonController.getSHATree(user, repository, branch);
+      return CommonController.getSHATree(owner, repository, branch);
     })
     .then(function(result) {
       shaTree = result.tree;
-      return ProjectController.commitElements(token, user, repository, branch, tags, shaTree);
+      return ProjectController.commitElements(token, owner, repository, branch, tags, shaTree);
     })
     .then(function(result) {
       var images = $(".content img");
@@ -459,9 +490,9 @@ var ProjectController = {
           var filename = image.getAttribute("filename");
           if (filename == uploadedImage.name) {
             thumbnailAspect = image.naturalWidth/image.naturalHeight;
-            thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
+            thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
             var url = image.getAttribute("fileurl");
-            return ProjectController.commitThumbnail(token, user, repository, branch, url, shaTree);
+            return ProjectController.commitThumbnail(token, owner, repository, branch, url, shaTree);
           }
         }
       }
@@ -471,12 +502,12 @@ var ProjectController = {
       } else {
         var image = images[0];
         thumbnailAspect = image.naturalWidth/image.naturalHeight;
-        thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
-        return ProjectController.commitThumbnail(token, user, repository, branch, image.getAttribute("src"), shaTree);
+        thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
+        return ProjectController.commitThumbnail(token, owner, repository, branch, image.getAttribute("src"), shaTree);
       }
     })
     .then(function() {
-      return ProjectController.updateRepositoryMeta(user, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
+      return ProjectController.updateRepositoryMeta(owner, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
     })
     .fail(function(error) {
       CommonController.showError(error);
@@ -485,7 +516,7 @@ var ProjectController = {
     })
     .done(function() {
       if (isURLChanged == true) {
-        var url = CommonController.getProjectPageURL(user, repository, branch);
+        var url = CommonController.getProjectPageURL(owner, repository, branch);
         ProjectController.href(url);
       } else {
         Logger.off();
@@ -505,8 +536,8 @@ var ProjectController = {
     return false;
   },
 
-  updateRepositoryMeta: function(user, repository, branch, tags, avatar, thumbnail, aspect) {
-    return CommonController.updateRepositoryMetadata(user, repository, branch, tags, avatar, thumbnail, aspect);
+  updateRepositoryMeta: function(owner, repository, branch, tags, avatar, thumbnail, aspect) {
+    return CommonController.updateRepositoryMetadata(owner, repository, branch, tags, avatar, thumbnail, aspect);
   },
 
   newRepository: function(token, user, repository, tags, avatar, thumbnail, aspect) {
@@ -528,10 +559,10 @@ var ProjectController = {
     return deferred.promise();
   },
 
-  renameRepository: function(token, user, newRepository, previousRepository) {
-    return CommonController.renameRepository(token, user, newRepository, previousRepository)
+  renameRepository: function(token, owner, newRepository, previousRepository) {
+    return CommonController.renameRepository(token, owner, newRepository, previousRepository)
     .then(function() {
-      return CommonController.renameLocalRepository(user, newRepository, previousRepository);
+      return CommonController.renameLocalRepository(owner, newRepository, previousRepository);
     });
   },
 
@@ -542,35 +573,32 @@ var ProjectController = {
     });
   },
 
-  renameBranch: function(token, user, repository, newBranch, previousBranch) {
-    return CommonController.renameBranch(token, user, repository, newBranch, previousBranch)
+  renameBranch: function(token, owner, repository, newBranch, previousBranch) {
+    return CommonController.renameBranch(token, owner, repository, newBranch, previousBranch)
     .then(function() {
-      return CommonController.renameLocalBranch(user, repository, newBranch, previousBranch);
+      return CommonController.renameLocalBranch(owner, repository, newBranch, previousBranch);
     });
   },
 
-  commitElements: function(token, user, repository, branch, tags, shatree) {
+  commitElements: function(token, owner, repository, branch, tags, shatree) {
     var base64 = new Base64();
-    var elements = ProjectController.prepareCommitElements(user, repository, branch, tags);
+    var elements = ProjectController.prepareCommitElements(owner, repository, branch, tags);
     var promiseList = [];
-    promiseList[0] = CommonController.commit(token, user, repository, branch, MAIN_DOCUMENT, base64.encodeStringAsUTF8(elements.document), "", shatree)
-            .then(function(res){
-                    ProjectController.readmeSHA = res.content.sha;
-            });
+    promiseList[0] = CommonController.commit(token, owner, repository, branch, MAIN_DOCUMENT, base64.encodeStringAsUTF8(elements.document), "", shatree);
     if (elements.customCSS) {
-      promiseList.push( CommonController.commit(token, user, repository, branch, CUSTOM_CSS, base64.encodeStringAsUTF8(elements.customCSS), "", shatree) );
+      promiseList.push( CommonController.commit(token, owner, repository, branch, CUSTOM_CSS, base64.encodeStringAsUTF8(elements.customCSS), "", shatree) );
     }
     var attachments = elements.attachments;
     for (var attachmentName in attachments) {
       var attachment = attachments[attachmentName];
       var path = MATERIALS_DIR + "/" + attachment.escapedName;
-      var promise = CommonController.commit(token, user, repository, branch, path, attachment.contents, "", shatree);
+      var promise = CommonController.commit(token, owner, repository, branch, path, attachment.contents, "", shatree);
       promiseList.push(promise);
     }
     return CommonController.when.apply($, promiseList);
   },
 
-  prepareCommitElements: function(user, repository, branch, tags) {
+  prepareCommitElements: function(owner, repository, branch, tags) {
     var userDocument = "";
     userDocument += "# " + repository;
     userDocument += "\n";
@@ -591,7 +619,7 @@ var ProjectController = {
         var file = files[key];
         file.escapedName = file.name.replace(/\s/g, "-");
         filemap[key] = file;
-        var fileURL = CommonController.getFileURL(user, repository, branch, MATERIALS_DIR + "/" + file.escapedName);
+        var fileURL = CommonController.getFileURL(owner, repository, branch, MATERIALS_DIR + "/" + file.escapedName);
         text = text.replace(key, fileURL);
         var img = $("img[src='" + key + "']");
         img.attr("fileurl", fileURL);
@@ -610,7 +638,7 @@ var ProjectController = {
     return elements;
   },
 
-  commitThumbnail: function(token, user, repository, branch, url, shaTree) {
+  commitThumbnail: function(token, owner, repository, branch, url, shaTree) {
     var promise = CommonController.getImage(url);
     return promise.then(function(image) {
       var canvas = document.createElement("canvas");
@@ -623,10 +651,7 @@ var ProjectController = {
       var data = canvas.toDataURL("image/jpeg");
       var index = data.indexOf(",");
       data = data.substring(index + 1);
-      return CommonController.commit(token, user, repository, branch, THUMBNAIL, data, "", shaTree)
-        .then(function(res){
-          ProjectController.thumbnailSHA  = res.content.sha;
-        });
+      return CommonController.commit(token, owner, repository, branch, THUMBNAIL, data, "", shaTree);
     });
   },
   

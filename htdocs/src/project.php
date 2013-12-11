@@ -51,6 +51,7 @@
             <a id="fork-button" class="button">fork</a>
             <a id="commit-button" class="button">commit</a>
           </section>
+          <div id="error-display"></div>
         </div>
 
         <div id="project">
@@ -62,7 +63,10 @@
                 <div id="abstract-title"></div>
                 <div id="abstract-text"></div>
                 <div id="tags"></div>
-                <div id="owner"></div>
+                <div id="collaborators">
+                  <div id="owner"></div>
+                  <div class="collaborator"></div>
+                </div>
               </div>
             </div>
           </section>

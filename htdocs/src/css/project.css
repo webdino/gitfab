@@ -20,6 +20,7 @@ a:hover{
   color: black;
   float: left;
   max-width: 880px;
+  width: 100%;
 }
 
 #meta {
@@ -96,8 +97,6 @@ a:hover{
 }
 
 #owner {
-  background-size: 30px 30px;
-  background-repeat: no-repeat;
   line-height: 30px;
   margin-top: 9px;
   font-size: 24px;
@@ -111,9 +110,27 @@ a:hover{
   float: left;
 }
 
-#owner :hover{
+#owner:hover {
   background: #ff8c00;
 }
+
+.collaborator {
+  line-height: 30px;
+  margin-top: 9px;
+  font-size: 24px;
+}
+
+.collaborator img {
+  margin-right: 5px;  
+  width: 30px;
+  height: 30px;
+  float: left;
+}
+
+.collaborator:hover{
+  background: #ff8c00;
+}
+
 
 #tools {
   text-align: right;
@@ -254,6 +271,11 @@ li.item{
   font-size: 10px;
   position: relative;
   top: -10px;
+}
+
+#error-display {
+  color: red;
+  font-size: 10px;
 }
 
 @media screen and (max-width: 360px) {

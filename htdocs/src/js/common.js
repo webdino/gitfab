@@ -300,6 +300,12 @@ var CommonController = {
     return CommonController.getGithubJSON(url);
   },
 
+  getCollaborators: function (owner, repository) {
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/collaborators";
+    return CommonController.getGithubJSON(url);
+  },
+
   getSHATree: function (owner, repository, branch) {
     var url = CommonController.getGithubRepositoryPath(owner, repository);
     url += "/git/trees/"+branch+"?recursive=2";
