@@ -7,6 +7,7 @@ var ProjectController = {
   init: function () {
     ProjectController.markdownParser = new Showdown.converter();
     ProjectController.current_item_id = 0;
+    window.onresize = ProjectController.fixVideoSize;
 
     var user = CommonController.getUser();
     var owner = CommonController.getOwner();
@@ -108,6 +109,22 @@ var ProjectController = {
       }
     }
     ProjectController.updateIndex();
+    ProjectController.fixVideoSize();
+  },
+
+  fixVideoSize: function(){
+    for (var i = 0; i<$(".content iframe").length; i++) {
+      ProjectController.fixSize($(".content iframe:eq("+i+")"), $(".item#0")[0].clientWidth);
+    }
+  },
+
+  fixSize: function(objs,rw){
+    console.log(objs);
+      var h = objs[0].clientHeight;
+      var w = objs[0].clientWidth;
+      console.log(h+" : " + w);
+      objs.attr("width",rw+"px");
+      objs.attr("height",h*(rw/w)+"px");
   },
 
   parseTagString: function(text) {
