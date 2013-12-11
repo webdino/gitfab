@@ -226,7 +226,7 @@ li.item{
   font-size: 16px;
 }
 
-#tools.button:hover {
+#tools .button:hover {
   background: #ff8c00;
 }
 
