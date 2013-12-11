@@ -476,6 +476,8 @@ var CommonController = {
 
     var deferred = CommonController.getDeferred();
 
+    parameter.cache = false;
+
     parameter.success = function(result) {
       Logger.response(parameter.url);
       deferred.resolve(result);

@@ -447,22 +447,6 @@ var ProjectController = {
     })
     .then(function(result) {
       shaTree = result.tree;
-      if(ProjectController.readmeSHA != null){
-        for(i in shaTree){
-          if(shaTree[i].path == "README.md"){
-            shaTree[i].sha = ProjectController.readmeSHA;
-            break;
-          }
-        }
-      }
-      if(ProjectController.thumbnailSHA != null){
-        for(i in shaTree){
-          if(shaTree[i].path == "gitfab/thumbnail.jpg"){
-            shaTree[i].sha = ProjectController.thumbnailSHA;
-            break;
-          }
-        }
-      }
       return ProjectController.commitElements(token, user, repository, branch, tags, shaTree);
     })
     .then(function(result) {
