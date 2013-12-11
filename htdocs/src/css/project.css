@@ -47,12 +47,11 @@ a:hover{
 #thumbnail {
   width: 320px;
   max-height: 225px;
-  margin: 5px 10px 0px 0px;
+  margin: 5px 30px 0px 0px;
   float:left;
 }
 
 #description{
-  margin-left: 20px;
   float:left;
   max-width: 500px;
 }
@@ -203,9 +202,6 @@ li.item{
 #facebook {
   width:400px;
   padding-top: 30px;
-  margin-left: 28px;
-
-  /*clear:right;*/
 }
 
 .sub {
@@ -273,6 +269,6 @@ li.item{
 
 @media screen and (max-width: 500px) {
   #description {
-    width: 300px;
+    width: 320px;
   }
 }
