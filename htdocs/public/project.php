@@ -42,16 +42,16 @@
   <body>
     <?php include('header.php.inc'); ?>
     <div id="contents">
-      <div id="sub">
-        <section id="tools">
-          <a id="slide-button" class="button">slide show</a>
-          <a id="customize-css" class="button">customize css</a>
-          <a id="delete-button" class="button">delete</a>
-          <a id="fork-button" class="button">fork</a>
-          <a id="commit-button" class="button">commit</a>
-        </section>
-      </div>
       <div id="main" role="main">
+        <div class="sub">
+          <section id="tools">
+            <a id="slide-button" class="button">slide show</a>
+            <a id="customize-css" class="button">customize css</a>
+            <a id="delete-button" class="button">delete</a>
+            <a id="fork-button" class="button">fork</a>
+            <a id="commit-button" class="button">commit</a>
+          </section>
+        </div>
 
         <div id="project">
           <section id="meta">
@@ -96,27 +96,18 @@
             </div>
             <input id="upload" name="file" type="file" />
           </section>
-        </div>
-        <div id="facebook">
+          <section id="facebook">
             <?php include('facebook.php.inc'); ?>
+          </section>
         </div>
-      </div>
-      <div id="sub">
-        <section id="histories">
-          <label>commit history</label>
-        </section>
-        <!--
-        <div id="parent-project-label"></div>
-        <div id="parent-project" class="project">
-        </div>
-        <hr/>
-        <div id="child-project-list-label"></div>
-        <div id="child-project-list">
-        </div>
-        -->
-      </div>
 
+        <div class="sub">
+          <section id="histories">
+            <label>commit history</label>
+          </section>
+        </div>
 
+      </div>
     </div>
     <?php include('footer.php.inc'); ?>
     <?php include('logger.php.inc'); ?>

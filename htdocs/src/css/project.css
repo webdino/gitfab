@@ -4,16 +4,12 @@ a:hover{
 }
 
 #main {
-  margin-top: 20px;
-  float: left;
-  max-width:1060px;
+  max-width: 1060px;
   min-width: 320px;
   font-family: 'Roboto', sans-serif;
   font-size:16px;
-}
-
-#main.hasToolbar {
-  /*width:1200px;*/
+  margin: 20px auto 0 auto;
+  padding-left: 25px;
 }
 
 #gitfab-document {
@@ -22,19 +18,11 @@ a:hover{
 
 #project {
   color: black;
-  max-width: 1024px;
-  margin-left: 28px;
+  float: left;
+  max-width: 880px;
 }
-
-@media screen and (max-width: 360px) {
-  #project {
-    margin-left:0px;
-  }
-}
-
 
 #meta {
-
   margin-bottom: 5px;
   border-bottom: 1px solid black;
   margin-right: 5px;
@@ -57,25 +45,22 @@ a:hover{
 }
 
 #thumbnail {
-  height: 225px;
-  /*width: 400px;*/
+  width: 320px;
+  max-height: 225px;
   margin: 5px 10px 0px 0px;
   float:left;
 }
 
 #description{
   margin-left: 20px;
-  min-width: 320px;
-  max-width: 600px;
   float:left;
+  max-width: 500px;
 }
 
 #repository {
   font-size: 48px; 
   font-weight: 900;
-  width: 80%;
   min-width: 200px;
-  max-width: 1024px;
   word-wrap: break-word;
 }
 
@@ -83,8 +68,6 @@ a:hover{
   margin: 6px 0 0 0;
   font-size:24px;
   font-weight: 700;
-  width: 80%;
-  min-width: 200px;
   word-wrap: break-word;
 }
 
@@ -92,11 +75,13 @@ a:hover{
   margin: 8px 0;
   font-size:16px;
   font-weight: 500;
+  word-wrap: break-word;
 }
 
 #tags {
   margin-top: -3px;
   font-size: 16px;
+  word-wrap: break-word;
 }
 
 #tags:before {
@@ -141,30 +126,22 @@ a:hover{
   padding: 0;
 }
 
-.item{
-  /*width: 320px;*/
-  width: 50%;
-  max-width: 480px;
+li.item{
+  width: 48%;
   min-width: 320px;
   display: inline-block;
   vertical-align: top;
-  margin: 28px 0px; 
-}
+  margin: 28px 2% 0 0; 
 
-@media screen and (max-width: 360px) {
-  .item {
-    margin: 28px 0;
-  }
 }
 
 .content h1 {
-  width: 95%;
   border-bottom: 1px solid black;
 }
 
 .content p {
-  width: 95%;
   font-size: 16px;
+  word-wrap: break-word;
 }
 
 .content p img {
@@ -189,7 +166,7 @@ a:hover{
 }
 
 #index {
-    max-width:1024px;
+/*    max-width:1024px; */
 }
 #index a{
   text-decoration: none;
@@ -231,23 +208,13 @@ a:hover{
   /*clear:right;*/
 }
 
-@media screen and (max-width: 360px) {
-  #facebook {
-    width:320px;
-    margin-left: 0px;
-  }
-}
-
-
-
-
-#sub {
+.sub {
   margin-top: 20px;
   float: right;
   width: 180px;
 }
 
-#sub .button {
+#tools .button {
   color: black;
   background-color: white;
   text-decoration: none;
@@ -263,7 +230,7 @@ a:hover{
   font-size: 16px;
 }
 
-#sub .button:hover {
+#tools.button:hover {
   background: #ff8c00;
 }
 
@@ -291,4 +258,21 @@ a:hover{
   font-size: 10px;
   position: relative;
   top: -10px;
+}
+
+@media screen and (max-width: 360px) {
+  #main {
+    padding-left: 0px;
+  }
+
+  .item {
+    margin: 28px 0;
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #description {
+    width: 300px;
+  }
 }
