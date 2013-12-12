@@ -85,6 +85,16 @@ var CommonController = {
     }
     return CommonController.getLocalJSON(url);
   },
+    
+  getProjectListWithQ: function (tag, owner,start,quantity) {
+    var url = "/api/projectList.php?start=" + start + "&q=" + quantity;
+    if (tag) {
+      url += "&tag=" + tag;
+    } else if (owner) {
+      url += "&owner=" + owner;
+    }
+    return CommonController.getLocalJSON(url);
+  },
 
   getOwnersProjectList: function(owner) {
     var url = "/api/ownersProjectList.php?owner="+owner;
