@@ -7,6 +7,8 @@ var ProjectListController = {
     document.title = "gitFAB" + (OWNER ? "/" + OWNER + "/" : "") +
       (parameters.QueryString ? "/?" + parameters.QueryString : "");
     ProjectListController.parameters = parameters;
+    ProjectListController.showingProjects = 0;
+    ProjectListController.getProjectsPerOnce = 30;
 
     Logger.on();
     var promise4list = ProjectListController.loadProjectList();
@@ -24,8 +26,12 @@ var ProjectListController = {
     })
     .done(function() {
       Logger.off();
+      ProjectListController.scrollRef = $(document).height() - window.innerHeight;
     });
-    //window.onscroll = ProjectListController.autoPager();
+    window.onscroll = ProjectListController.autoPager;
+    window.onresize = function(){
+      ProjectListController.scrollRef = $(document).height() - window.innerHeight;
+    };
   },
   
   loadProjectList: function() {
@@ -103,23 +109,33 @@ var ProjectListController = {
   },
 
   //----------------------------------------------------------
-  /*
+  
   autoPager: function () {
-    var rows = ProjectListController.showingProjects / 3;
-    if (ProjectListController.allProjects != ProjectListController.showingProjects &&
-      scrollY > 60 + 218 * (rows - 3)) { //スクロール量の判定
-      if (3 * (rows + 1) < ProjectListController.allProjects) {
-        ProjectListController.loadAndAppendProject(
-          ProjectListController.showingProjects,
-          3 * (rows + 1)); //追加表示するプロジェクト数
-      } else {
-        ProjectListController.loadAndAppendProject(
-          ProjectListController.showingProjects,
-          ProjectListController.allProjects);
-      }
-    }
+    console.log(ProjectListController.scrollRef- scrollY);
+    if(ProjectListController.loading == false &&
+      ProjectListController.scrollRef - scrollY <200){
+        var promise = ProjectListController.loadProjectList();
+        promise.done(function(){
+          ProjectListController.scrollRef = $(document).height() - window.innerHeight;
+        });
+    }      
+  },
+  loadProjectList: function() {
+    var promise = CommonController.getProjectListWithQ(
+      ProjectListController.parameters.tag, 
+      OWNER,
+      ProjectListController.showingProjects,
+      ProjectListController.getProjectsPerOnce);
+    ProjectListController.loading = true;
+    ProjectListController.showingProjects += ProjectListController.getProjectsPerOnce;
+    promise.done(function(data) {
+      var projectList = data.projectList;
+      ProjectListController.createProjectListUI(projectList);
+      ProjectListController.loading = false;
+    });
+    return promise;
   }
-  */ 
+   
 };
 
 $(document).ready(function () {

@@ -15,7 +15,15 @@
       $query .= ",tags AS T WHERE T.repository_id=R.id AND T.name=?";
       $parameter[] = $tag;
     } 
-    $query .= " ORDER BY updated DESC";
+    $query .= " ORDER BY updated DESC";  
+    
+    if(isset($_GET["start"]) && isset($_GET["q"])){
+      $startIndex = $_GET["start"];
+      $quantity = $_GET["q"];
+      $query .= " LIMIT ".$startIndex.", ".$quantity;
+    }
+    dbg($startIndex);
+    dbg($query);
     $statement = $connection -> prepare($query);
     $statement -> execute($parameter);
     $projectList = array();
