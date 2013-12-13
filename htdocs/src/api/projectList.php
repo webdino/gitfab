@@ -1,6 +1,6 @@
 <?php
-  $owner = $_GET["owner"];
-  $tag = $_GET["tag"];
+  $owner = htmlspecialchars($_GET["owner"],ENT_QUOTES);
+  $tag =  htmlspecialchars($_GET["tag"],ENT_QUOTES);
   include('localDatabaseFunctions.php.inc');
   $result = array();
   try {
@@ -18,12 +18,10 @@
     $query .= " ORDER BY updated DESC";  
     
     if(isset($_GET["start"]) && isset($_GET["q"])){
-      $startIndex = $_GET["start"];
-      $quantity = $_GET["q"];
+      $startIndex = htmlspecialchars($_GET["start"],ENT_QUOTES);
+      $quantity =  htmlspecialchars($_GET["q"],ENT_QUOTES);
       $query .= " LIMIT ".$startIndex.", ".$quantity;
     }
-    dbg($startIndex);
-    dbg($query);
     $statement = $connection -> prepare($query);
     $statement -> execute($parameter);
     $projectList = array();

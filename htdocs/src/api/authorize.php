@@ -1,5 +1,5 @@
 <?php
-  $code = $_GET["code"];
+  $code = htmlspecialchars($_GET["code"],ENT_QUOTES);
 
   $ch = curl_init();
 
