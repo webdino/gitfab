@@ -79,22 +79,6 @@
   font-size: 14px;
 }
 
-.editable #form {
-  display: block;
-}
-
-.editable #customize-css {
-  display: inline-block;
-}
-
-.editable #delete-button {
-  display: inline-block;
-}
-
-.editable #commit-button {
-  display: inline-block;
-}
-
 #css-editor {
   display: none;
   margin: 10px;  
