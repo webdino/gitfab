@@ -120,10 +120,8 @@ var ProjectController = {
   },
 
   fixSize: function(objs,rw){
-    console.log(objs);
       var h = objs[0].clientHeight;
       var w = objs[0].clientWidth;
-      console.log(h+" : " + w);
       objs.attr("width",rw+"px");
       objs.attr("height",h*(rw/w)+"px");
   },
