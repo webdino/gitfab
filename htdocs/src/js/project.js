@@ -33,6 +33,9 @@ var ProjectController = {
     if (repository == CREATE_PROJECT_COMMAND) {
       ProjectController.newGitFABDocument(user, avatarURL);
       ProjectEditor.enable(user,"input-your-repository-name","master");
+      $("#commit-button").click(function() {
+        ProjectController.commitProject(token, owner, repository, branch);});
+      $("#delete-button").hide();
       $("#fork-button").hide();
     } else {
       var gitfabDocument = ProjectController.getGitFABDocument();
@@ -197,6 +200,17 @@ var ProjectController = {
     var html = ProjectController.encode4html(text);
     target.html(html);
     target.find("a").attr("target", "_blank");
+    files = target.find("a");
+
+    for(i=0;i<files.length;i++){
+      if(files[i].text.match(/.*.stl/)){
+       files[i].parentElement.innerHTML += 
+         "<iframe height =\'420px\' width=\'620px\' frameborder=\'0\' src=\'https://render.github.com/view/3d?url="+ 
+         files[i].href+
+         "\'><\/iframe>";
+
+      }
+    } 
     ProjectController.updateIndex();
   },
 
@@ -243,7 +257,6 @@ var ProjectController = {
         $("#collaborators").append(container);
       }      
       //editor
-      console.log("-----------Editor type : "+editorType);
       switch (editorType) {
         case 1 : {
           ProjectEditor.enable(owner, repository, branch);
