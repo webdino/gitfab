@@ -100,7 +100,7 @@ a:hover{
   line-height: 30px;
   margin-top: 9px;
   font-size: 24px;
-  /*bottom:0;*/
+  float: left;
 }
 
 #owner img {
@@ -117,7 +117,9 @@ a:hover{
 .collaborator {
   line-height: 30px;
   margin-top: 9px;
+  margin-left: 10px;
   font-size: 24px;
+  float: left;
 }
 
 .collaborator img {
@@ -197,13 +199,6 @@ li.item{
   text-decoration: underline; 
 }
 
-#form {
-  display: none;
-  border-bottom: 1px solid black;
-  margin-top: 50px;
-  padding-bottom: 50px;
-}
-
 #facebook {
   width:400px;
   padding-top: 30px;
@@ -264,6 +259,65 @@ li.item{
 #error-display {
   color: red;
   font-size: 10px;
+}
+
+#add-collaborator {
+  clear: both;
+  position: relative;
+  top: 8px;
+}
+
+#add-collaborator-button {
+  color: gray;
+  cursor: pointer;
+}
+
+#add-collaborator-button:hover {
+  color: black;
+}
+
+#add-collaborator .button {
+  display: inline;
+  text-decoration: none;
+  cursor: pointer;
+  border: black solid 1px;
+  font-family: 'Roboto',sans-serif;
+  padding: 2px 5px 3px 5px;
+  border-radius: 0;
+  background-color: white;
+  color: black;
+}
+
+#add-collaborator .button:hover {
+  background: #ff8c00;
+}
+
+#add-collaborator-find-form input {
+  position: relative;
+  top: -1px;
+  font-size: 16px;
+}
+
+#new-collaborator img {
+  width: 26px;
+  position: relative;
+  top: 7px;
+}
+
+#add-collaborator-find-form {
+  display: none;
+}
+
+#add-collaborator-add-form {
+  display: none;
+}
+
+#add-collaborator-add-form div{
+  display: inline;
+}
+
+#add-collaborator-label {
+  display: inline;
 }
 
 @media screen and (max-width: 360px) {

@@ -65,9 +65,22 @@
                 <div id="tags"></div>
                 <div id="collaborators">
                   <div id="owner"></div>
-                  <!--
-                  <a id="add-collaborator" title="Add collaborator" alt="Add collaborator">+</a>
-                -->
+                </div>
+                <div id="add-collaborator">
+                  <div id="add-collaborator-button">+collaborator</div>
+                  <div id="add-collaborator-find-form">
+                    <input placeholder="please input collaborator" type="text"></input>
+                    <div class="button">find</div>
+                  </div>
+                  <div id="add-collaborator-add-form">
+                    <div id="new-collaborator">
+                      <img>
+                      <div></div>
+                    </div>
+                    <div class="button add">add</div>
+                    <div class="button cancel">cancel</div>
+                  </div>
+                  <div id="add-collaborator-label"></div>
                 </div>
               </div>
             </div>

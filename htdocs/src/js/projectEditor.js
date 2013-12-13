@@ -62,8 +62,6 @@ var ProjectEditor = {
     $("#repository").click(ProjectEditor.editTitle);
     $("#tags").click(ProjectEditor.editTags);
 
-    $("#main").addClass("editable");
-
     $("#customize-css").click(function() {ProjectEditor.customizeCSS(user, repository, branch);});
 
     ProjectEditor.uploaded_images = [];

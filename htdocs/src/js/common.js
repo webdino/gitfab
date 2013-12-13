@@ -332,6 +332,17 @@ var CommonController = {
     return CommonController.getGithubJSON(url);
   },
  
+  findUser: function(name) {
+    var url = GITHUB_API + "users/"+name;
+    return CommonController.getGithubJSON(url);
+  },
+
+  addCollaborator: function(token, owner, repository, name) {    
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/collaborators/"+name;
+    return CommonController.getGithubJSON4Token(url, "PUT", token, {});
+  },
+
   commit: function (token, owner, repository, branch, path, content, message, tree) {
     var parameters = { path: path, message: message, content: content, branch: branch, };
     for (var i = 0, n = tree.length; i < n; i++) {

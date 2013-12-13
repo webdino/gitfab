@@ -231,36 +231,35 @@ var ProjectController = {
         if (user == account) {
           editorType = 1;
         }
-        var container = $(document.createElement("div"));
-        container.addClass("collaborator");
-        var a = $(document.createElement("a"));
-        a.attr("href", "/"+account+"/");
-        a.text(account);
-        container.append(a);
-        var icon = $(document.createElement("img"));
-        icon.attr("src", avatar);
-        container.children().append(icon);
-        $("#collaborators").append(container);
+        ProjectController.appendCollaboratorUI(account, avatar);
       }      
       //editor
-      console.log("-----------Editor type : "+editorType);
       switch (editorType) {
         case 1 : {
           ProjectEditor.enable(owner, repository, branch);
           $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
           $("#delete-button").hide();
+          $("#add-collaborator").hide();
           break;
         }
         case 2 : {
           ProjectEditor.enable(owner, repository, branch);
           $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
           $("#delete-button").click(function() {ProjectController.deleteProject(token, owner, repository, branch);});
+
+          $("#add-collaborator-button").click(function() {ProjectController.showCollaboratorForm();});
+          $("#add-collaborator-find-form .button").click(function() {ProjectController.findCollaborator(owner);});
+          $("#add-collaborator-add-form .add").click(function() {ProjectController.addCollaborator(token, owner, repository, branch);});
+          $("#add-collaborator-add-form .cancel").click(function() {ProjectController.cancelCollaborator();});
+
           break;
         }
         default : {
           $("#commit-button").hide();
           $("#customize-css").hide();
           $("#delete-button").hide();
+          $("#add-collaborator").hide();
+          $("#form").hide();
         }
       }
     })
@@ -269,6 +268,8 @@ var ProjectController = {
       $("#commit-button").hide();
       $("#customize-css").hide();
       $("#delete-button").hide();
+      $("#add-collaborator").hide();
+      $("#form").hide();
     });
   },
 
@@ -673,6 +674,77 @@ var ProjectController = {
     });
   },
   
+
+  //collaborator ----------------------------------------
+  appendCollaboratorUI: function(account, avatar) {
+    var container = $(document.createElement("div"));
+    container.addClass("collaborator");
+    var a = $(document.createElement("a"));
+    a.attr("href", "/"+account+"/");
+    a.text(account);
+    container.append(a);
+    var icon = $(document.createElement("img"));
+    icon.attr("src", avatar);
+    container.children().append(icon);
+    $("#collaborators").append(container);
+  },
+
+  showCollaboratorForm: function() {
+    $("#add-collaborator-button").hide();
+    $("#add-collaborator-find-form").css("display", "inline");
+  },
+
+  findCollaborator: function(owner) {
+    var errorLabel = $("#add-collaborator-label");
+    var name = $.trim($("#add-collaborator-find-form input").val());
+    if (name.length == 0) {
+      errorLabel.text("please input");
+      return;
+    }
+    if (name == owner) {
+      errorLabel.text("this is owner");
+      return;
+    }
+    var collaborators = $(".collaborator a");
+    for (var i = 0, n = collaborators.length; i < n; i++) {
+      var collaborator = $.trim(collaborators.get(i).textContent);
+      if (collaborator == name) {
+        errorLabel.text("already collaborator");
+        return;
+      }
+    }
+    CommonController.findUser(name)
+    .then(function(result) {
+      $("#add-collaborator-find-form").hide();
+      $("#add-collaborator-add-form").css("display", "inline");
+      var avatar = result.avatar_url;
+      $("#new-collaborator img").attr("src", avatar);
+      $("#new-collaborator div").text(name);
+      errorLabel.text("");
+    })
+    .fail(function(error) {
+      errorLabel.text(error.message);
+    });
+  },
+
+  addCollaborator: function(token, owner, repository) {
+    var name = $("#new-collaborator div").text();
+    var avatar = $("#new-collaborator img").attr("src");
+    CommonController.addCollaborator(token, owner, repository, name)
+    .then(function(result) {
+      ProjectController.appendCollaboratorUI(name, avatar);
+      $("#add-collaborator-add-form").hide();
+    })
+    .fail(function(error) {
+      $("#add-collaborator-label").text(error.message);
+    });
+  },
+
+  cancelCollaborator: function() {
+    $("#add-collaborator-find-form").css("display", "inline");
+    $("#add-collaborator-add-form").hide();
+  },
+
   href: function(url) {
     setTimeout(function () {
       window.location.href = url;
