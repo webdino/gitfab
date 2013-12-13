@@ -111,7 +111,6 @@ var ProjectListController = {
   //----------------------------------------------------------
   
   autoPager: function () {
-    console.log(ProjectListController.scrollRef- scrollY);
     if(ProjectListController.loading == false &&
       ProjectListController.scrollRef - scrollY <200){
         var promise = ProjectListController.loadProjectList();
