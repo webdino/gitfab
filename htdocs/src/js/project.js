@@ -32,6 +32,7 @@ var ProjectController = {
     //repository
     if (repository == CREATE_PROJECT_COMMAND) {
       ProjectController.newGitFABDocument(user, avatarURL);
+      ProjectEditor.enable(user,"input-your-repository-name","master");
       $("#fork-button").hide();
     } else {
       var gitfabDocument = ProjectController.getGitFABDocument();
@@ -242,6 +243,7 @@ var ProjectController = {
         $("#collaborators").append(container);
       }      
       //editor
+      console.log("-----------Editor type : "+editorType);
       switch (editorType) {
         case 1 : {
           ProjectEditor.enable(owner, repository, branch);
