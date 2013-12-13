@@ -84,3 +84,6 @@
   margin: 10px;  
 }
 
+.editable #form {
+  display: block;
+}

@@ -204,18 +204,6 @@ li.item{
   padding-bottom: 50px;
 }
 
-#customize-css {
-  display: none;
-}
-
-#delete-button {
-  display: none;
-}
-
-#commit-button {
-  display: none;
-}
-
 #facebook {
   width:400px;
   padding-top: 30px;
