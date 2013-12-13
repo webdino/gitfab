@@ -312,6 +312,24 @@ var ProjectEditor = {
       text += "[" + file.name + "](" + url + ")";
     }
     ProjectController.updateItem(text, ProjectEditor.upload_target);
+
+    if(file.name.match(/.*.stl/)){
+      var owner = CommonController.getOwner();
+      var branch = CommonController.getBranch();
+      var repository = CommonController.getRepository();
+      promise4sha = CommonController.getSHATree(owner,repository,branch);
+      promise4sha.then(function(res){
+        return ProjectController.commitElements(
+          CommonController.getToken(),
+          owner,
+          repository,
+          branch,
+          CommonController.getTagList(),
+          res.tree);
+      }).done(function(){
+        ProjectController.updateItem(text,ProjectEditor.upload_target);
+      });
+    }
     if (!target.files) {
       target.files = {};
     }
