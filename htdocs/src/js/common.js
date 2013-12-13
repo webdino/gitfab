@@ -437,8 +437,10 @@ var CommonController = {
   },
 
   getGithubJSON: function(url) {
+    var headers = { "Authorization": " bearer " + CommonController.getToken()};
+
     var deferred = CommonController.getDeferred();
-    var promise = CommonController.ajaxPromise({url: url, type:"GET", dataType:"json"});
+    var promise = CommonController.ajaxPromise({url: url, type:"GET", dataType:"json", headers: headers});
     promise.then(function(result) {
       deferred.resolve(result);
     })
