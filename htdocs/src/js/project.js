@@ -747,6 +747,7 @@ var ProjectController = {
     CommonController.addCollaborator(token, owner, repository, name)
     .then(function(result) {
       ProjectController.appendCollaboratorUI(name, avatar);
+      $("#add-collaborator-find-form").css("display", "inline");
       $("#add-collaborator-add-form").hide();
     })
     .fail(function(error) {
