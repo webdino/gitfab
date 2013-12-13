@@ -9,6 +9,7 @@ var ProjectListController = {
     ProjectListController.parameters = parameters;
     ProjectListController.showingProjects = 0;
     ProjectListController.getProjectsPerOnce = 30;
+    ProjectListController.loadedAllProjects = false;
 
     Logger.on();
     var promise4list = ProjectListController.loadProjectList();
@@ -111,7 +112,8 @@ var ProjectListController = {
   //----------------------------------------------------------
   
   autoPager: function () {
-    if(ProjectListController.loading == false &&
+    if(!ProjectListController.loadedAllProjects &&
+      !ProjectListController.loading &&
       ProjectListController.scrollRef - scrollY <200){
         var promise = ProjectListController.loadProjectList();
         promise.done(function(){
@@ -126,9 +128,12 @@ var ProjectListController = {
       ProjectListController.showingProjects,
       ProjectListController.getProjectsPerOnce);
     ProjectListController.loading = true;
-    ProjectListController.showingProjects += ProjectListController.getProjectsPerOnce;
     promise.done(function(data) {
       var projectList = data.projectList;
+      if (projectList.length < ProjectListController.getProjectsPerOnce){
+        ProjectListController.loadedAllProjects = true;
+      }
+      ProjectListController.showingProjects += projectList.length;
       ProjectListController.createProjectListUI(projectList);
       ProjectListController.loading = false;
     });
