@@ -47,8 +47,7 @@
 
 #reusable-item-tools {
   float: right;
-  margin-top: 6px;
-  margin-right: 20px;
+  margin-top: -5px;
 }
 
 #reusable-item-tools .button {
