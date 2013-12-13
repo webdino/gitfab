@@ -65,7 +65,9 @@
                 <div id="tags"></div>
                 <div id="collaborators">
                   <div id="owner"></div>
-                  <div class="collaborator"></div>
+                  <!--
+                  <a id="add-collaborator" title="Add collaborator" alt="Add collaborator">+</a>
+                -->
                 </div>
               </div>
             </div>

@@ -44,6 +44,7 @@ var ProjectController = {
       $("#thumbnail").attr("src", thumbnailSrc);
 
 //      ProjectController.loadAdditionalInformation(owner, repository, branch);
+
       ProjectController.loadCollaborators(token, user, owner, repository, branch);
       ProjectController.loadCommitHistories(owner, repository, branch);
 
