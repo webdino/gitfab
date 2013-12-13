@@ -521,18 +521,6 @@ li.item{
   padding-bottom: 50px;
 }
 
-#customize-css {
-  display: none;
-}
-
-#delete-button {
-  display: none;
-}
-
-#commit-button {
-  display: none;
-}
-
 #facebook {
   width:400px;
   padding-top: 30px;
@@ -693,24 +681,11 @@ li.item{
   font-size: 14px;
 }
 
-.editable #form {
-  display: block;
-}
-
-.editable #customize-css {
-  display: inline-block;
-}
-
-.editable #delete-button {
-  display: inline-block;
-}
-
-.editable #commit-button {
-  display: inline-block;
-}
-
 #css-editor {
   display: none;
   margin: 10px;  
 }
 
+.editable #form {
+  display: block;
+}
