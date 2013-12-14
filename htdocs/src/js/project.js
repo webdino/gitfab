@@ -205,10 +205,7 @@ var ProjectController = {
     for(i=0;i<files.length;i++){
       if(files[i].text.match(/.*.stl/)){
        files[i].parentElement.innerHTML += 
-         "<iframe height =\'420px\' width=\'620px\' frameborder=\'0\' src=\'https://render.github.com/view/3d?url="+ 
-         files[i].href+
-         "\'><\/iframe>";
-
+         "<iframe height =\'420px\' width=\'620px\' frameborder=\'0\' src=\'https://render.github.com/view/3d?url="+files[i].href+"\'><\/iframe>";
       }
     } 
     ProjectController.updateIndex();
@@ -245,7 +242,7 @@ var ProjectController = {
         if (user == account) {
           editorType = 1;
         }
-        ProjectController.appendCollaboratorUI(account, avatar);
+        ProjectController.appendCollaboratorUI(token, owner, repository, account, avatar);
       }      
       //editor
       switch (editorType) {
@@ -258,6 +255,7 @@ var ProjectController = {
         }
         case 2 : {
           ProjectEditor.enable(owner, repository, branch);
+          $("#collaborators").addClass("admin");
           $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
           $("#delete-button").click(function() {ProjectController.deleteProject(token, owner, repository, branch);});
 
@@ -687,20 +685,49 @@ var ProjectController = {
       return CommonController.commit(token, owner, repository, branch, THUMBNAIL, data, "", shaTree);
     });
   },
-  
 
   //collaborator ----------------------------------------
-  appendCollaboratorUI: function(account, avatar) {
+  appendCollaboratorUI: function(token, owner, repository, account, avatar) {
     var container = $(document.createElement("div"));
     container.addClass("collaborator");
+    container.attr("id", account);
     var a = $(document.createElement("a"));
     a.attr("href", "/"+account+"/");
     a.text(account);
     container.append(a);
     var icon = $(document.createElement("img"));
     icon.attr("src", avatar);
-    container.children().append(icon);
+    a.append(icon);
+
+    var removeButton = $(document.createElement("div"));
+    removeButton.addClass("remove-collaborator");
+    removeButton.text("(-)");
+    removeButton.attr("alt", "remove collaborator");
+    removeButton.attr("title", "remove collaborator");
+    removeButton.click(function() { ProjectController.removeCollaborator(token, owner, repository, account); });
+    container.append(removeButton);
+
     $("#collaborators").append(container);
+  },
+
+  removeCollaborator: function(token, owner, repository, account) {
+    if (false ==window.confirm("Are you sure to remove the collaborator?")) {
+      return;
+    }
+    Logger.on();
+    CommonController.removeCollaborator(token, owner, repository, account)
+    .then(function(result) {
+      $("#"+account).remove();
+    })
+    .fail(function(error) {
+      var element = $(document.createElement("div"));
+      element.addClass("error");
+      element.text(error);
+      $("#"+account).append(element);
+    })
+    .done(function() {
+      Logger.off();
+    });
   },
 
   showCollaboratorForm: function() {
@@ -727,6 +754,7 @@ var ProjectController = {
         return;
       }
     }
+    Logger.on();
     CommonController.findUser(name)
     .then(function(result) {
       $("#add-collaborator-find-form").hide();
@@ -738,20 +766,28 @@ var ProjectController = {
     })
     .fail(function(error) {
       errorLabel.text(error.message);
-    });
+    })
+    .done(function() {
+      Logger.off();
+    });    
   },
 
   addCollaborator: function(token, owner, repository) {
     var name = $("#new-collaborator div").text();
     var avatar = $("#new-collaborator img").attr("src");
+    Logger.on();
     CommonController.addCollaborator(token, owner, repository, name)
     .then(function(result) {
-      ProjectController.appendCollaboratorUI(name, avatar);
+      ProjectController.appendCollaboratorUI(token, owner, repository, name, avatar);
+      $("#add-collaborator-find-form input").val("");
       $("#add-collaborator-find-form").css("display", "inline");
       $("#add-collaborator-add-form").hide();
     })
     .fail(function(error) {
       $("#add-collaborator-label").text(error.message);
+    })
+    .done(function() {
+      Logger.off();
     });
   },
 

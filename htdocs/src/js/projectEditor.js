@@ -188,7 +188,6 @@ var ProjectEditor = {
     title.unbind("click", ProjectEditor.editTitle);
     var text = title.text();
     title.empty();
-    title.addClass("editing");
     ProjectEditor.textfield.val(text);
     ProjectEditor.textfield.change(ProjectEditor.commitTitle);
     ProjectEditor.textfield.blur(ProjectEditor.commitTitle);
@@ -200,7 +199,6 @@ var ProjectEditor = {
     var text = ProjectEditor.textfield.val();
     var title = $("#repository");
     title.text(text);
-    title.removeClass("editing");
     title.click(ProjectEditor.editTitle);
     ProjectEditor.textfield.unbind("change", ProjectEditor.commitTitle);
     ProjectEditor.textfield.unbind("blur", ProjectEditor.commitTitle);
@@ -211,7 +209,6 @@ var ProjectEditor = {
     tags.unbind("click", ProjectEditor.editTags);
     var text = ProjectController.getTagString();
     tags.empty();
-    tags.addClass("editing");
     ProjectEditor.textfield.val(text);
     ProjectEditor.textfield.change(ProjectEditor.commitTags);
     ProjectEditor.textfield.blur(ProjectEditor.commitTags);
@@ -225,7 +222,6 @@ var ProjectEditor = {
 
     ProjectController.parseTagString(text);
 
-    tags.removeClass("editing");
     tags.click(ProjectEditor.editTags);
     ProjectEditor.textfield.unbind("change", ProjectEditor.commitTags);
     ProjectEditor.textfield.unbind("blur", ProjectEditor.commitTags);

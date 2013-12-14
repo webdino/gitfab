@@ -129,7 +129,7 @@ a:hover{
   float: left;
 }
 
-.collaborator:hover{
+.collaborator a:hover{
   background: #ff8c00;
 }
 
@@ -318,6 +318,29 @@ li.item{
 
 #add-collaborator-label {
   display: inline;
+}
+
+.remove-collaborator {
+  display: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: gray;
+  float: right;
+  line-height: 10px;
+  margin-left: 5px;
+}
+
+.remove-collaborator:hover {
+  color: black;
+}
+
+#collaborators.admin .remove-collaborator {
+  display: block;
+}
+
+#collaborators .error {
+  color: red;  
+  float: left;
 }
 
 @media screen and (max-width: 360px) {
