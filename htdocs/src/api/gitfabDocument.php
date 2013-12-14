@@ -19,7 +19,6 @@
   $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/)%');
   $config->set('HTML.SafeEmbed', true);
   $config->set('HTML.SafeObject', true);
-  $config->set('HTML.SafeVideo', true);
 
   
   $def = $config->getHTMLDefinition(true);

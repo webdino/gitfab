@@ -143,18 +143,18 @@ a:hover{
   list-style-type: none;
   padding: 0;
 }
-
+#item-list-ul li{
+}
 li.item{
   width: 48%;
   min-width: 320px;
   display: inline-block;
   vertical-align: top;
   margin: 28px 2% 0 0; 
-
 }
-
 .content h1 {
   border-bottom: 1px solid black;
+  list-style-type: decimal;
 }
 
 .content p {
@@ -197,6 +197,9 @@ li.item{
 
 #index a:hover { 
   text-decoration: underline; 
+}
+#index li{
+  list-style-type: decimal;
 }
 
 #facebook {
