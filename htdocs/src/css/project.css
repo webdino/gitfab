@@ -133,28 +133,33 @@ a:hover{
   background: #ff8c00;
 }
 
-
 #tools {
   text-align: right;
   margin-right: 5px;
 }
 
 #item-list-ul {
-  list-style-type: none;
   padding: 0;
 }
-#item-list-ul li{
+
+#item-list-ul li {
 }
-li.item{
+
+li.item {
   width: 48%;
   min-width: 320px;
   display: inline-block;
   vertical-align: top;
   margin: 28px 2% 0 0; 
+  counter-increment: item;
 }
+
 .content h1 {
   border-bottom: 1px solid black;
-  list-style-type: decimal;
+}
+
+.content h1:before {
+  content: counter(item) ". ";
 }
 
 .content p {
