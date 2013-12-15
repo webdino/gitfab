@@ -64,7 +64,7 @@ var ProjectEditor = {
 
     $("#customize-css").click(function() {ProjectEditor.customizeCSS(user, repository, branch);});
 
-    ProjectEditor.uploaded_images = [];
+    ProjectEditor.attached_files = [];
   },
 
   appendItem: function (e) {
@@ -294,21 +294,34 @@ var ProjectEditor = {
       ProjectEditor.upload_target = $(target);
     }
     var file = this.files[0];
-    CommonController.readFile(file)
-    .then(function(contents) {
-      file.contents = contents;
-    });
+    var exists = false;
+    for (var i = 0, n = ProjectEditor.attached_files.length; i < n; i++) {
+      var attached = ProjectEditor.attached_files[i];
+      if (file.name == attached.name) {
+        file = attached;
+        exists = true;
+        break;
+      }
+    }
+    if (exists == false) {
+      CommonController.readFile(file)
+      .then(function(contents) {
+        file.contents = contents;
+      });
+      ProjectEditor.attached_files.push(file);
+      var urlObject = window.URL ? window.URL : window.webkitURL;
+      var url = urlObject.createObjectURL(file);
+      file.localURL= url;
+    }
 
-    var urlObject = window.URL ? window.URL : window.webkitURL;
-    var url = urlObject.createObjectURL(file);
     if (file.type.match(/image.*/)) {
-      text += "![" + file.name + "](" + url + ")";
-      ProjectEditor.uploaded_images.push(file);
+      text += "![" + file.name + "](" + file.localURL + ")";
     } else {
-      text += "[" + file.name + "](" + url + ")";
+      text += "[" + file.name + "](" + file.localURL + ")";
     }
     ProjectController.updateItem(text, ProjectEditor.upload_target);
 
+    /*
     if(file.name.match(/.*.stl/)){
       var owner = CommonController.getOwner();
       var branch = CommonController.getBranch();
@@ -326,10 +339,7 @@ var ProjectEditor = {
         ProjectController.updateItem(text,ProjectEditor.upload_target);
       });
     }
-    if (!target.files) {
-      target.files = {};
-    }
-    target.files[url] = file;
+    */
   },
 
   customizeCSS: function (owner, repository, branch) {

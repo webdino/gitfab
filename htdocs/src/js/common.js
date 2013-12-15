@@ -363,6 +363,13 @@ var CommonController = {
     return CommonController.getGithubJSON4Token(url, "PUT", token, parameters);
   },
 
+  remove: function (token, owner, repository, branch, path, message, sha) {
+    var parameters = { path: path, message: message, branch: branch, sha:sha};
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/contents/" + path;
+    return CommonController.getGithubJSON4Token(url, "DELETE", token, parameters);
+  },
+
   watch: function (owner, repository) {
     var url = "/api/watch.php?owner=" + owner + "&repository=" + repository;
     return CommonController.getLocalJSON(url);

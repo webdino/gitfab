@@ -45,7 +45,7 @@ var ProjectController = {
       }
       ProjectController.parseGitFABDocument(gitfabDocument, owner, repository, branch);
       var thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
-      $("#thumbnail").attr("src", thumbnailSrc);
+      $("#thumbnail").attr("src", thumbnailSrc+"?"+((new Date()).getTime()));
 
 //      ProjectController.loadAdditionalInformation(owner, repository, branch);
 
@@ -512,21 +512,23 @@ var ProjectController = {
       return ProjectController.commitElements(token, owner, repository, branch, tags, shaTree);
     })
     .then(function(result) {
-      var images = $(".content img");
-      var uploadedImages = ProjectEditor.uploaded_images;
-      for (var i = uploadedImages.length-1, m = images.length; i >= 0; i--) {
-        for (var j = 0; j < m; j++) {
-          var uploadedImage = uploadedImages[i];
-          var image = images[j];
-          var filename = image.getAttribute("filename");
-          if (filename == uploadedImage.name) {
-            thumbnailAspect = image.naturalWidth/image.naturalHeight;
-            thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
-            var url = image.getAttribute("fileurl");
-            return ProjectController.commitThumbnail(token, owner, repository, branch, url, shaTree);
-          }
+      var attachments = ProjectEditor.attached_files;
+      for (var i = attachments.length-1; i >= 0; i--) {
+        var attachment = attachments[i];
+        if (!attachment.type.match(/image.*/)) {
+          continue;
         }
+        var localURL = attachment.localURL;
+        var images = $("img[src='"+localURL+"']");
+        if (images.length == 0) {
+          continue;
+        }
+        var image = images.get(0);
+        thumbnailAspect = image.naturalWidth/image.naturalHeight;
+        thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
+        return ProjectController.commitThumbnail(token, owner, repository, branch, attachment.fileURL, shaTree);
       }
+      var images = $(".content img");
       if (images.length == 0) {
         thumbnailAspect = 0;
         thumbnailSrc = "";
@@ -540,19 +542,19 @@ var ProjectController = {
     .then(function() {
       return ProjectController.updateRepositoryMeta(owner, repository, branch, tags, avatar, thumbnailSrc, thumbnailAspect);
     })
+    .then(function() {
+      return ProjectController.removeExtras(token, owner, repository, branch, shaTree);
+    })
     .fail(function(error) {
       CommonController.showError(error);
       Logger.error(error);
+      console.log(error);
       Logger.off();
     })
     .done(function() {
-      if (isURLChanged == true) {
-        var url = CommonController.getProjectPageURL(owner, repository, branch);
-        ProjectController.href(url);
-      } else {
-        Logger.off();
-        $("#thumbnail").attr("src", thumbnailSrc+"?"+(new Date()).getTime());
-      }
+      var url = CommonController.getProjectPageURL(owner, repository, branch);
+      ProjectController.href(url);
+//      Logger.off();
     });
   },
 
@@ -611,19 +613,66 @@ var ProjectController = {
     });
   },
 
+  removeExtras: function(token, owner, repository, branch, shatree) {
+    var contentList = $(".content");
+    var contentText = "";
+    for (var i = 0, n = contentList.length; i < n; i++) {
+      var content = contentList.get(i);
+      contentText += content.markdown;
+    }
+    var promiseList = [];
+    for (var i = 0, n = shatree.length; i < n; i++) {
+      var element = shatree[i];
+      if (element.type == "tree" || element.path == MAIN_DOCUMENT || element.path == THUMBNAIL) {
+        continue;
+      }
+      var url = CommonController.getFileURL(owner, repository, branch, element.path);
+      if (contentText.indexOf(url) >= 0) {
+        continue;
+      }
+      var path = element.path;
+      var sha = element.sha;
+
+      var promise = ProjectController.removeFile(token, owner, repository, branch, path, sha, i);
+      promiseList.push(promise);
+    }
+    if (promiseList.length == 0) {
+      return CommonController.emptyPromise();
+    }
+
+    var deferred = CommonController.getDeferred();
+    CommonController.when.apply($, promiseList)
+    .fail(function(e) {
+      Logger.error("removeExtras:"+e.statusText);
+      deferred.resolve();
+    })
+    .done(function() {
+      deferred.resolve();
+    });
+
+    return deferred.promise();
+  },
+
+  removeFile: function(token, owner, repository, branch, path, sha, count) {
+    //make a time difference for conflict error on github api
+    return CommonController.timerPromise(count*1000)
+    .then(function() {
+      return CommonController.remove(token, owner, repository, branch, path, "remove", sha);
+    });
+  },
+
   commitElements: function(token, owner, repository, branch, tags, shatree) {
     var base64 = new Base64();
     var elements = ProjectController.prepareCommitElements(owner, repository, branch, tags);
     var promiseList = [];
     promiseList[0] = CommonController.commit(token, owner, repository, branch, MAIN_DOCUMENT, base64.encodeStringAsUTF8(elements.document), "", shatree);
     if (elements.customCSS) {
-      promiseList.push( CommonController.commit(token, owner, repository, branch, CUSTOM_CSS, base64.encodeStringAsUTF8(elements.customCSS), "", shatree) );
+      promiseList.push(CommonController.commit(token, owner, repository, branch, CUSTOM_CSS, base64.encodeStringAsUTF8(elements.customCSS), "", shatree));
     }
     var attachments = elements.attachments;
-    for (var attachmentName in attachments) {
-      var attachment = attachments[attachmentName];
-      var path = MATERIALS_DIR + "/" + attachment.escapedName;
-      var promise = CommonController.commit(token, owner, repository, branch, path, attachment.contents, "", shatree);
+    for (var i = 0, n = attachments.length; i < n; i++) {
+      var attachment = attachments[i];
+      var promise = CommonController.commit(token, owner, repository, branch, attachment.path, attachment.contents, "", shatree);
       promiseList.push(promise);
     }
     return CommonController.when.apply($, promiseList);
@@ -640,28 +689,31 @@ var ProjectController = {
     userDocument += "---";
     userDocument += "\n";
 
-    var filemap = {};
+    var attachments = ProjectEditor.attached_files;
+    var uploadable = [];
     var contentList = $(".content");
-    for (var i = 0, n = contentList.length; i < n; i++) {
+    for (var i = 0, n = contentList.length, m = attachments.length; i < n; i++) {
       var content = contentList.get(i);
       var text = content.markdown;
-      var files = content.files;
-      for (key in files) {
-        var file = files[key];
-        file.escapedName = file.name.replace(/\s/g, "-");
-        filemap[key] = file;
-        var fileURL = CommonController.getFileURL(owner, repository, branch, MATERIALS_DIR + "/" + file.escapedName);
-        text = text.replace(key, fileURL);
-        var img = $("img[src='" + key + "']");
-        img.attr("fileurl", fileURL);
-        img.attr("filename", file.name);
+
+      for (var j = 0; j < m; j++) {
+        var attachment = attachments[j];
+        var elements = text.split(attachment.localURL);
+        if (elements.length == 1) {
+          continue;
+        }
+        attachment.path = MATERIALS_DIR + "/" + attachment.name.replace(/\s/g, "-");
+        var fileURL = CommonController.getFileURL(owner, repository, branch, attachment.path);
+        text = elements.join(fileURL);
+        attachment.fileURL = fileURL;
+        uploadable.push(attachment)
       }
       content.markdown = text;
-      content.files = {};
       userDocument += text + "\n";
       userDocument += "---\n";
     }
-    var elements = {"document": userDocument, "attachments": filemap};
+
+    var elements = {"document": userDocument, "attachments": uploadable};
     var stylesheet = $("#" + CUSTOME_CSS_ID);
     if (stylesheet.length != 0) {
       elements.customCSS = stylesheet.text();
