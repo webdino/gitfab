@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 var ProjectEditor = {
 
-  enable: function (user, repository, branch) {
+  enable: function (user, repository, branch, isAdmin) {
     //reusable elements
     ProjectEditor.textfield = $(document.createElement("input"));
     ProjectEditor.textfield.attr("id", "reusable-textfield");
@@ -59,11 +59,14 @@ var ProjectEditor = {
     $("#append-markdown").click(ProjectEditor.prepareMarkdown);
 
     $("#upload").change(ProjectEditor.upload);
-    $("#repository").click(ProjectEditor.editTitle);
     $("#tags").click(ProjectEditor.editTags);
 
     $("#customize-css").click(function() {ProjectEditor.customizeCSS(user, repository, branch);});
 
+    if (isAdmin == true) {
+      $("#repository").click(ProjectEditor.editTitle);
+    }
+    
     ProjectEditor.attached_files = [];
   },
 

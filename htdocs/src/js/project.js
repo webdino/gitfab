@@ -247,14 +247,14 @@ var ProjectController = {
       //editor
       switch (editorType) {
         case 1 : {
-          ProjectEditor.enable(owner, repository, branch);
+          ProjectEditor.enable(owner, repository, branch, false);
           $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
           $("#delete-button").hide();
           $("#add-collaborator").hide();
           break;
         }
         case 2 : {
-          ProjectEditor.enable(owner, repository, branch);
+          ProjectEditor.enable(owner, repository, branch, true);
           $("#collaborators").addClass("admin");
           $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
           $("#delete-button").click(function() {ProjectController.deleteProject(token, owner, repository, branch);});
@@ -479,6 +479,21 @@ var ProjectController = {
       branch = MASTER_BRANCH;
       isURLChanged = true;
     } else {
+      //check
+      /*
+      if (1 == 1) {
+        var originalDocument = ProjectController.getGitFABDocument();
+        var elements = ProjectController.prepareCommitElements(owner, repository, branch, tags);
+        var userDocument = elements.document;
+        var diffHTML = diffString(originalDocument, userDocument);
+        var diffElement = $(document.createElement("div"));
+        diffElement.html(diffHTML);
+        $(document.body).append(diffElement);
+        return;
+      }
+      */
+
+
       if (branch == MASTER_BRANCH && projectName != repository) {
         if (ProjectController.existProjectName(projectName) == true) {
           CommonController.showError("project name["+projectName+"] already exists.");        
