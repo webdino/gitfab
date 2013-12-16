@@ -32,7 +32,7 @@ var ProjectController = {
     //repository
     if (repository == CREATE_PROJECT_COMMAND) {
       ProjectController.newGitFABDocument(user, avatarURL);
-      ProjectEditor.enable(user,"input-your-repository-name","master");
+      ProjectEditor.enable(user, "input-your-repository-name", "master", true);
       $("#commit-button").click(function() {
         ProjectController.commitProject(token, owner, repository, branch);});
       $("#delete-button").hide();
