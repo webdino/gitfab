@@ -141,17 +141,17 @@ var CommonController = {
     projectName.addClass("projectName");
     if (branchS == "master") {
 
-      if(repositoryS.length > 25){
+      if(repositoryS.length > 20){
         // repositoryS = repositoryS.substring(0,20)+"…";
-        repositoryS = repositoryS.substring(0,25).truncateTailInWidth(240,'ruler');
+        repositoryS = repositoryS.truncateTailInWidth(240,'ruler');
       }
 
       projectName.text(repositoryS);
     } else {
       // change title length
-      if(branchS.length > 25){
+      if(branchS.length > 20){
         // branchS = branchS.substring(0,20)+"…";
-        branchS = branchS.substring(0,25).truncateTailInWidth(240,'ruler');
+        branchS = branchS.truncateTailInWidth(240,'ruler');
       }
       projectName.text(branchS);
     }
