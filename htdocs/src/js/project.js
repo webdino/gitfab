@@ -479,21 +479,6 @@ var ProjectController = {
       branch = MASTER_BRANCH;
       isURLChanged = true;
     } else {
-      //check
-      /*
-      if (1 == 1) {
-        var originalDocument = ProjectController.getGitFABDocument();
-        var elements = ProjectController.prepareCommitElements(owner, repository, branch, tags);
-        var userDocument = elements.document;
-        var diffHTML = diffString(originalDocument, userDocument);
-        var diffElement = $(document.createElement("div"));
-        diffElement.html(diffHTML);
-        $(document.body).append(diffElement);
-        return;
-      }
-      */
-
-
       if (branch == MASTER_BRANCH && projectName != repository) {
         if (ProjectController.existProjectName(projectName) == true) {
           CommonController.showError("project name["+projectName+"] already exists.");        
@@ -515,8 +500,8 @@ var ProjectController = {
         branch = projectName;
         isURLChanged = true;
       } else {
-        promise = CommonController.emptyPromise();
         Logger.on();
+        promise = CommonController.emptyPromise();
       }
     }
     promise.then(function() {
@@ -582,6 +567,81 @@ var ProjectController = {
       }
     }
     return false;
+  },
+
+  preventConflict: function(owner, repository, branch, userTagsString) {
+    var deferred = CommonController.getDeferred();
+
+    CommonController.getGithubContents(owner, repository, branch, MAIN_DOCUMENT)
+    .then(function(result) {
+      var base64 = new Base64();
+      var latestDocument = base64.decodeStringAsUTF8(result.content.replace(/\n/g, ""));
+      var originalDocument = ProjectController.getGitFABDocument();
+      var elements = ProjectController.prepareCommitElements(owner, repository, branch, tags);
+      var userDocument = elements.document;
+      /*
+      if (latestDocument == originalDocument) {
+        deferred.resolve();
+      } else {
+        var elements = ProjectController.prepareCommitElements(owner, repository, branch, tags);
+        var userDocument = elements.document;
+
+        var lines = userDocument.split("\n");
+        //compare the tag
+        var latestTagsString = $.trim(lines[1].substring("## ".length));
+        userTagsString = $.trim(userTagsString);
+        if (userTagsString != latestTagsString) {
+          var userTags = userTagsString.split(",");
+          var latestTags = latestTagsString.split(",");
+          for (var i = 0, n = latestTags.length, m = userTags.length; i < n; i++) {
+            var tag = latestTags[i];
+            var exists = false;
+            for (var j = 0; j < m; j++) {
+              if (userTags[j] == tag) {
+                exists = true;
+                break;
+              }
+            }
+            if (exists == false) {
+              userTags.push(tag)
+            }
+          }
+          userTagsString = userTags.join(",");          
+          ProjectController.parseTagString(userTagsString);
+        }
+
+        var text;
+        var heading;
+        for (var i = 4, n = lines.length; i < n; i++) {
+          var line = lines[i];
+          if (line == "---") {
+            console.log("HEADING:"+heading);
+            console.log("\n");
+            console.log(text);
+            text = null;
+            heading = null;
+            continue;
+          }
+          if (heading && text) {
+            text += "\n" + line;
+          } else if (heading) {
+            text = line;
+          } else {
+            heading = line;
+          }
+        }
+
+
+        var diffHTML = diffString(latestDocument, userDocument);
+        var diffElement = $(document.createElement("div"));
+        diffElement.html(diffHTML);
+        $(document.body).append(diffElement);
+        deferred.reject("conflict: please edit the document");
+      }
+      */
+    });
+
+    return deferred.promise();
   },
 
   updateRepositoryMeta: function(owner, repository, branch, tags, avatar, thumbnail, aspect) {
