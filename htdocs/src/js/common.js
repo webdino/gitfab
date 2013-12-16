@@ -556,21 +556,6 @@ var CommonController = {
 }
 
 
-
-// String.prototype.getExtent = function(ruler) {
-//   var e = $(ruler);
-//   if(e.attr('visibility') == 'hidden'){ e.attr('visibility','visible');}
-//   // var c;
-//   // while (e.children() ) e.empty();
-//   // var text = e.append(document.createTextNode(this));
-//   e.append(this);
-//   var width = e.attr('offsetWidth');
-//   e.empty();
-//   e.attr('visibility','hidden');
-//   return width;
-// }
-
-
 String.prototype.getExtent = function(ruler) {
   var e = document.getElementById(ruler);
   var c;

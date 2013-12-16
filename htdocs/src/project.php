@@ -8,6 +8,7 @@
     <meta charset="utf-8">
     <title data-l10n-id="title">gitFAB</title>  
     <!-- development -->
+    <link rel="stylesheet" href="/css/colorbox.css" type="text/css">
     <link rel="stylesheet" href="/css/common.css" type="text/css">
     <link rel="stylesheet" href="/css/projectEditor.css" type="text/css">
     <link rel="stylesheet" href="/css/project.css" type="text/css">
@@ -17,6 +18,7 @@
     <script type="text/javascript" src="/js/lib/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/base64.js"></script>
     <script type="text/javascript" src="/js/lib/showdown-dev.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery.colorbox-min.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/projectEditor.js"></script>
     <script type="text/javascript" src="/js/project.js"></script>

@@ -200,6 +200,14 @@ var ProjectController = {
     var html = ProjectController.encode4html(text);
     target.html(html);
     target.find("a").attr("target", "_blank");
+
+    target.find("img").attr('id','gallery');
+      // for (var i=0; i<$('#gallery').length; i++) {
+  //     $('#gallery').eq(i).colorbox({rel:'gal'});
+  //     $('#gallery').eq(i).attr('href', $('#gallery').eq(i).attr('src'));
+  //   }
+
+
     files = target.find("a");
 
     for(i=0;i<files.length;i++){
@@ -881,4 +889,11 @@ var ProjectController = {
 
 $(document).ready(function () {
   ProjectController.init();
+
+  // add lightbox
+  for (var i=0; i<$('img#gallery').length; i++) {
+    $('img#gallery').eq(i).colorbox({rel:'gal', width:"100%", height:"100%"});
+    $('img#gallery').eq(i).attr('href', $('img#gallery').eq(i).attr('src'));
+  }
+
 });
