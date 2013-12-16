@@ -460,6 +460,12 @@ var CommonController = {
     return deferred.promise();
   },
 
+  getGithubContents: function(owner, repository, branch, path) {
+    var url = CommonController.getGithubRepositoryPath(owner, repository);
+    url += "/contents/" + path + "?ref="+branch;
+    return CommonController.getGithubJSON(url);
+  },
+
   getGithubJSON: function(url) {
     var headers = {};
     if (CommonController.getToken()) {
@@ -479,7 +485,7 @@ var CommonController = {
     return deferred.promise();
   },
 
-  getGithubJSON4Token: function (url, method, token, parameters, callback) {
+  getGithubJSON4Token: function (url, method, token, parameters) {
     var deferred = CommonController.getDeferred();
     var promise = CommonController.ajaxPromise({url: url, type:method, dataType:"json", data: JSON.stringify(parameters), headers: { "Authorization": " bearer " + token}});
     promise.then(function(result) {
