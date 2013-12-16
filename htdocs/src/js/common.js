@@ -143,7 +143,7 @@ var CommonController = {
 
       if(repositoryS.length > 25){
         // repositoryS = repositoryS.substring(0,20)+"…";
-        repositoryS = repositoryS.substring(0,25).truncateTailInWidth(247,'ruler');
+        repositoryS = repositoryS.substring(0,25).truncateTailInWidth(240,'ruler');
       }
 
       projectName.text(repositoryS);
@@ -151,7 +151,7 @@ var CommonController = {
       // change title length
       if(branchS.length > 25){
         // branchS = branchS.substring(0,20)+"…";
-        branchS = branchS.substring(0,25).truncateTailInWidth(247,'ruler');
+        branchS = branchS.substring(0,25).truncateTailInWidth(240,'ruler');
       }
       projectName.text(branchS);
     }
@@ -583,13 +583,10 @@ String.prototype.getExtent = function(ruler) {
 
 String.prototype.truncateTailInWidth = function(maxWidth, ruler) {
   if (this.length == 0) return '';
-  console.log(this.getExtent(ruler));
   if (this.getExtent(ruler) <= maxWidth) return this;
   for (var i=this.length-1; i>=1; --i) {
-    console.log(i);
     var s = this.slice(0, i) + '...';
     if (s.getExtent(ruler) <= maxWidth) return s;
-    console.log(s.getExtent(ruler));
   }
   return '';
 }
