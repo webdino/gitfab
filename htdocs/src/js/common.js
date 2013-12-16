@@ -141,14 +141,17 @@ var CommonController = {
     projectName.addClass("projectName");
     if (branchS == "master") {
 
-      if(repositoryS.length > 22){
-        repositoryS = repositoryS.substring(0,22)+"…";
+      if(repositoryS.length > 25){
+        // repositoryS = repositoryS.substring(0,20)+"…";
+        repositoryS = repositoryS.substring(0,25).truncateTailInWidth(247,'ruler');
       }
 
       projectName.text(repositoryS);
     } else {
-      if(branchS.length > 22){
-        branchS = branchS.substring(0,22)+"…";
+      // change title length
+      if(branchS.length > 25){
+        // branchS = branchS.substring(0,20)+"…";
+        branchS = branchS.substring(0,25).truncateTailInWidth(247,'ruler');
       }
       projectName.text(branchS);
     }
@@ -551,3 +554,43 @@ var CommonController = {
     return deferred.promise();
   }
 }
+
+
+
+// String.prototype.getExtent = function(ruler) {
+//   var e = $(ruler);
+//   if(e.attr('visibility') == 'hidden'){ e.attr('visibility','visible');}
+//   // var c;
+//   // while (e.children() ) e.empty();
+//   // var text = e.append(document.createTextNode(this));
+//   e.append(this);
+//   var width = e.attr('offsetWidth');
+//   e.empty();
+//   e.attr('visibility','hidden');
+//   return width;
+// }
+
+
+String.prototype.getExtent = function(ruler) {
+  var e = document.getElementById(ruler);
+  var c;
+  while (c = e.lastChild) e.removeChild(c);
+  var text = e.appendChild(document.createTextNode(this));
+  var width = e.offsetWidth;
+  e.removeChild(text);
+  return width;
+}
+
+String.prototype.truncateTailInWidth = function(maxWidth, ruler) {
+  if (this.length == 0) return '';
+  console.log(this.getExtent(ruler));
+  if (this.getExtent(ruler) <= maxWidth) return this;
+  for (var i=this.length-1; i>=1; --i) {
+    console.log(i);
+    var s = this.slice(0, i) + '...';
+    if (s.getExtent(ruler) <= maxWidth) return s;
+    console.log(s.getExtent(ruler));
+  }
+  return '';
+}
+
