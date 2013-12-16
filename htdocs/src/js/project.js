@@ -345,7 +345,7 @@ var ProjectController = {
         return;
       }
       Logger.on();
-      var thumbnailSrc = CommonController.getThumbnailURL(user, repository, branch);
+      var thumbnailSrc = CommonController.getThumbnailURL(user, projectName, MASTER_BRANCH);
       promise = ProjectController.cloneProject(token, user, owner, repository, branch, projectName, tags, avatar, thumbnailSrc, thumbnailAspect)
       .then(function() {
         return CommonController.newLocalFork(owner, repository, branch, user, projectName, MASTER_BRANCH);        
