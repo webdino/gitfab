@@ -142,6 +142,7 @@ module.exports = function(grunt) {
 				 '<%= dirs.src.css%>/logger.css',
 				 '<%= dirs.src.css%>/slide.css',
 				 '<%= dirs.src.css%>/project.css',
+				 '<%= dirs.src.css%>/colorbox.css',
 				 '<%= dirs.src.css%>/projectEditor.css'
 				 ],
 			dest:'<%= dirs.dest.css%>/project.min.css'
