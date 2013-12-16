@@ -34,6 +34,8 @@
   <body>
     <?php include('header.php.inc'); ?>
 
+    <span id="ruler">&nbsp;</span>
+
     <!-- <div id="sort">Sorted by</div> -->
     <!-- <div id="sort-item">Likes</div> -->
     <!-- <div id="sort-item">Forks</div> -->

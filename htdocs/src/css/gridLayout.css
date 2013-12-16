@@ -69,3 +69,17 @@
   padding-right: 5px;
   display: inline-block;
 }
+
+#ruler {
+  visibility: hidden;
+  position: absolute;
+  margin-top: -3px;
+  padding: 0px 0 3px 10px;
+  font-size: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  word-wrap: break-word;
+}
+
+
+}

@@ -141,14 +141,17 @@ var CommonController = {
     projectName.addClass("projectName");
     if (branchS == "master") {
 
-      if(repositoryS.length > 22){
-        repositoryS = repositoryS.substring(0,22)+"…";
+      if(repositoryS.length > 24){
+        // repositoryS = repositoryS.substring(0,20)+"…";
+        repositoryS = repositoryS.truncateTailInWidth(240,'ruler');
       }
 
       projectName.text(repositoryS);
     } else {
-      if(branchS.length > 22){
-        branchS = branchS.substring(0,22)+"…";
+      // change title length
+      if(branchS.length > 24){
+        // branchS = branchS.substring(0,20)+"…";
+        branchS = branchS.truncateTailInWidth(240,'ruler');
       }
       projectName.text(branchS);
     }
@@ -557,3 +560,25 @@ var CommonController = {
     return deferred.promise();
   }
 }
+
+
+String.prototype.getExtent = function(ruler) {
+  var e = document.getElementById(ruler);
+  var c;
+  while (c = e.lastChild) e.removeChild(c);
+  var text = e.appendChild(document.createTextNode(this));
+  var width = e.offsetWidth;
+  e.removeChild(text);
+  return width;
+}
+
+String.prototype.truncateTailInWidth = function(maxWidth, ruler) {
+  if (this.length == 0) return '';
+  if (this.getExtent(ruler) <= maxWidth) return this;
+  for (var i=this.length-1; i>=1; i-=2) {
+    var s = this.slice(0, i) + '...';
+    if (s.getExtent(ruler) <= maxWidth) return s;
+  }
+  return '';
+}
+
