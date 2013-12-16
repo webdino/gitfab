@@ -141,7 +141,7 @@ var CommonController = {
     projectName.addClass("projectName");
     if (branchS == "master") {
 
-      if(repositoryS.length > 20){
+      if(repositoryS.length > 24){
         // repositoryS = repositoryS.substring(0,20)+"…";
         repositoryS = repositoryS.truncateTailInWidth(240,'ruler');
       }
@@ -149,7 +149,7 @@ var CommonController = {
       projectName.text(repositoryS);
     } else {
       // change title length
-      if(branchS.length > 20){
+      if(branchS.length > 24){
         // branchS = branchS.substring(0,20)+"…";
         branchS = branchS.truncateTailInWidth(240,'ruler');
       }
@@ -569,7 +569,7 @@ String.prototype.getExtent = function(ruler) {
 String.prototype.truncateTailInWidth = function(maxWidth, ruler) {
   if (this.length == 0) return '';
   if (this.getExtent(ruler) <= maxWidth) return this;
-  for (var i=this.length-1; i>=1; --i) {
+  for (var i=this.length-1; i>=1; i-=2) {
     var s = this.slice(0, i) + '...';
     if (s.getExtent(ruler) <= maxWidth) return s;
   }
