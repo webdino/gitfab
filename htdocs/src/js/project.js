@@ -37,6 +37,7 @@ var ProjectController = {
         ProjectController.commitProject(token, owner, repository, branch);});
       $("#delete-button").hide();
       $("#fork-button").hide();
+      $("#add-collaborator").hide();
     } else {
       var gitfabDocument = ProjectController.getGitFABDocument();
       if (gitfabDocument.length == 0) {
@@ -273,7 +274,6 @@ var ProjectController = {
           $("#collaborators").addClass("admin");
           $("#commit-button").click(function() {ProjectController.commitProject(token, owner, repository, branch);});
           $("#delete-button").click(function() {ProjectController.deleteProject(token, owner, repository, branch);});
-
           $("#add-collaborator-button").click(function() {ProjectController.showCollaboratorForm();});
           $("#add-collaborator-find-form .button").click(function() {ProjectController.findCollaborator(owner);});
           $("#add-collaborator-add-form .add").click(function() {ProjectController.addCollaborator(token, owner, repository, branch);});
@@ -488,7 +488,6 @@ var ProjectController = {
         return;
       }
       Logger.on();
-
       promise = ProjectController.newRepository(token, owner, projectName, "", "", "", 0);
       repository = projectName;
       branch = MASTER_BRANCH;
@@ -528,6 +527,7 @@ var ProjectController = {
       return ProjectController.commitElements(token, owner, repository, branch, tags, shaTree);
     })
     .then(function(result) {
+
       var attachments = ProjectEditor.attached_files;
       for (var i = attachments.length-1; i >= 0; i--) {
         var attachment = attachments[i];
@@ -777,7 +777,7 @@ var ProjectController = {
     var attachments = elements.attachments;
     for (var i = 0, n = attachments.length; i < n; i++) {
       var attachment = attachments[i];
-      var promise = CommonController.commit(token, owner, repository, branch, attachment.path, attachment.contents, "", shatree);
+      var promise = CommonController.commit(token, owner, repository, branch, attachment.filePATH, attachment.contents, "", shatree);
       promiseList.push(promise);
     }
     return CommonController.when.apply($, promiseList);
@@ -807,13 +807,12 @@ var ProjectController = {
         if (elements.length == 1) {
           continue;
         }
-        attachment.path = MATERIALS_DIR + "/" + attachment.name.replace(/\s/g, "-");
-        var fileURL = CommonController.getFileURL(owner, repository, branch, attachment.path);
+        attachment.filePATH = MATERIALS_DIR + "/" + attachment.name.replace(/\s/g, "-");
+        var fileURL = CommonController.getFileURL(owner, repository, branch, attachment.filePATH);
         text = elements.join(fileURL);
         attachment.fileURL = fileURL;
         uploadable.push(attachment)
       }
-      content.markdown = text;
       userDocument += text + "\n";
       userDocument += "---\n";
     }

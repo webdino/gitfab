@@ -353,7 +353,7 @@ var CommonController = {
   },
 
   commit: function (token, owner, repository, branch, path, content, message, tree) {
-    var parameters = { path: path, message: message, content: content, branch: branch, };
+    var parameters = { path: path, message: message, content: content, branch: branch };
     for (var i = 0, n = tree.length; i < n; i++) {
       var node = tree[i];
       if (path == node.path) {
