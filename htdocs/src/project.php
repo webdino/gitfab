@@ -19,6 +19,7 @@
     <script type="text/javascript" src="/js/lib/base64.js"></script>
     <script type="text/javascript" src="/js/lib/showdown-dev.js"></script>
     <script type="text/javascript" src="/js/lib/jquery.colorbox-min.js"></script>
+    <script type="text/javascript" src="/js/lib/diff_match_patch.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/projectEditor.js"></script>
     <script type="text/javascript" src="/js/project.js"></script>
@@ -66,7 +67,7 @@
                 <div id="abstract-text"></div>
                 <div id="tags"></div>
                 <div id="collaborators">
-                  <div id="owner"></div>
+                  <div id="owner"><a><span></span><img></img></a></div>
                 </div>
                 <div id="add-collaborator">
                   <div id="add-collaborator-button">+collaborator</div>

@@ -9,7 +9,6 @@ var ProjectEditor = {
     ProjectEditor.textfield.attr("id", "reusable-textfield");
     ProjectEditor.textarea = $(document.createElement("textarea"));
     ProjectEditor.textarea.attr("id", "reusable-textarea");
-    ProjectEditor.textarea.attr("rows", "5");
     //-----------------
     var buttoncontainer = $(document.createElement("div"));
     var button = $(document.createElement("div"));
@@ -48,8 +47,10 @@ var ProjectEditor = {
     itemTools.append(upButton);
     itemTools.append(downButton);
     ProjectEditor.itemTools = itemTools;
-    $(".item").mouseover(ProjectEditor.showItemTools);
-    $(".item").mouseout(ProjectEditor.hideItemTools);
+    ProjectEditor.itemTools.hide();
+
+    $(document).on('mouseover', '.item', ProjectEditor.showItemTools);
+    $(document).on('mouseout', '.item', ProjectEditor.hideItemTools);
 
     $("#append-button").click(ProjectEditor.appendItem);
     $("#append-file").click(ProjectEditor.appendViaUpload);
@@ -113,8 +114,6 @@ var ProjectEditor = {
       }
     }
     ProjectController.updateIndex();
-    $(".item").mouseover(ProjectEditor.showItemTools);
-    $(".item").mouseout(ProjectEditor.hideItemTools);
   },
 
   getLastItemContent: function() {
@@ -166,12 +165,18 @@ var ProjectEditor = {
     ProjectEditor.itemTools.hide();
   },
 
+  beforeRemoveProcessing: function (e) {
+    $("#main").append(ProjectEditor.itemTools);
+  },
+
   editItem: function (e) {
     e.preventDefault();
-
-    var target = $(e.currentTarget.parentNode.parentNode).find(".content");
+    var target = ProjectEditor.itemTools.parent().find(".content");
     var text = target.get(0).markdown;
+    var hOfTarget = target.height();
+    ProjectEditor.textarea.height(hOfTarget);
     ProjectEditor.textarea.val(text);
+
     target.empty();
     target.append(ProjectEditor.textarea);
     ProjectEditor.textarea.focus();
@@ -231,30 +236,28 @@ var ProjectEditor = {
   },
 
   upload2Item: function (e) {
-    var target = e.target;
-    var parent = $(target.parentNode.parentNode);
+    var parent = ProjectEditor.itemTools.parent();
     var content = $(parent.find(".content"));
     ProjectEditor.upload_target = content;
     $("#upload").click();
   },
 
   upItem: function (e) {
-    var target = $(e.currentTarget).parent().parent();
+    var target = ProjectEditor.itemTools.parent();
     ProjectEditor.exchangeItems(target.attr("id"), target.prev().attr("id"));
   },
 
   downItem: function (e) {
-    var target = $(e.currentTarget).parent().parent();
+    var target = ProjectEditor.itemTools.parent();
     ProjectEditor.exchangeItems(target.attr("id"), target.next().attr("id"));
   },
 
   removeItem: function (e) {
+    var target = ProjectEditor.itemTools.parent();
     if (!window.confirm("are you sure to remove this item?")) {
       return;
     }
-    var target = $(e.currentTarget.parentNode.parentNode);
-    var itemToolEntity = ProjectEditor.itemTools.get(0);
-    itemToolEntity.parentNode.removeChild(itemToolEntity);
+    ProjectEditor.beforeRemoveProcessing();
     target.remove();
     ProjectController.updateIndex();
   },
