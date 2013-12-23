@@ -1,0 +1,9 @@
+#config.yaml
+#
+testUser1:
+  name: gf-tester
+  passwd: mozilla5
+testUser2:
+  name: gf-tester2
+  passwd: mozilla
+baseUrl: http://local.gitfab.org
