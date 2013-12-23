@@ -351,6 +351,16 @@ li.item {
   float: left;
 }
 
+del.conflict {
+  background-color: red;  
+  text-decoration: none;
+}
+
+ins.conflict {
+  background-color: green;
+  text-decoration: none;
+}
+
 @media screen and (max-width: 360px) {
   #main {
     padding-left: 0px;

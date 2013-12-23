@@ -9,6 +9,6 @@ require.config({
 	}
     }
 });
-require(["jQuery","common","project","projectEditor","gridlayout","slide","logger","lib/showdown-dev","lib/base64"], 
+require(["jQuery","common","project","projectEditor","gridlayout","slide","logger","lib/showdown-dev","lib/base64", "lib/diff_match_patch"], 
 	function($,common,project,gridlayout,slide,logger,taglist,showdown,base64){
 });
