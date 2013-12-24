@@ -27,7 +27,7 @@ class TestUtils < Test::Unit::TestCase
     assert_equal [], @verification_errors
     delete_all_project
     p @createProjects
-    @driver.quit
+    #@driver.quit
   end
 
   def notifier(notified)
@@ -80,7 +80,6 @@ class TestUtils < Test::Unit::TestCase
       @driver.switch_to.alert.accept
     end
     assert !100.times{
-      p "waiting :"+@driver.current_url() 
       break if (@driver.current_url() == @baseUrl + "/"  rescue false) 
       sleep 1
     }
@@ -104,7 +103,6 @@ class TestUtils < Test::Unit::TestCase
     @driver.find_element(:id, "repository").click
     @driver.find_element(:id, "reusable-textfield").send_keys @keys
     @driver.find_element(:id, "append-markdown").click
-    p @driver.switch_to.methods
     
   end
   def rename_project(name)
@@ -186,7 +184,6 @@ class TestUtils < Test::Unit::TestCase
       if alert_present?()
         @driver.switch_to.alert.accept
       end
-      p @driver.current_url().split("/")[3] 
       break if (@driver.current_url().split("/")[3] == @user1  rescue false) 
       sleep 1
     }
