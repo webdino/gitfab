@@ -18,6 +18,7 @@ class TestUtils < Test::Unit::TestCase
     @baseUrl = @config['baseUrl']
     @createProjects = []
     @forkProjects = []
+    @tail = makeRandStr
     open_base
   
   end
@@ -49,6 +50,7 @@ class TestUtils < Test::Unit::TestCase
   end 
 
   def create_project(name)
+    name += @tail
     notifier("creating "+name+" ...")
     @driver.find_element(:id,"create").click
     rename(name)
@@ -94,20 +96,21 @@ class TestUtils < Test::Unit::TestCase
   end
 
   def rename(name)
-    @keys = []
+    keys = []
     @driver.find_element(:id, "repository").text.length.times{
-      @keys.push(:delete)
+      keys.push(:delete)
     }
-    @keys.push(name)
-    @keys.push(:return)
+    keys.push(name)
+    keys.push(:return)
     @driver.find_element(:id, "repository").click
-    @driver.find_element(:id, "reusable-textfield").send_keys @keys
+    @driver.find_element(:id, "reusable-textfield").send_keys keys
     @driver.find_element(:id, "append-markdown").click
     
   end
   def rename_project(name)
     @createProjects.delete(get_current_project)
     projData = get_current_project
+    name+=@tail
     notifier projData.to_s + " rename to " + name
     if is_branch? 
       newUrl = @baseUrl +"/"+projData[0]+"/"+projData[1]+"/"+name+"/"
@@ -248,7 +251,10 @@ class TestUtils < Test::Unit::TestCase
     @driver.find_element(:id, "opened_file").click
   end
 
-
+  def makeRandStr
+    t =Time.now
+    return "-"+t.month.to_s+ "-"+t.day.to_s+"-" + ((0..9).to_a+("a".."z").to_a).sample(8).join
+  end
 
   def element_present?(how, what)
     @driver.find_element(how, what)
