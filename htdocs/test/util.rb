@@ -28,7 +28,7 @@ class TestUtils < Test::Unit::TestCase
     assert_equal [], @verification_errors
     delete_all_project
     p @createProjects
-    @driver.quit
+    #@driver.quit
   end
 
   def notifier(notified)
@@ -117,6 +117,7 @@ class TestUtils < Test::Unit::TestCase
     else
       newUrl = @baseUrl +"/"+projData[0]+"/"+name+"/master/"
     end
+    p newUrl
     rename(name)
     commit
     assert !300.times{
@@ -250,6 +251,11 @@ class TestUtils < Test::Unit::TestCase
   def upload_file(path)
     @driver.find_element(:id, "opened_file").click
   end
+
+  def delete_all_own_branch_project
+
+  end
+
 
   def makeRandStr
     t =Time.now
