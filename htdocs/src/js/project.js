@@ -502,7 +502,7 @@ var ProjectController = {
           return;
         }
         promise = promise.then(function() {
-          return ProjectController.renameRepository(token, owner, projectName, repository);
+          return ProjectController.renameRepository(token, owner, projectName, CommonController.getRepository());
         });
         repository = projectName;
         isURLChanged = true;
@@ -712,6 +712,7 @@ var ProjectController = {
   },
 
   renameBranch: function(token, owner, repository, newBranch, previousBranch) {
+    console.log("renameBranch");
     return CommonController.renameBranch(token, owner, repository, newBranch, previousBranch)
     .then(function() {
       return CommonController.renameLocalBranch(owner, repository, newBranch, previousBranch);
