@@ -712,7 +712,6 @@ var ProjectController = {
   },
 
   renameBranch: function(token, owner, repository, newBranch, previousBranch) {
-    console.log("renameBranch");
     return CommonController.renameBranch(token, owner, repository, newBranch, previousBranch)
     .then(function() {
       return CommonController.renameLocalBranch(owner, repository, newBranch, previousBranch);
