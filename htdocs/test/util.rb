@@ -28,7 +28,7 @@ class TestUtils < Test::Unit::TestCase
     assert_equal [], @verification_errors
     delete_all_project
     p @createProjects
-    #@driver.quit
+    @driver.quit
   end
 
   def notifier(notified)

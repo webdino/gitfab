@@ -197,6 +197,7 @@ var ProjectEditor = {
     var text = title.text();
     title.empty();
     ProjectEditor.textfield.val(text);
+    ProjectEditor.textfield.keydown(ProjectController.checkProjectName);
     ProjectEditor.textfield.change(ProjectEditor.commitTitle);
     ProjectEditor.textfield.blur(ProjectEditor.commitTitle);
     title.append(ProjectEditor.textfield);

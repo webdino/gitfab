@@ -47,7 +47,6 @@ var ProjectController = {
       ProjectController.parseGitFABDocument(gitfabDocument, owner, repository, branch);
       var thumbnailSrc = CommonController.getThumbnailURL(owner, repository, branch);
       $("#thumbnail").attr("src", thumbnailSrc+"?"+((new Date()).getTime()));
-
 //      ProjectController.loadAdditionalInformation(owner, repository, branch);
 
       ProjectController.loadCollaborators(token, user, owner, repository, branch);
@@ -456,6 +455,17 @@ var ProjectController = {
     });
   },
 
+  checkProjectName: function(){
+    var projectName = ProjectEditor.textfield.val();
+    for (i in projectName){
+      var c =projectName.charCodeAt(i);
+      if(c <45 || 45 < c && c < 48 || 57 < c && c < 65|| 90 < c && c < 97 || 122 <c){
+        $('#commit-button').hide(); 
+      }else{
+        $('#commit-button').show();
+      }
+    }
+  },
   commitProject: function(token, owner, repository, branch) {
     var projectName = $.trim($("#repository").text());
     if (projectName.length == 0) {
@@ -473,7 +483,6 @@ var ProjectController = {
         return;
       }
     }
-
     var avatar = $("#owner img").attr("src");
     var tags = ProjectController.getTagString();
     var promise = null;
