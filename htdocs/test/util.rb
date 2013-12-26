@@ -71,6 +71,10 @@ class TestUtils < Test::Unit::TestCase
   def delete_project(project)
     to_project(project)
     @createProjects.delete(get_current_project)
+    delete
+  end
+
+  def delete
     @driver.find_element(:id, "delete-button").click
     if alert_present?
       alert = @driver.switch_to.alert
@@ -85,8 +89,8 @@ class TestUtils < Test::Unit::TestCase
       break if (@driver.current_url() == @baseUrl + "/"  rescue false) 
       sleep 1
     }
-    
   end
+
 
   def delete_all_project
     p @createProjects
@@ -173,6 +177,21 @@ class TestUtils < Test::Unit::TestCase
     @driver.find_element(:xpath,xpath).click
     notifier @driver.current_url()
   end
+
+  def to_my_project
+    notifier "to_my_project"
+    xpath = "id('project-list')/li/div/a[position()=2][@href='/"+@user1+"/']"
+    @driver.find_element(:xpath,xpath).click
+    xpath = "id('project-list')/li/div/a"
+    if element_present?(:xpath,xpath)
+      @driver.find_element(:xpath,xpath).click
+      notifier @driver.current_url()
+      return true
+    else 
+      return false
+    end
+  end
+
   
   def fork_project
     save_fork_project_data
@@ -252,8 +271,10 @@ class TestUtils < Test::Unit::TestCase
     @driver.find_element(:id, "opened_file").click
   end
 
-  def delete_all_own_branch_project
-
+  def delete_all_own_project
+    while to_my_project
+      delete
+    end
   end
 
 

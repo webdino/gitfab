@@ -3,7 +3,8 @@
 ##準備
 
 ```
-$ bundle install
+$ sudo gem install bundler
+$ sudo bundle install
 $ brew install terminal-notifier
 ```
 
