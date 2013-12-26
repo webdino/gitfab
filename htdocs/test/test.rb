@@ -94,13 +94,12 @@ class TestUtils < Test::Unit::TestCase
     open_base
   end
 
-=begin
   def test_delete
     open_base
     login
-    #delete_all_own_project
+    delete_all_own_project
   end
-=end
+
 
 
 end

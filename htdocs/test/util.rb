@@ -94,7 +94,15 @@ class TestUtils < Test::Unit::TestCase
 
   def delete_all_project
     p @createProjects
-    @createProjects.reverse_each do |project|
+    masterProjects = []
+    @createProjects.each do |project|
+      if project[3] == "master"
+        masterProjects.push(project)
+      else
+        delete_project(project)
+      end
+    end
+    masterProjects.each do |project|
       delete_project(project)
     end
   end
