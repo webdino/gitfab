@@ -13,7 +13,12 @@ var Slide = {
     Slide.setContent(Slide.current_index);
     var html = $("html");
     html.css("overflow", "hidden");
-    html.keypress(Slide.key);
+    if(window.navigator.userAgent.search("Firefox") != -1){
+      html.keypress(Slide.key);
+    } else {
+      html.keydown(Slide.key);
+    }
+
     $("#slide").show();
   },
 
