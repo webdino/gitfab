@@ -74,10 +74,10 @@ class TestUtils < Test::Unit::TestCase
     to_project(@createProjects.last)
     fork_project
     open_base
-    to_project(@createProjects[@createProjects.length-1])
+    to_project(@createProjects.last)
     rename_project("renamed-master")
     open_base
-    to_project(@createProjects[@createProjects.length-1])
+    to_project(@createProjects.last)
     fork_project
     open_base
     
@@ -97,7 +97,7 @@ class TestUtils < Test::Unit::TestCase
   def test_delete
     open_base
     login
-    delete_all_own_project
+    #delete_all_own_project
   end
 
 

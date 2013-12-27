@@ -96,7 +96,7 @@ class TestUtils < Test::Unit::TestCase
     p @createProjects
     masterProjects = []
     @createProjects.each do |project|
-      if project[3] == "master"
+      if project[2] == "master"
         masterProjects.push(project)
       else
         delete_project(project)

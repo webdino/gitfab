@@ -21,6 +21,7 @@ var Slide = {
     if (Slide.current_index + 1 == Slide.contentlist.length) {
       return;
     }
+    Slide.removeHeaderNumber();
     Slide.current_index += 1;
     Slide.setContent(Slide.current_index);
   },
@@ -29,6 +30,7 @@ var Slide = {
     if (Slide.current_index == 0) {
       return;
     }
+    Slide.removeHeaderNumber();
     Slide.current_index -= 1;
     Slide.setContent(Slide.current_index);
   },
@@ -38,6 +40,16 @@ var Slide = {
     container.empty();
     var content = Slide.contentlist[index];
     container.get(0).appendChild(content);
+    Slide.setHeaderNumber();
+
+  },
+  setHeaderNumber: function(){  
+    var header = $("#slide-container").find(':header')[0];
+    if(header != undefined)header.innerHTML = Slide.current_index-1+"."+ header.innerHTML;
+  },
+  removeHeaderNumber: function(){  
+    var header = $("#slide-container").find(':header')[0];
+    if(header != undefined)header.innerHTML = header.innerHTML.substring(header.innerHTML.indexOf(".")+1);
   },
 
   key: function(e) {

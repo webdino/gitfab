@@ -60,3 +60,6 @@
   font-size: 28px;
 }
 
+#slide-container .content h1:before{
+  content: "";
+}
